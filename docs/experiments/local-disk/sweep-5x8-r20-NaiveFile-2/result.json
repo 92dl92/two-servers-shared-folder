@@ -1,0 +1,187 @@
+{
+  "passed": false,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T20:55:55.6471624+00:00",
+  "finishedAt": "2026-10-17T20:56:02.5970214+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/data",
+    "servers": 5,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 20,
+      "Reviewer": 15,
+      "Admin": 5
+    },
+    "records": 20,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2",
+  "servers": [
+    {
+      "port": 34793,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/logs/server-34793.jsonl"
+    },
+    {
+      "port": 45029,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/logs/server-45029.jsonl"
+    },
+    {
+      "port": 46751,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/logs/server-46751.jsonl"
+    },
+    {
+      "port": 43697,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/logs/server-43697.jsonl"
+    },
+    {
+      "port": 42565,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-2/logs/server-42565.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 80,
+    "saves": 42,
+    "conflicts": 33,
+    "wrongStatus": 4,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 33,
+      "http500": 1,
+      "saved": 42,
+      "wrongStatus": 4
+    },
+    "savesByAction": {
+      "Create": 20,
+      "Update": 5,
+      "Submit": 1,
+      "Reject": 1,
+      "Comment": 15
+    },
+    "reads": 8000,
+    "readFailures": {
+      "http500": 6291,
+      "notFound": 1649
+    },
+    "durationSeconds": 4.228,
+    "savesPerSecond": 9.93,
+    "saveLatencyMs": {
+      "p50": 27.42,
+      "p95": 129.74,
+      "max": 152.04,
+      "mean": 68.91
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027]\u0027 is invalid after a single JSON value. Expected end of data. Path: $[1] | LineNumber: 145 | BytePositionInLine: 0.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 34793",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 45029",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 46751",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 43697",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 42565",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

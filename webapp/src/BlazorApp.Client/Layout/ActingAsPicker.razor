@@ -1,0 +1,32 @@
+@*
+    "Acting as" dropdown in the top bar. There is no login: anyone can pick any user.
+    Raises OnChange with the chosen id (null for nobody); the layout saves it.
+*@
+
+<label class="acting-as">
+    <span class="acting-as-label">Acting as</span>
+    <select value="@(Current?.Id ?? string.Empty)" @onchange="ChangedAsync" disabled="@(Users is null)">
+        <option value="">— nobody —</option>
+        @foreach (var user in Users ?? [])
+        {
+            <option value="@user.Id">@user.Name (@string.Join(", ", user.Roles))</option>
+        }
+    </select>
+</label>
+
+@code {
+    /// <summary>Users to choose from; null while loading.</summary>
+    [Parameter] public IReadOnlyList<UserDto>? Users { get; set; }
+
+    /// <summary>The selected user, or null for nobody.</summary>
+    [Parameter] public UserDto? Current { get; set; }
+
+    /// <summary>Raised with the chosen user id, or null when "nobody" is chosen.</summary>
+    [Parameter] public EventCallback<string?> OnChange { get; set; }
+
+    private Task ChangedAsync(ChangeEventArgs e)
+    {
+        var id = e.Value as string;
+        return OnChange.InvokeAsync(string.IsNullOrEmpty(id) ? null : id);
+    }
+}

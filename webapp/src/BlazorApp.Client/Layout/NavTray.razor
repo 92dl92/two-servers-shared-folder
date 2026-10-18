@@ -1,0 +1,71 @@
+@*
+    Navigation tray. Add a NavItem to _items to add a link.
+    - Wide screens: docked sidebar; the chevron button collapses it to an icon rail.
+    - Narrow screens: slide-in drawer with a backdrop; closes on link click or backdrop tap.
+*@
+
+@if (MobileOpen)
+{
+    <div class="backdrop" @onclick="OnClose"></div>
+}
+
+<nav class="tray @(MobileOpen ? "open" : null) @(Collapsed ? "collapsed" : null)"
+     aria-label="Main navigation">
+    <div class="tray-header">
+        <span class="tray-title">Menu</span>
+        <button type="button" class="icon-button collapse-button"
+                aria-label="@(Collapsed ? "Expand navigation" : "Collapse navigation")"
+                @onclick="ToggleCollapsed">
+            @(Collapsed ? "»" : "«")
+        </button>
+        <button type="button" class="icon-button close-button"
+                aria-label="Close navigation" @onclick="OnClose">
+            ✕
+        </button>
+    </div>
+
+    <ul class="tray-links">
+        @foreach (var item in _items)
+        {
+            <li>
+                <NavLink class="tray-link" href="@item.Href" Match="item.Match"
+                         title="@item.Label" @onclick="OnClose">
+                    <span class="tray-icon" aria-hidden="true">@item.Icon</span>
+                    <span class="tray-label">@item.Label</span>
+                </NavLink>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    /// <summary>A single entry in the tray.</summary>
+    /// <param name="Href">Relative URL to navigate to.</param>
+    /// <param name="Label">Visible text (also the tooltip when collapsed).</param>
+    /// <param name="Icon">Short glyph shown in the icon rail.</param>
+    /// <param name="Match">How the active link is detected.</param>
+    private sealed record NavItem(string Href, string Label, string Icon, NavLinkMatch Match = NavLinkMatch.Prefix);
+
+    private static readonly NavItem[] _items =
+    [
+        new("", "Home", "⌂", NavLinkMatch.All),
+        new("register", "Register", "✎"),
+        new("records", "Records", "☰"),
+    ];
+
+    /// <summary>Whether the drawer is open (narrow screens only).</summary>
+    [Parameter] public bool MobileOpen { get; set; }
+
+    /// <summary>Whether the docked tray is collapsed to icons (wide screens only).</summary>
+    [Parameter] public bool Collapsed { get; set; }
+
+    /// <summary>Raised when <see cref="Collapsed"/> changes; enables <c>@bind-Collapsed</c>.</summary>
+    [Parameter] public EventCallback<bool> CollapsedChanged { get; set; }
+
+    /// <summary>Raised when the drawer should close (link clicked, backdrop or ✕ tapped).</summary>
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    /// <summary>Flips <see cref="Collapsed"/> and notifies the parent.</summary>
+    /// <returns>A task that completes when the parent has been notified.</returns>
+    private Task ToggleCollapsed() => CollapsedChanged.InvokeAsync(!Collapsed);
+}

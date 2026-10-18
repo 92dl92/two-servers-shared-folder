@@ -1,0 +1,88 @@
+@inherits LayoutComponentBase
+@inject ICurrentUserService CurrentUsers
+@inject NavigationManager Navigation
+@inject IClientEventLog Log
+
+@*
+    App shell: top bar + navigation tray + page content.
+    The tray is a docked sidebar on wide screens (collapsible to an icon rail)
+    and a slide-in drawer on narrow screens.
+*@
+
+@* data-interactive turns "true" once WebAssembly has taken over from the prerendered HTML;
+   browser tests wait for it before clicking. *@
+<div class="shell" data-interactive="@(RendererInfo.IsInteractive ? "true" : "false")">
+    <header class="topbar">
+        <button type="button" class="icon-button menu-button"
+                aria-label="Open navigation" aria-expanded="@(_mobileOpen ? "true" : "false")"
+                @onclick="() => _mobileOpen = true">
+            ☰
+        </button>
+        <span class="brand">BlazorApp</span>
+        <ActingAsPicker Users="State?.Users" Current="State?.Current" OnChange="ChangeUserAsync" />
+    </header>
+
+    <NavTray MobileOpen="_mobileOpen"
+             @bind-Collapsed="_collapsed"
+             OnClose="() => _mobileOpen = false" />
+
+    <main class="content @(_collapsed ? "tray-collapsed" : null)">
+        <CascadingValue Value="_acting">
+            @Body
+        </CascadingValue>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    /// <summary>Whether the drawer is open on narrow screens.</summary>
+    private bool _mobileOpen;
+
+    /// <summary>Whether the docked tray is collapsed to an icon rail on wide screens.</summary>
+    private bool _collapsed;
+
+    /// <summary>Cascaded to pages; null until <see cref="State"/> has loaded.</summary>
+    private ActingUser? _acting;
+
+    /// <summary>
+    /// Users and the acting user. [PersistentState] carries the value loaded during server
+    /// prerendering over to the WebAssembly render, avoiding a second fetch.
+    /// </summary>
+    [PersistentState]
+    public UserState? State { get; set; }
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        State ??= new UserState(
+            [.. await CurrentUsers.GetUsersAsync()],
+            await CurrentUsers.GetCurrentUserAsync());
+        _acting = new ActingUser(State.Current);
+    }
+
+    /// <summary>Saves the new acting user and reloads, so every page and the server see the change.</summary>
+    /// <param name="userId">The chosen user id, or null for nobody.</param>
+    /// <returns>A task that completes when the choice has been saved.</returns>
+    private async Task ChangeUserAsync(string? userId)
+    {
+        using (var action = Log.ButtonPressed("layout", "ActingAs"))
+        {
+            await CurrentUsers.SetCurrentUserAsync(userId);
+            action.Result("Changed");
+        }
+
+        // The reload would drop events still waiting to be sent.
+        await Log.FlushAsync();
+        Navigation.Refresh(forceReload: true);
+    }
+
+    /// <summary>What the layout loads about users.</summary>
+    /// <param name="Users">Users that can be picked.</param>
+    /// <param name="Current">The acting user, or null.</param>
+    public sealed record UserState(List<UserDto> Users, UserDto? Current);
+}

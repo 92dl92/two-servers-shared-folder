@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T21:01:45.9782122+00:00",
+  "finishedAt": "2026-10-17T21:02:05.8819408+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "Sqlite",
+    "dataPath": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/data",
+    "servers": 5,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 20,
+      "Reviewer": 15,
+      "Admin": 5
+    },
+    "records": 20,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3",
+  "servers": [
+    {
+      "port": 39953,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/logs/server-39953.jsonl"
+    },
+    {
+      "port": 33121,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/logs/server-33121.jsonl"
+    },
+    {
+      "port": 44277,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/logs/server-44277.jsonl"
+    },
+    {
+      "port": 40401,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/logs/server-40401.jsonl"
+    },
+    {
+      "port": 33411,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-Sqlite-3/logs/server-33411.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 8020,
+    "saves": 3343,
+    "conflicts": 959,
+    "wrongStatus": 3718,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 959,
+      "saved": 3343,
+      "wrongStatus": 3718
+    },
+    "savesByAction": {
+      "Create": 20,
+      "Update": 242,
+      "Submit": 20,
+      "Approve": 9,
+      "Reject": 11,
+      "Comment": 3041
+    },
+    "reads": 8000,
+    "readFailures": {},
+    "durationSeconds": 16.779,
+    "savesPerSecond": 199.23,
+    "saveLatencyMs": {
+      "p50": 14.75,
+      "p95": 45.72,
+      "max": 366.88,
+      "mean": 21.64
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 39953",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 33121",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 44277",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 40401",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 33411",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

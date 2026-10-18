@@ -1,0 +1,143 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T21:58:52.3900085+00:00",
+  "finishedAt": "2026-10-17T21:58:57.1192712+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "/mnt/share/runs/nfs-one-heavy-NaiveFile-3/data",
+    "servers": 3,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 12,
+      "Reviewer": 9,
+      "Admin": 3
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": [],
+    "remote": null,
+    "remoteServers": 0,
+    "remoteDataPath": null
+  },
+  "runFolder": "stress-runs/nfs/nfs-one-heavy-NaiveFile-3",
+  "servers": [
+    {
+      "port": 42091,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-NaiveFile-3/logs/server-42091.jsonl",
+      "host": null
+    },
+    {
+      "port": 44813,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-NaiveFile-3/logs/server-44813.jsonl",
+      "host": null
+    },
+    {
+      "port": 46025,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-NaiveFile-3/logs/server-46025.jsonl",
+      "host": null
+    }
+  ],
+  "numbers": {
+    "writes": 12,
+    "saves": 12,
+    "conflicts": 0,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "saved": 12
+    },
+    "savesByAction": {
+      "Create": 12
+    },
+    "reads": 4800,
+    "readFailures": {
+      "http500": 4800
+    },
+    "durationSeconds": 2.89,
+    "savesPerSecond": 4.15,
+    "saveLatencyMs": {
+      "p50": 107.6,
+      "p95": 117.91,
+      "max": 117.91,
+      "mean": 110.56
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027]\u0027 is invalid after a single JSON value. Expected end of data. Path: $[1] | LineNumber: 33 | BytePositionInLine: 0.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 42091",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 44813",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 46025",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

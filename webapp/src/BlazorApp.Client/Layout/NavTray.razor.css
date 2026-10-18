@@ -1,0 +1,129 @@
+.tray {
+    position: fixed;
+    top: var(--topbar-height);
+    bottom: 0;
+    left: 0;
+    z-index: 30;
+    width: var(--tray-width);
+    overflow-x: hidden;
+    background: var(--tray-bg);
+    color: var(--tray-fg);
+    transition: width 0.2s ease, transform 0.2s ease;
+}
+
+.tray-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0.75rem 0.5rem 1rem;
+}
+
+.tray-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+}
+
+.tray-links {
+    list-style: none;
+    margin: 0;
+    padding: 0 0.5rem;
+}
+
+/* NavLink renders its own <a>, so reach it with ::deep. */
+.tray-links ::deep .tray-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.25rem;
+    border-radius: 6px;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.tray-links ::deep .tray-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tray-links ::deep .tray-link.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.tray-icon {
+    width: 1.5rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.tray .icon-button {
+    color: inherit;
+}
+
+.close-button {
+    display: none;
+}
+
+/* ---- Collapsed icon rail (wide screens) ---- */
+.tray.collapsed {
+    width: var(--tray-width-collapsed);
+}
+
+.tray.collapsed .tray-title,
+.tray.collapsed .tray-label {
+    display: none;
+}
+
+.tray.collapsed .tray-header {
+    justify-content: center;
+    padding-left: 0.75rem;
+}
+
+/* ---- Drawer (narrow screens) ---- */
+.backdrop {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .tray,
+    .tray.collapsed {
+        top: 0;
+        width: var(--tray-width);
+        transform: translateX(-100%);
+    }
+
+    .tray.open {
+        transform: translateX(0);
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Collapsing is a wide-screen feature; on mobile, always show labels. */
+    .tray.collapsed .tray-title,
+    .tray.collapsed .tray-label {
+        display: initial;
+    }
+
+    .tray.collapsed .tray-header {
+        justify-content: space-between;
+        padding-left: 1rem;
+    }
+
+    .collapse-button {
+        display: none;
+    }
+
+    .close-button {
+        display: inline-flex;
+    }
+
+    .backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 25;
+        background: rgba(0, 0, 0, 0.4);
+    }
+}

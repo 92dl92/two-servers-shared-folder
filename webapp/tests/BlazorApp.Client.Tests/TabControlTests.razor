@@ -1,0 +1,90 @@
+@inherits ClientTestContext
+
+@* TabControl: switching tabs and the ARIA wiring between tab buttons and panels. *@
+
+@code {
+    [Fact]
+    public void First_tab_is_selected_and_wired_to_its_panel()
+    {
+        var cut = Render(@<TabControl>
+            <TabPage Title="One">first</TabPage>
+            <TabPage Title="Two">second</TabPage>
+        </TabControl>);
+
+        var tabs = cut.FindAll("[role=tab]");
+        var panels = cut.FindAll("[role=tabpanel]");
+        Assert.Equal(["One", "Two"], tabs.Select(t => t.TextContent.Trim()));
+        Assert.Equal(2, panels.Count);
+        Assert.NotNull(cut.Find("[role=tablist]"));
+
+        for (var i = 0; i < 2; i++)
+        {
+            Assert.Equal(panels[i].Id, tabs[i].GetAttribute("aria-controls"));
+            Assert.Equal(tabs[i].Id, panels[i].GetAttribute("aria-labelledby"));
+        }
+
+        Assert.Equal("true", tabs[0].GetAttribute("aria-selected"));
+        Assert.Equal("0", tabs[0].GetAttribute("tabindex"));
+        Assert.Equal("false", tabs[1].GetAttribute("aria-selected"));
+        Assert.Equal("-1", tabs[1].GetAttribute("tabindex"));
+        Assert.False(panels[0].HasAttribute("hidden"));
+        Assert.True(panels[1].HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void Clicking_a_tab_selects_it_and_reports_the_new_index()
+    {
+        var reported = -1;
+        var cut = Render(@<TabControl ActiveIndexChanged="i => reported = i">
+            <TabPage Title="One">first</TabPage>
+            <TabPage Title="Two">second</TabPage>
+        </TabControl>);
+
+        cut.FindAll("[role=tab]")[1].Click();
+
+        Assert.Equal(1, reported);
+        var tabs = cut.FindAll("[role=tab]");
+        var panels = cut.FindAll("[role=tabpanel]");
+        Assert.Equal("false", tabs[0].GetAttribute("aria-selected"));
+        Assert.Equal("true", tabs[1].GetAttribute("aria-selected"));
+        Assert.Equal("0", tabs[1].GetAttribute("tabindex"));
+        Assert.Contains("active", tabs[1].ClassList);
+        Assert.True(panels[0].HasAttribute("hidden"));
+        Assert.False(panels[1].HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void Inactive_panels_stay_rendered()
+    {
+        var cut = Render(@<TabControl ActiveIndex="1">
+            <TabPage Title="One"><input id="keep-me" /></TabPage>
+            <TabPage Title="Two">second</TabPage>
+        </TabControl>);
+
+        Assert.NotNull(cut.Find("#keep-me"));
+        Assert.True(cut.FindAll("[role=tabpanel]")[0].HasAttribute("hidden"));
+    }
+
+    [Fact]
+    public void Disabled_tab_cannot_be_selected()
+    {
+        var cut = Render(@<TabControl>
+            <TabPage Title="One">first</TabPage>
+            <TabPage Title="Two" Disabled="true">second</TabPage>
+        </TabControl>);
+
+        Assert.True(cut.FindAll("[role=tab]")[1].HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public void Two_tab_controls_on_one_page_get_different_ids()
+    {
+        var cut = Render(@<div>
+            <TabControl><TabPage Title="A">a</TabPage></TabControl>
+            <TabControl><TabPage Title="B">b</TabPage></TabControl>
+        </div>);
+
+        var ids = cut.FindAll("[role=tab]").Select(t => t.Id).ToList();
+        Assert.Equal(2, ids.Distinct().Count());
+    }
+}

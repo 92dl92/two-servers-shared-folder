@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Tests for the stress tool: its checks on hand-made data, its options, and known-answer
+       runs against real Server processes. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\tools\BlazorApp.Stress\BlazorApp.Stress.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,3 @@
+# Stress tool run folders, wherever the tool is run from (data, logs, result.json, summary.md)
+stress-runs/
+manual-run/

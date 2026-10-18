@@ -1,0 +1,19 @@
+.acting-as {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.acting-as select {
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    max-width: 14rem;
+}
+
+@media (max-width: 480px) {
+    .acting-as-label {
+        display: none;
+    }
+}

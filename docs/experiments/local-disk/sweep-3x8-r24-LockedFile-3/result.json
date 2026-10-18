@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T20:45:29.996434+00:00",
+  "finishedAt": "2026-10-17T20:46:09.1514487+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "LockedFile",
+    "dataPath": "stress-runs/sweep/sweep-3x8-r24-LockedFile-3/data",
+    "servers": 3,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 12,
+      "Reviewer": 9,
+      "Admin": 3
+    },
+    "records": 24,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-3x8-r24-LockedFile-3",
+  "servers": [
+    {
+      "port": 39043,
+      "logFile": "stress-runs/sweep/sweep-3x8-r24-LockedFile-3/logs/server-39043.jsonl"
+    },
+    {
+      "port": 43083,
+      "logFile": "stress-runs/sweep/sweep-3x8-r24-LockedFile-3/logs/server-43083.jsonl"
+    },
+    {
+      "port": 34095,
+      "logFile": "stress-runs/sweep/sweep-3x8-r24-LockedFile-3/logs/server-34095.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 4824,
+    "saves": 2165,
+    "conflicts": 612,
+    "wrongStatus": 2047,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 612,
+      "saved": 2165,
+      "wrongStatus": 2047
+    },
+    "savesByAction": {
+      "Create": 24,
+      "Update": 154,
+      "Submit": 24,
+      "Approve": 9,
+      "Reject": 15,
+      "Comment": 1939
+    },
+    "reads": 4800,
+    "readFailures": {},
+    "durationSeconds": 36.976,
+    "savesPerSecond": 58.55,
+    "saveLatencyMs": {
+      "p50": 11.43,
+      "p95": 279.1,
+      "max": 1134.59,
+      "mean": 55.7
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 24,
+        "recordsFound": 24,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 39043",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 24,
+        "recordsFound": 24,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 43083",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 24,
+        "recordsFound": 24,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 34095",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 24,
+        "recordsFound": 24,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

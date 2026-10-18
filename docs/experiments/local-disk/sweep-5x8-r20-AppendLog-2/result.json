@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T21:00:42.8273148+00:00",
+  "finishedAt": "2026-10-17T21:00:54.6300396+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "AppendLog",
+    "dataPath": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/data",
+    "servers": 5,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 20,
+      "Reviewer": 15,
+      "Admin": 5
+    },
+    "records": 20,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2",
+  "servers": [
+    {
+      "port": 42987,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/logs/server-42987.jsonl"
+    },
+    {
+      "port": 45505,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/logs/server-45505.jsonl"
+    },
+    {
+      "port": 40217,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/logs/server-40217.jsonl"
+    },
+    {
+      "port": 43189,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/logs/server-43189.jsonl"
+    },
+    {
+      "port": 42151,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-AppendLog-2/logs/server-42151.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 8020,
+    "saves": 2525,
+    "conflicts": 1967,
+    "wrongStatus": 3528,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 1967,
+      "saved": 2525,
+      "wrongStatus": 3528
+    },
+    "savesByAction": {
+      "Create": 20,
+      "Update": 134,
+      "Submit": 20,
+      "Approve": 11,
+      "Reject": 9,
+      "Comment": 2331
+    },
+    "reads": 8000,
+    "readFailures": {},
+    "durationSeconds": 8.625,
+    "savesPerSecond": 292.74,
+    "saveLatencyMs": {
+      "p50": 16.34,
+      "p95": 72.44,
+      "max": 329.88,
+      "mean": 25.57
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 42987",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 45505",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 40217",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 43189",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 42151",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

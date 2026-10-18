@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Browser tests: start the real Server process and drive it with Playwright (Chromium). -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" Version="1.56.0" />
+  </ItemGroup>
+
+  <!-- DTOs and routes, for creating test data through the API. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BlazorApp.Shared\BlazorApp.Shared.csproj" />
+  </ItemGroup>
+
+  <!-- Build the Server first, but run it as its own process rather than loading it. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BlazorApp.Server\BlazorApp.Server.csproj"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- Tell the tests where the Server was built and where its project folder is. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>ServerProjectDir</_Parameter1>
+      <_Parameter2>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../src/BlazorApp.Server'))</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>ServerDll</_Parameter1>
+      <_Parameter2>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../src/BlazorApp.Server/bin/$(Configuration)/$(TargetFramework)/BlazorApp.Server.dll'))</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

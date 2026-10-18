@@ -1,0 +1,67 @@
+.shell {
+    min-height: 100vh;
+}
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: var(--topbar-height);
+    padding: 0 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.content {
+    padding: 1.5rem;
+    margin-left: var(--tray-width);
+    transition: margin-left 0.2s ease;
+}
+
+.content.tray-collapsed {
+    margin-left: var(--tray-width-collapsed);
+}
+
+/* Hamburger only shows on narrow screens, where the tray becomes a drawer. */
+.menu-button {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .menu-button {
+        display: inline-flex;
+    }
+
+    .content,
+    .content.tray-collapsed {
+        margin-left: 0;
+        padding: 1rem;
+    }
+}
+
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0.6rem 1.25rem;
+    background: lightyellow;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

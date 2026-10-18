@@ -1,0 +1,179 @@
+{
+  "passed": false,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T20:56:02.7584424+00:00",
+  "finishedAt": "2026-10-17T20:56:10.0034624+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/data",
+    "servers": 5,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 20,
+      "Reviewer": 15,
+      "Admin": 5
+    },
+    "records": 20,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3",
+  "servers": [
+    {
+      "port": 39291,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/logs/server-39291.jsonl"
+    },
+    {
+      "port": 40677,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/logs/server-40677.jsonl"
+    },
+    {
+      "port": 33737,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/logs/server-33737.jsonl"
+    },
+    {
+      "port": 44259,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/logs/server-44259.jsonl"
+    },
+    {
+      "port": 32955,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-NaiveFile-3/logs/server-32955.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 20,
+    "saves": 20,
+    "conflicts": 0,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "saved": 20
+    },
+    "savesByAction": {
+      "Create": 20
+    },
+    "reads": 8000,
+    "readFailures": {
+      "http500": 8000
+    },
+    "durationSeconds": 4.668,
+    "savesPerSecond": 4.28,
+    "saveLatencyMs": {
+      "p50": 125.7,
+      "p95": 141.6,
+      "max": 142.01,
+      "mean": 128.83
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027]\u0027 is invalid after a single JSON value. Expected end of data. Path: $[1] | LineNumber: 33 | BytePositionInLine: 0.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 39291",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 40677",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 33737",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 44259",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 32955",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

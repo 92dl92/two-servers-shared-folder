@@ -1,0 +1,283 @@
+@page "/register"
+@inject IRegistrationService Registrations
+@inject IClientEventLog Log
+
+@*
+    Tabbed registration form. All tabs belong to one EditForm, so the whole
+    RegistrationDto is validated on submit. If validation fails, the first tab
+    containing an error is selected automatically.
+*@
+
+<PageTitle>Register</PageTitle>
+
+<h1>Register</h1>
+
+@if (Acting is null)
+{
+    <p><em>Loading…</em></p>
+}
+else if (Acting.User is null)
+{
+    <div class="alert info" role="status">Pick a user under <strong>Acting as</strong> to register.</div>
+}
+else if (!Permissions.Allows(Acting.User, RecordAction.Create))
+{
+    <div class="alert info" role="status">
+        @Acting.User.Name (@string.Join(", ", Acting.User.Roles)) can't create registrations.
+    </div>
+}
+else if (_submittedId is { } id)
+{
+    <div class="alert success" role="status">
+        Thanks, @_model.FirstName! Your registration was saved as a draft (ref <code>@id.ToString()[..8]</code>).
+        <a href="records/@id">Open it</a> to submit it for review.
+    </div>
+    <button type="button" class="btn" @onclick="RegisterAnother">Register another</button>
+}
+else
+{
+    <EditForm EditContext="_editContext" OnValidSubmit="SubmitAsync" OnInvalidSubmit="SubmitInvalid"
+              class="card">
+        <DataAnnotationsValidator />
+
+        <TabControl @bind-ActiveIndex="_activeTab">
+            <TabPage Title="1. Personal">
+                <div class="form-grid">
+                    <label>
+                        First name
+                        <InputText @bind-Value="_model.FirstName" autocomplete="given-name" />
+                        <ValidationMessage For="() => _model.FirstName" />
+                    </label>
+                    <label>
+                        Last name
+                        <InputText @bind-Value="_model.LastName" autocomplete="family-name" />
+                        <ValidationMessage For="() => _model.LastName" />
+                    </label>
+                    <label>
+                        Email
+                        <InputText type="email" @bind-Value="_model.Email" autocomplete="email" />
+                        <ValidationMessage For="() => _model.Email" />
+                    </label>
+                    <label>
+                        <span>Phone <span class="optional">(optional)</span></span>
+                        <InputText type="tel" @bind-Value="_model.Phone" autocomplete="tel" />
+                        <ValidationMessage For="() => _model.Phone" />
+                    </label>
+                </div>
+            </TabPage>
+
+            <TabPage Title="2. Address">
+                <div class="form-grid">
+                    <label class="span-2">
+                        Street
+                        <InputText @bind-Value="_model.Street" autocomplete="street-address" />
+                        <ValidationMessage For="() => _model.Street" />
+                    </label>
+                    <label>
+                        City
+                        <InputText @bind-Value="_model.City" autocomplete="address-level2" />
+                        <ValidationMessage For="() => _model.City" />
+                    </label>
+                    <label>
+                        Postal code
+                        <InputText @bind-Value="_model.PostalCode" autocomplete="postal-code" />
+                        <ValidationMessage For="() => _model.PostalCode" />
+                    </label>
+                    <label class="span-2">
+                        Country
+                        <InputText @bind-Value="_model.Country" autocomplete="country-name" />
+                        <ValidationMessage For="() => _model.Country" />
+                    </label>
+                </div>
+            </TabPage>
+
+            <TabPage Title="3. Preferences">
+                <div class="form-grid">
+                    <label>
+                        Preferred contact
+                        <InputSelect @bind-Value="_model.PreferredContact">
+                            @foreach (var method in Enum.GetValues<ContactMethod>())
+                            {
+                                <option value="@method">@method</option>
+                            }
+                        </InputSelect>
+                    </label>
+                    <label class="checkbox">
+                        <InputCheckbox @bind-Value="_model.SubscribeToNewsletter" />
+                        Subscribe to newsletter
+                    </label>
+                    <label class="span-2">
+                        <span>Notes <span class="optional">(optional)</span></span>
+                        <InputTextArea rows="4" @bind-Value="_model.Notes" />
+                        <ValidationMessage For="() => _model.Notes" />
+                    </label>
+                </div>
+            </TabPage>
+
+            <TabPage Title="4. Review">
+                <dl class="review">
+                    <dt>Name</dt><dd>@_model.FirstName @_model.LastName</dd>
+                    <dt>Email</dt><dd>@_model.Email</dd>
+                    <dt>Phone</dt><dd>@(string.IsNullOrWhiteSpace(_model.Phone) ? "—" : _model.Phone)</dd>
+                    <dt>Address</dt><dd>@_model.Street, @_model.PostalCode @_model.City, @_model.Country</dd>
+                    <dt>Contact via</dt><dd>@_model.PreferredContact</dd>
+                    <dt>Newsletter</dt><dd>@(_model.SubscribeToNewsletter ? "Yes" : "No")</dd>
+                    <dt>Notes</dt><dd>@(string.IsNullOrWhiteSpace(_model.Notes) ? "—" : _model.Notes)</dd>
+                </dl>
+                <ValidationSummary />
+            </TabPage>
+        </TabControl>
+
+        <div class="form-actions">
+            <button type="button" class="btn secondary" disabled="@(_activeTab == 0)"
+                    @onclick='() => MoveTab("Back", -1)'>
+                Back
+            </button>
+            @if (_activeTab < LastTab)
+            {
+                <button type="button" class="btn" @onclick='() => MoveTab("Next", 1)'>Next</button>
+            }
+            else
+            {
+                <button type="submit" class="btn" disabled="@_submitting">
+                    @(_submitting ? "Submitting…" : "Submit")
+                </button>
+            }
+        </div>
+    </EditForm>
+}
+
+@code {
+    private const int LastTab = 3;
+
+    /// <summary>This page's route, as written in client events.</summary>
+    private const string Page = "register";
+
+    /// <summary>The "Acting as" user, cascaded from the layout; decides whether the form is shown.</summary>
+    [CascadingParameter] public ActingUser? Acting { get; set; }
+
+    /// <summary>Which tab each validated field lives on, used to jump to the first error.</summary>
+    private static readonly (string Field, int Tab)[] _fieldTabs =
+    [
+        (nameof(RegistrationDto.FirstName), 0),
+        (nameof(RegistrationDto.LastName), 0),
+        (nameof(RegistrationDto.Email), 0),
+        (nameof(RegistrationDto.Phone), 0),
+        (nameof(RegistrationDto.Street), 1),
+        (nameof(RegistrationDto.City), 1),
+        (nameof(RegistrationDto.PostalCode), 1),
+        (nameof(RegistrationDto.Country), 1),
+        (nameof(RegistrationDto.Notes), 2),
+    ];
+
+    private RegistrationDto _model = new();
+    private EditContext _editContext = default!;
+    private ValidationMessageStore _serverErrors = default!;
+    private int _activeTab;
+    private bool _submitting;
+    private Guid? _submittedId;
+
+    /// <inheritdoc />
+    protected override void OnInitialized() => CreateEditContext();
+
+    /// <inheritdoc />
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Only in the browser: prerendering is not a page the user has loaded yet.
+        if (firstRender && RendererInfo.IsInteractive)
+        {
+            Log.PageLoaded(Page);
+        }
+    }
+
+    /// <summary>The Back and Next buttons.</summary>
+    private void MoveTab(string button, int step)
+    {
+        using var action = Log.ButtonPressed(Page, button);
+        _activeTab += step;
+    }
+
+    /// <summary>Submit pressed, but client-side validation failed; nothing was sent.</summary>
+    private void SubmitInvalid()
+    {
+        using var action = Log.ButtonPressed(Page, "Submit");
+        ShowFirstInvalidTab();
+        action.Result("Invalid");
+    }
+
+    private void RegisterAnother()
+    {
+        using var action = Log.ButtonPressed(Page, "Register another");
+        Reset();
+    }
+
+    /// <summary>Builds a fresh edit context (and server-error store) for <see cref="_model"/>.</summary>
+    private void CreateEditContext()
+    {
+        _editContext = new EditContext(_model);
+        _serverErrors = new ValidationMessageStore(_editContext);
+
+        // Clear a server-reported error as soon as the user edits that field.
+        _editContext.OnFieldChanged += (_, e) => _serverErrors.Clear(e.FieldIdentifier);
+    }
+
+    /// <summary>Sends the form to the server and shows any server-side validation errors.</summary>
+    /// <returns>A task that completes when the submission has been handled.</returns>
+    private async Task SubmitAsync()
+    {
+        using var action = Log.ButtonPressed(Page, "Submit");
+        _submitting = true;
+        _serverErrors.Clear();
+        try
+        {
+            var result = await Registrations.CreateAsync(_model);
+            if (result.Success)
+            {
+                _submittedId = result.Id;
+                action.Result("Saved");
+                return;
+            }
+
+            action.Result("Invalid");
+
+            foreach (var (field, messages) in result.Errors)
+            {
+                _serverErrors.Add(_editContext.Field(field), messages);
+            }
+
+            _editContext.NotifyValidationStateChanged();
+            ShowFirstInvalidTab();
+        }
+        catch (AccessDeniedException e)
+        {
+            action.Result(e.Reason == AccessDenial.NoUser ? "NoUser" : "Forbidden");
+            throw;
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    /// <summary>Selects the first tab that contains a field with a validation error.</summary>
+    private void ShowFirstInvalidTab()
+    {
+        foreach (var (field, tab) in _fieldTabs)
+        {
+            if (_editContext.GetValidationMessages(_editContext.Field(field)).Any())
+            {
+                _activeTab = tab;
+                return;
+            }
+        }
+    }
+
+    /// <summary>Clears the form so another registration can be entered.</summary>
+    private void Reset()
+    {
+        _model = new RegistrationDto();
+        _submittedId = null;
+        _activeTab = 0;
+        CreateEditContext();
+    }
+}

@@ -1,0 +1,144 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T22:20:40.8378064+00:00",
+  "finishedAt": "2026-10-17T22:20:49.3955971+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "/mnt/share/runs/nfs-two-heavy-NaiveFile-2/data",
+    "servers": 3,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 12,
+      "Reviewer": 9,
+      "Admin": 3
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": [],
+    "remote": "user@mac.example",
+    "remoteServers": 1,
+    "remoteDataPath": "/Volumes/share/runs/nfs-two-heavy-NaiveFile-2/data"
+  },
+  "runFolder": "stress-runs/nfs/nfs-two-heavy-NaiveFile-2",
+  "servers": [
+    {
+      "port": 38183,
+      "logFile": "stress-runs/nfs/nfs-two-heavy-NaiveFile-2/logs/server-38183.jsonl",
+      "host": null
+    },
+    {
+      "port": 33927,
+      "logFile": "stress-runs/nfs/nfs-two-heavy-NaiveFile-2/logs/server-33927.jsonl",
+      "host": null
+    },
+    {
+      "port": 40065,
+      "logFile": "stress-runs/nfs/nfs-two-heavy-NaiveFile-2/logs/server-40065.jsonl",
+      "host": "mac-host.local"
+    }
+  ],
+  "numbers": {
+    "writes": 12,
+    "saves": 8,
+    "conflicts": 0,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "http500": 4,
+      "saved": 8
+    },
+    "savesByAction": {
+      "Create": 8
+    },
+    "reads": 4000,
+    "readFailures": {
+      "http500": 4000
+    },
+    "durationSeconds": 4.605,
+    "savesPerSecond": 1.74,
+    "saveLatencyMs": {
+      "p50": 114.33,
+      "p95": 124.03,
+      "max": 124.03,
+      "mean": 117.77
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027]\u0027 is invalid after a single JSON value. Expected end of data. Path: $[1] | LineNumber: 33 | BytePositionInLine: 0.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 38183",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 33927",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server mac-host.local:40065",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

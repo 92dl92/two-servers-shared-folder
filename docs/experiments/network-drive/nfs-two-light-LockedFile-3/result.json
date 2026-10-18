@@ -1,0 +1,152 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T22:19:09.7726868+00:00",
+  "finishedAt": "2026-10-17T22:19:19.3979945+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "LockedFile",
+    "dataPath": "/mnt/share/runs/nfs-two-light-LockedFile-3/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 6,
+      "Reviewer": 6,
+      "Admin": 3
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 3,
+    "serverArgs": [],
+    "remote": "user@mac.example",
+    "remoteServers": 1,
+    "remoteDataPath": "/Volumes/share/runs/nfs-two-light-LockedFile-3/data"
+  },
+  "runFolder": "stress-runs/nfs/nfs-two-light-LockedFile-3",
+  "servers": [
+    {
+      "port": 43327,
+      "logFile": "stress-runs/nfs/nfs-two-light-LockedFile-3/logs/server-43327.jsonl",
+      "host": null
+    },
+    {
+      "port": 37913,
+      "logFile": "stress-runs/nfs/nfs-two-light-LockedFile-3/logs/server-37913.jsonl",
+      "host": null
+    },
+    {
+      "port": 35917,
+      "logFile": "stress-runs/nfs/nfs-two-light-LockedFile-3/logs/server-35917.jsonl",
+      "host": "mac-host.local"
+    }
+  ],
+  "numbers": {
+    "writes": 160,
+    "saves": 68,
+    "conflicts": 58,
+    "wrongStatus": 18,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 58,
+      "http500": 16,
+      "saved": 68,
+      "wrongStatus": 18
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 24,
+      "Submit": 4,
+      "Approve": 1,
+      "Reject": 1,
+      "Comment": 32
+    },
+    "reads": 600,
+    "readFailures": {
+      "http500": 419,
+      "notFound": 27
+    },
+    "durationSeconds": 5.546,
+    "savesPerSecond": 12.26,
+    "saveLatencyMs": {
+      "p50": 114.93,
+      "p95": 356.92,
+      "max": 801.68,
+      "mean": 155.02
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027n\u0027 is invalid after a single JSON value. Expected end of data. Path: $[5] | LineNumber: 485 | BytePositionInLine: 2.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 43327",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 37913",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server mac-host.local:35917",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

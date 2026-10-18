@@ -1,0 +1,148 @@
+{
+  "passed": true,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T22:11:44.0871771+00:00",
+  "finishedAt": "2026-10-17T22:16:17.6876663+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "LockedFile",
+    "dataPath": "/mnt/share/runs/nfs-one-heavy-LockedFile-3/data",
+    "servers": 3,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 12,
+      "Reviewer": 9,
+      "Admin": 3
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": [],
+    "remote": null,
+    "remoteServers": 0,
+    "remoteDataPath": null
+  },
+  "runFolder": "stress-runs/nfs/nfs-one-heavy-LockedFile-3",
+  "servers": [
+    {
+      "port": 37189,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-LockedFile-3/logs/server-37189.jsonl",
+      "host": null
+    },
+    {
+      "port": 37625,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-LockedFile-3/logs/server-37625.jsonl",
+      "host": null
+    },
+    {
+      "port": 39761,
+      "logFile": "stress-runs/nfs/nfs-one-heavy-LockedFile-3/logs/server-39761.jsonl",
+      "host": null
+    }
+  ],
+  "numbers": {
+    "writes": 4812,
+    "saves": 1565,
+    "conflicts": 1349,
+    "wrongStatus": 1898,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 1349,
+      "saved": 1565,
+      "wrongStatus": 1898
+    },
+    "savesByAction": {
+      "Create": 12,
+      "Update": 69,
+      "Submit": 12,
+      "Approve": 7,
+      "Reject": 5,
+      "Comment": 1460
+    },
+    "reads": 4800,
+    "readFailures": {},
+    "durationSeconds": 270.404,
+    "savesPerSecond": 5.79,
+    "saveLatencyMs": {
+      "p50": 640.55,
+      "p95": 1842.56,
+      "max": 4076.8,
+      "mean": 766.59
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 37189",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 37625",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 39761",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

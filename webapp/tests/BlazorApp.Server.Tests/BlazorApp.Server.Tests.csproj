@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- HTTP API tests, run in-process with WebApplicationFactory. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BlazorApp.Server\BlazorApp.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.Testing" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

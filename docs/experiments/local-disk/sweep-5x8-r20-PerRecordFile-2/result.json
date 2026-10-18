@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T21:00:08.0213269+00:00",
+  "finishedAt": "2026-10-17T21:00:18.2912438+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/data",
+    "servers": 5,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 20,
+      "Reviewer": 15,
+      "Admin": 5
+    },
+    "records": 20,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2",
+  "servers": [
+    {
+      "port": 39511,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/logs/server-39511.jsonl"
+    },
+    {
+      "port": 33165,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/logs/server-33165.jsonl"
+    },
+    {
+      "port": 34993,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/logs/server-34993.jsonl"
+    },
+    {
+      "port": 40447,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/logs/server-40447.jsonl"
+    },
+    {
+      "port": 33755,
+      "logFile": "stress-runs/sweep/sweep-5x8-r20-PerRecordFile-2/logs/server-33755.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 8020,
+    "saves": 2427,
+    "conflicts": 2381,
+    "wrongStatus": 3212,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 2381,
+      "saved": 2427,
+      "wrongStatus": 3212
+    },
+    "savesByAction": {
+      "Create": 20,
+      "Update": 183,
+      "Submit": 20,
+      "Approve": 7,
+      "Reject": 13,
+      "Comment": 2184
+    },
+    "reads": 8000,
+    "readFailures": {},
+    "durationSeconds": 7.18,
+    "savesPerSecond": 338.03,
+    "saveLatencyMs": {
+      "p50": 21.53,
+      "p95": 51.56,
+      "max": 172.64,
+      "mean": 26.06
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 39511",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 33165",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 34993",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 40447",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 33755",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 20,
+        "recordsFound": 20,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

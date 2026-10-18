@@ -1,0 +1,6 @@
+/* A stable minimum height keeps controls below the tabs (e.g. Next/Back) from
+   jumping when switching tabs or when validation messages appear/disappear. */
+.tab-panel {
+    padding: 1.25rem 0;
+    min-height: var(--tab-panel-min-height, 20rem);
+}

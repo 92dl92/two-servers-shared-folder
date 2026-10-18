@@ -1,0 +1,44 @@
+# Builds and tests pushes to main and pull requests on a clean GitHub machine,
+# independently of the session that wrote the code (plan section 7).
+name: CI
+
+# Changes that only touch Markdown files or docs/ skip CI.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**/*.md", "docs/**"]
+  pull_request:
+    paths-ignore: ["**/*.md", "docs/**"]
+
+permissions:
+  contents: read
+
+# A new push to the same branch or PR cancels the run that is still going.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build (warnings are errors)
+        run: dotnet build webapp/BlazorApp.slnx
+
+      - name: Check formatting
+        run: dotnet format webapp/BlazorApp.slnx --verify-no-changes --no-restore
+
+      # The E2E tests drive Chromium through Playwright 1.56.0; this installs the matching
+      # browser and the system libraries it needs (pwsh is preinstalled on GitHub's runners).
+      - name: Install Chromium for the E2E tests
+        run: pwsh webapp/tests/BlazorApp.E2E.Tests/bin/Debug/net10.0/playwright.ps1 install --with-deps chromium
+
+      - name: Test
+        run: dotnet test webapp/BlazorApp.slnx --no-build

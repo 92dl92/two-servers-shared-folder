@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "commit": "f161ef446061acf35ef35e3eaac8fd7168560700",
+  "startedAt": "2026-10-17T20:42:52.6797989+00:00",
+  "finishedAt": "2026-10-17T20:42:57.8804979+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/sweep/sweep-3x8-r12-PerRecordFile-2/data",
+    "servers": 3,
+    "clientsPerServer": 8,
+    "clientsByRole": {
+      "Registrant": 12,
+      "Reviewer": 9,
+      "Admin": 3
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/sweep/sweep-3x8-r12-PerRecordFile-2",
+  "servers": [
+    {
+      "port": 42749,
+      "logFile": "stress-runs/sweep/sweep-3x8-r12-PerRecordFile-2/logs/server-42749.jsonl"
+    },
+    {
+      "port": 37495,
+      "logFile": "stress-runs/sweep/sweep-3x8-r12-PerRecordFile-2/logs/server-37495.jsonl"
+    },
+    {
+      "port": 36053,
+      "logFile": "stress-runs/sweep/sweep-3x8-r12-PerRecordFile-2/logs/server-36053.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 4812,
+    "saves": 1431,
+    "conflicts": 1405,
+    "wrongStatus": 1976,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 1405,
+      "saved": 1431,
+      "wrongStatus": 1976
+    },
+    "savesByAction": {
+      "Create": 12,
+      "Update": 168,
+      "Submit": 12,
+      "Approve": 8,
+      "Reject": 4,
+      "Comment": 1227
+    },
+    "reads": 4800,
+    "readFailures": {},
+    "durationSeconds": 3.294,
+    "savesPerSecond": 434.4,
+    "saveLatencyMs": {
+      "p50": 11.69,
+      "p95": 19.57,
+      "max": 114.66,
+      "mean": 13.47
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 42749",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 37495",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 36053",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

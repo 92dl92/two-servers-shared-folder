@@ -1,0 +1,299 @@
+/* Global styles and design tokens. Component-specific styles live in *.razor.css files. */
+
+:root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --fg: #1f2328;
+    --muted: #656d76;
+    --border: #d8dee4;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --danger: #cf222e;
+    --success-bg: #dafbe1;
+    --success-fg: #116329;
+    --tray-bg: #1e1b4b;
+    --tray-fg: #e0e7ff;
+
+    --topbar-height: 3.5rem;
+    --tray-width: 14rem;
+    --tray-width-collapsed: 4rem;
+
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0d1117;
+        --surface: #161b22;
+        --fg: #e6edf3;
+        --muted: #8d96a0;
+        --border: #30363d;
+        --accent: #818cf8;
+        --accent-hover: #a5b4fc;
+        --danger: #f85149;
+        --success-bg: #12261e;
+        --success-fg: #3fb950;
+        --tray-bg: #11102a;
+        color-scheme: dark;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+}
+
+h1:focus {
+    outline: none;
+}
+
+a {
+    color: var(--accent);
+}
+
+/* ---- Cards, buttons, inputs ---- */
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.5rem 1.25rem;
+    max-width: 52rem;
+}
+
+.btn {
+    padding: 0.55rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.btn.secondary {
+    background: transparent;
+    color: var(--accent);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fg);
+    font-size: 1.15rem;
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    background: rgba(127, 127, 127, 0.15);
+}
+
+input:not([type="checkbox"]),
+select,
+textarea {
+    width: 100%;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--fg);
+    font: inherit;
+    font-weight: 400;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+/* ---- Blazor validation ---- */
+
+.invalid {
+    border-color: var(--danger) !important;
+}
+
+.validation-message,
+.validation-errors {
+    color: var(--danger);
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+
+.validation-errors {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    max-width: 52rem;
+}
+
+.alert.info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.alert.success {
+    background: var(--success-bg);
+    color: var(--success-fg);
+}
+
+.alert.warning {
+    background: var(--surface);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ---- Forms (Register page, record edit form) ---- */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.25rem;
+}
+
+.form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-weight: 500;
+}
+
+.form-grid .span-2 {
+    grid-column: span 2;
+}
+
+.form-grid label.checkbox {
+    flex-direction: row;
+    align-items: center;
+    align-self: end;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.optional {
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.review {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5rem 1.5rem;
+    margin: 0 0 1rem;
+}
+
+.review dt {
+    color: var(--muted);
+}
+
+.review dd {
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid .span-2 {
+        grid-column: auto;
+    }
+}
+
+/* ---- Tables (records list, history) ---- */
+
+.table-wrap {
+    overflow-x: auto;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--bg);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---- Record page ---- */
+
+.record-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.comment-box {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.comment-box label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    font-weight: 500;
+}

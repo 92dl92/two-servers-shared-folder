@@ -1,0 +1,27 @@
+@page "/Error"
+@using System.Diagnostics
+
+@* Static server-rendered error page used by the exception handler in production. *@
+
+<PageTitle>Error</PageTitle>
+
+<h1 class="text-danger">Error.</h1>
+<p>An error occurred while processing your request.</p>
+
+@if (ShowRequestId)
+{
+    <p><strong>Request ID:</strong> <code>@RequestId</code></p>
+}
+
+@code {
+    /// <summary>Current HTTP context (only available during static server rendering).</summary>
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    /// <inheritdoc />
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}

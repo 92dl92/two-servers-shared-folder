@@ -1,0 +1,38 @@
+@implements IDisposable
+
+@* A single tab. Must be placed inside a <TabControl>. *@
+
+<div class="tab-panel" role="tabpanel"
+     id="@Parent.PanelIdFor(this)"
+     aria-labelledby="@Parent.TabIdFor(this)"
+     hidden="@(!Parent.IsActive(this))">
+    @ChildContent
+</div>
+
+@code {
+    /// <summary>The enclosing tab control, supplied via cascading value.</summary>
+    [CascadingParameter] private TabControl Parent { get; set; } = default!;
+
+    /// <summary>Text shown on the tab header.</summary>
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+
+    /// <summary>When true, the tab header cannot be selected.</summary>
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Content of the tab panel.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <inheritdoc />
+    protected override void OnInitialized()
+    {
+        if (Parent is null)
+        {
+            throw new InvalidOperationException($"{nameof(TabPage)} must be used inside a {nameof(TabControl)}.");
+        }
+
+        Parent.Register(this);
+    }
+
+    /// <inheritdoc />
+    public void Dispose() => Parent?.Unregister(this);
+}

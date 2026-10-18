@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BlazorApp.Client/BlazorApp.Client.csproj" />
+    <Project Path="src/BlazorApp.Server/BlazorApp.Server.csproj" />
+    <Project Path="src/BlazorApp.Services/BlazorApp.Services.csproj" />
+    <Project Path="src/BlazorApp.Shared/BlazorApp.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BlazorApp.Client.Tests/BlazorApp.Client.Tests.csproj" />
+    <Project Path="tests/BlazorApp.E2E.Tests/BlazorApp.E2E.Tests.csproj" />
+    <Project Path="tests/BlazorApp.Server.Tests/BlazorApp.Server.Tests.csproj" />
+    <Project Path="tests/BlazorApp.Services.Tests/BlazorApp.Services.Tests.csproj" />
+    <Project Path="tests/BlazorApp.Stress.Tests/BlazorApp.Stress.Tests.csproj" />
+    <Project Path="tests/BlazorApp.StoreHelper/BlazorApp.StoreHelper.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/BlazorApp.Stress/BlazorApp.Stress.csproj" />
+  </Folder>
+</Solution>

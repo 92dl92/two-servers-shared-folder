@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "commit": "ee6af83bef739621009cd4be91192b48f8df58df",
+  "startedAt": "2026-10-17T19:08:10.4760469+00:00",
+  "finishedAt": "2026-10-17T19:08:12.9279094+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "AppendLog",
+    "dataPath": "stress-runs/light-AppendLog-2/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 2,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/light-AppendLog-2",
+  "servers": [
+    {
+      "port": 38371,
+      "logFile": "stress-runs/light-AppendLog-2/logs/server-38371.jsonl"
+    },
+    {
+      "port": 33187,
+      "logFile": "stress-runs/light-AppendLog-2/logs/server-33187.jsonl"
+    },
+    {
+      "port": 44787,
+      "logFile": "stress-runs/light-AppendLog-2/logs/server-44787.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 606,
+    "saves": 232,
+    "conflicts": 215,
+    "wrongStatus": 159,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 215,
+      "saved": 232,
+      "wrongStatus": 159
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 54,
+      "Submit": 6,
+      "Approve": 1,
+      "Reject": 5,
+      "Comment": 160
+    },
+    "reads": 600,
+    "readFailures": {},
+    "durationSeconds": 0.719,
+    "savesPerSecond": 322.52,
+    "saveLatencyMs": {
+      "p50": 2.34,
+      "p95": 15.81,
+      "max": 184.7,
+      "mean": 8.34
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 38371",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 33187",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server 44787",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

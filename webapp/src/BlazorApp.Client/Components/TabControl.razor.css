@@ -1,0 +1,32 @@
+.tab-strip {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab {
+    padding: 0.6rem 1.1rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tab:hover:not(:disabled) {
+    color: var(--fg);
+}
+
+.tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+
+.tab:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

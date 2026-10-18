@@ -1,0 +1,193 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T22:19:30.0088858+00:00",
+  "finishedAt": "2026-10-17T22:19:39.6795906+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "/mnt/share/runs/nfs-two-light-PerRecordFile-2/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 6,
+      "Reviewer": 6,
+      "Admin": 3
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 2,
+    "serverArgs": [],
+    "remote": "user@mac.example",
+    "remoteServers": 1,
+    "remoteDataPath": "/Volumes/share/runs/nfs-two-light-PerRecordFile-2/data"
+  },
+  "runFolder": "stress-runs/nfs/nfs-two-light-PerRecordFile-2",
+  "servers": [
+    {
+      "port": 42529,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-2/logs/server-42529.jsonl",
+      "host": null
+    },
+    {
+      "port": 34643,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-2/logs/server-34643.jsonl",
+      "host": null
+    },
+    {
+      "port": 43681,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-2/logs/server-43681.jsonl",
+      "host": "mac-host.local"
+    }
+  ],
+  "numbers": {
+    "writes": 594,
+    "saves": 245,
+    "conflicts": 201,
+    "wrongStatus": 119,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 201,
+      "http500": 24,
+      "notFound": 5,
+      "saved": 245,
+      "wrongStatus": 119
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 97,
+      "Submit": 6,
+      "Approve": 4,
+      "Reject": 2,
+      "Comment": 130
+    },
+    "reads": 600,
+    "readFailures": {
+      "http500": 10,
+      "notFound": 2
+    },
+    "durationSeconds": 5.345,
+    "savesPerSecond": 45.84,
+    "saveLatencyMs": {
+      "p50": 22.82,
+      "p95": 192.38,
+      "max": 312.65,
+      "mean": 58.32
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 9,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v16 Comment by s3c4-admin \u0027s3c4-admin:8\u0027 via mac-host.local:43681 (stress-57dbad6633f342c8b66661643e767380): version 16 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v34 Comment by s3c4-admin \u0027s3c4-admin:39\u0027 via mac-host.local:43681 (stress-662961957db14d8b855fadcd8098dfc1): version 34 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v27 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:43681 (stress-21ce0bcbaf024de4aee9c6feb9626538): version 27 holds Comment by s3c4-admin",
+          "lost update ee54a616-7831-4cd9-93bd-dfd13c9c0b85 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:20\u0027 via mac-host.local:43681 (stress-60155f99c13144f19ed65281d71bee63): version 45 holds Comment by s3c2-reviewer",
+          "lost update b82f1bf2-b34d-4f8a-aab7-f1b447c005e9 v17 Comment by s3c2-reviewer \u0027s3c2-reviewer:15\u0027 via mac-host.local:43681 (stress-a3da51b12c634de48f4345e0e86e7005): version 17 holds Submit by s3c1-registrant",
+          "lost update aaaacdde-0f90-4898-94cd-4ceb4320d3c9 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:16\u0027 via mac-host.local:43681 (stress-4ca22cbc225c4a4ca3e14039d3408aa4): version 45 holds Comment by s2c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v16 Update by s3c3-registrant \u0027s3c3-registrant:8\u0027 via mac-host.local:43681 (stress-40d07cbc4d6749f7a08e34740edd3968): version 16 holds Update by s3c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c4-admin \u0027s3c4-admin:4\u0027 via mac-host.local:43681 (stress-4b21162b1bdf4f84b52bfb8ad8f6a92b): version 11 holds Submit by s3c3-registrant",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c5-reviewer \u0027s3c5-reviewer:5\u0027 via mac-host.local:43681 (stress-8e4d052ddd974e088099634177189de7): version 11 holds Submit by s3c3-registrant"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 42529",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 9,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v16 Comment by s3c4-admin \u0027s3c4-admin:8\u0027 via mac-host.local:43681 (stress-57dbad6633f342c8b66661643e767380): version 16 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v34 Comment by s3c4-admin \u0027s3c4-admin:39\u0027 via mac-host.local:43681 (stress-662961957db14d8b855fadcd8098dfc1): version 34 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v27 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:43681 (stress-21ce0bcbaf024de4aee9c6feb9626538): version 27 holds Comment by s3c4-admin",
+          "lost update ee54a616-7831-4cd9-93bd-dfd13c9c0b85 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:20\u0027 via mac-host.local:43681 (stress-60155f99c13144f19ed65281d71bee63): version 45 holds Comment by s3c2-reviewer",
+          "lost update b82f1bf2-b34d-4f8a-aab7-f1b447c005e9 v17 Comment by s3c2-reviewer \u0027s3c2-reviewer:15\u0027 via mac-host.local:43681 (stress-a3da51b12c634de48f4345e0e86e7005): version 17 holds Submit by s3c1-registrant",
+          "lost update aaaacdde-0f90-4898-94cd-4ceb4320d3c9 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:16\u0027 via mac-host.local:43681 (stress-4ca22cbc225c4a4ca3e14039d3408aa4): version 45 holds Comment by s2c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v16 Update by s3c3-registrant \u0027s3c3-registrant:8\u0027 via mac-host.local:43681 (stress-40d07cbc4d6749f7a08e34740edd3968): version 16 holds Update by s3c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c4-admin \u0027s3c4-admin:4\u0027 via mac-host.local:43681 (stress-4b21162b1bdf4f84b52bfb8ad8f6a92b): version 11 holds Submit by s3c3-registrant",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c5-reviewer \u0027s3c5-reviewer:5\u0027 via mac-host.local:43681 (stress-8e4d052ddd974e088099634177189de7): version 11 holds Submit by s3c3-registrant"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 34643",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 9,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v16 Comment by s3c4-admin \u0027s3c4-admin:8\u0027 via mac-host.local:43681 (stress-57dbad6633f342c8b66661643e767380): version 16 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v34 Comment by s3c4-admin \u0027s3c4-admin:39\u0027 via mac-host.local:43681 (stress-662961957db14d8b855fadcd8098dfc1): version 34 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v27 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:43681 (stress-21ce0bcbaf024de4aee9c6feb9626538): version 27 holds Comment by s3c4-admin",
+          "lost update ee54a616-7831-4cd9-93bd-dfd13c9c0b85 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:20\u0027 via mac-host.local:43681 (stress-60155f99c13144f19ed65281d71bee63): version 45 holds Comment by s3c2-reviewer",
+          "lost update b82f1bf2-b34d-4f8a-aab7-f1b447c005e9 v17 Comment by s3c2-reviewer \u0027s3c2-reviewer:15\u0027 via mac-host.local:43681 (stress-a3da51b12c634de48f4345e0e86e7005): version 17 holds Submit by s3c1-registrant",
+          "lost update aaaacdde-0f90-4898-94cd-4ceb4320d3c9 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:16\u0027 via mac-host.local:43681 (stress-4ca22cbc225c4a4ca3e14039d3408aa4): version 45 holds Comment by s2c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v16 Update by s3c3-registrant \u0027s3c3-registrant:8\u0027 via mac-host.local:43681 (stress-40d07cbc4d6749f7a08e34740edd3968): version 16 holds Update by s3c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c4-admin \u0027s3c4-admin:4\u0027 via mac-host.local:43681 (stress-4b21162b1bdf4f84b52bfb8ad8f6a92b): version 11 holds Submit by s3c3-registrant",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c5-reviewer \u0027s3c5-reviewer:5\u0027 via mac-host.local:43681 (stress-8e4d052ddd974e088099634177189de7): version 11 holds Submit by s3c3-registrant"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server mac-host.local:43681",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 9,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v16 Comment by s3c4-admin \u0027s3c4-admin:8\u0027 via mac-host.local:43681 (stress-57dbad6633f342c8b66661643e767380): version 16 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v34 Comment by s3c4-admin \u0027s3c4-admin:39\u0027 via mac-host.local:43681 (stress-662961957db14d8b855fadcd8098dfc1): version 34 holds Comment by s3c5-reviewer",
+          "lost update 63b6871c-a340-41fb-b885-5f01b42e5d34 v27 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:43681 (stress-21ce0bcbaf024de4aee9c6feb9626538): version 27 holds Comment by s3c4-admin",
+          "lost update ee54a616-7831-4cd9-93bd-dfd13c9c0b85 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:20\u0027 via mac-host.local:43681 (stress-60155f99c13144f19ed65281d71bee63): version 45 holds Comment by s3c2-reviewer",
+          "lost update b82f1bf2-b34d-4f8a-aab7-f1b447c005e9 v17 Comment by s3c2-reviewer \u0027s3c2-reviewer:15\u0027 via mac-host.local:43681 (stress-a3da51b12c634de48f4345e0e86e7005): version 17 holds Submit by s3c1-registrant",
+          "lost update aaaacdde-0f90-4898-94cd-4ceb4320d3c9 v45 Comment by s3c5-reviewer \u0027s3c5-reviewer:16\u0027 via mac-host.local:43681 (stress-4ca22cbc225c4a4ca3e14039d3408aa4): version 45 holds Comment by s2c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v16 Update by s3c3-registrant \u0027s3c3-registrant:8\u0027 via mac-host.local:43681 (stress-40d07cbc4d6749f7a08e34740edd3968): version 16 holds Update by s3c4-admin",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c4-admin \u0027s3c4-admin:4\u0027 via mac-host.local:43681 (stress-4b21162b1bdf4f84b52bfb8ad8f6a92b): version 11 holds Submit by s3c3-registrant",
+          "lost update 0f83319f-e0e4-44fe-8170-00c7588c09f1 v11 Comment by s3c5-reviewer \u0027s3c5-reviewer:5\u0027 via mac-host.local:43681 (stress-8e4d052ddd974e088099634177189de7): version 11 holds Submit by s3c3-registrant"
+        ]
+      }
+    }
+  ]
+}

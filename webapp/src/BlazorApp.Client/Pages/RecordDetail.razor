@@ -1,0 +1,359 @@
+@page "/records/{Id:guid}"
+@inject IRegistrationService Registrations
+@inject NavigationManager Navigation
+@inject IClientEventLog Log
+
+@*
+    One record: its data, status and history, with the actions the acting user may take.
+    Buttons follow RecordRules; the server checks again and has the final say.
+    Every change sends the version shown here. If someone else changed the record first,
+    the server answers 409 and this page says so, with a Reload button.
+*@
+
+<PageTitle>Record</PageTitle>
+
+<h1>@(Record is null ? "Record" : $"{Record.Data.FirstName} {Record.Data.LastName}")</h1>
+
+@if (_conflict)
+{
+    <div class="alert warning conflict" role="alert">
+        <span>Someone else changed this record.</span>
+        <button type="button" class="btn secondary" @onclick="ReloadPressedAsync">Reload</button>
+    </div>
+}
+else if (_error is not null)
+{
+    <div class="alert warning" role="alert">@_error</div>
+}
+
+@if (_loadError is not null)
+{
+    <div class="alert info" role="status">@_loadError</div>
+}
+else if (Record is null)
+{
+    <p><em>Loading…</em></p>
+}
+else
+{
+    <dl class="review">
+        <dt>Status</dt><dd class="record-status">@Record.Status</dd>
+        <dt>Version</dt><dd class="record-version">@Record.Version</dd>
+        <dt>Created</dt><dd>by @Record.CreatedBy, @Record.CreatedAt.ToLocalTime().ToString("g")</dd>
+        <dt>Updated</dt><dd>by @Record.UpdatedBy, @Record.UpdatedAt.ToLocalTime().ToString("g")</dd>
+    </dl>
+
+    @if (_editing && _editContext is not null && _draft is not null)
+    {
+        <EditForm EditContext="_editContext" OnValidSubmit="SaveAsync" OnInvalidSubmit="SaveInvalid" class="card">
+            <DataAnnotationsValidator />
+            <RegistrationFields Model="_draft" />
+            <div class="form-actions">
+                <button type="button" class="btn secondary" @onclick="CancelPressed">Cancel</button>
+                <button type="submit" class="btn" disabled="@_busy">Save</button>
+            </div>
+        </EditForm>
+    }
+    else
+    {
+        <div class="card">
+            <dl class="review">
+                <dt>Email</dt><dd>@Record.Data.Email</dd>
+                <dt>Phone</dt><dd>@(string.IsNullOrWhiteSpace(Record.Data.Phone) ? "—" : Record.Data.Phone)</dd>
+                <dt>Address</dt><dd class="record-address">@Record.Data.Street, @Record.Data.PostalCode @Record.Data.City, @Record.Data.Country</dd>
+                <dt>Contact via</dt><dd>@Record.Data.PreferredContact</dd>
+                <dt>Newsletter</dt><dd>@(Record.Data.SubscribeToNewsletter ? "Yes" : "No")</dd>
+                <dt>Notes</dt><dd>@(string.IsNullOrWhiteSpace(Record.Data.Notes) ? "—" : Record.Data.Notes)</dd>
+            </dl>
+
+            <div class="record-actions">
+                @if (Can(RecordAction.Update))
+                {
+                    <button type="button" class="btn" @onclick="StartEdit">Edit</button>
+                }
+                @if (Can(RecordAction.Submit))
+                {
+                    <button type="button" class="btn" disabled="@_busy" @onclick='() => RunAsync("Submit for review", v => Registrations.SubmitAsync(Id, v))'>Submit for review</button>
+                }
+                @if (Can(RecordAction.Approve))
+                {
+                    <button type="button" class="btn" disabled="@_busy" @onclick='() => RunAsync("Approve", v => Registrations.ApproveAsync(Id, v))'>Approve</button>
+                }
+                @if (Can(RecordAction.Reject))
+                {
+                    <button type="button" class="btn secondary" disabled="@_busy" @onclick='() => RunAsync("Reject", v => Registrations.RejectAsync(Id, v))'>Reject</button>
+                }
+                @if (Can(RecordAction.Delete))
+                {
+                    <button type="button" class="btn secondary" disabled="@_busy" @onclick="DeleteAsync">Delete</button>
+                }
+            </div>
+        </div>
+
+        @if (Can(RecordAction.Comment))
+        {
+            <div class="card comment-box">
+                <label>
+                    Comment
+                    <textarea rows="2" @bind="_comment" @bind:event="oninput"></textarea>
+                </label>
+                <button type="button" class="btn" disabled="@(_busy || string.IsNullOrWhiteSpace(_comment))"
+                        @onclick="CommentAsync">Add comment</button>
+            </div>
+        }
+    }
+
+    <h2>History</h2>
+    <div class="card table-wrap">
+        <table class="history">
+            <thead><tr><th>Version</th><th>Action</th><th>By</th><th>When</th><th>Comment</th></tr></thead>
+            <tbody>
+                @foreach (var entry in Record.History.Reverse())
+                {
+                    <tr>
+                        <td>@entry.Version</td>
+                        <td>@entry.Action</td>
+                        <td>@entry.UserId</td>
+                        <td>@entry.At.ToLocalTime().ToString("g")</td>
+                        <td>@entry.Comment</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    /// <summary>This page's route template, as written in client events.</summary>
+    private const string Page = "records/{id}";
+
+    /// <summary>Record id from the URL.</summary>
+    [Parameter] public Guid Id { get; set; }
+
+    /// <summary>The "Acting as" user, cascaded from the layout; decides which buttons are shown.</summary>
+    [CascadingParameter] public ActingUser? Acting { get; set; }
+
+    /// <summary>
+    /// The record as last loaded or saved. [PersistentState] carries the value fetched during
+    /// server prerendering over to the WebAssembly render, avoiding a second fetch.
+    /// </summary>
+    [PersistentState]
+    public RegistrationRecordDto? Record { get; set; }
+
+    private string? _loadError;
+    private string? _error;
+    private bool _conflict;
+    private bool _busy;
+    private bool _editing;
+    private RegistrationDto? _draft;
+    private EditContext? _editContext;
+    private ValidationMessageStore? _serverErrors;
+    private string _comment = string.Empty;
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        // A record carried over from prerendering is already loaded.
+        var outcome = Record?.Id == Id ? "Loaded" : await LoadAsync();
+
+        // Only in the browser, and after the fetch, so the event says what the user was shown.
+        if (RendererInfo.IsInteractive)
+        {
+            Log.PageLoaded(Page, Id, outcome);
+        }
+    }
+
+    /// <summary>Whether the acting user may perform <paramref name="action"/> on the record as shown.</summary>
+    private bool Can(RecordAction action) =>
+        Record is not null && Acting?.User is { } user
+        && RecordRules.Evaluate(user, action, Record.Status, Record.CreatedBy) == RuleOutcome.Allowed;
+
+    /// <summary>Fetches the record.</summary>
+    /// <returns>What was shown: <c>Loaded</c>, <c>NoUser</c>, <c>Forbidden</c> or <c>NotFound</c>.</returns>
+    private async Task<string> LoadAsync()
+    {
+        try
+        {
+            Record = await Registrations.GetAsync(Id);
+            _loadError = null;
+            return "Loaded";
+        }
+        catch (AccessDeniedException e)
+        {
+            _loadError = e.Reason == AccessDenial.NoUser ? "Pick a user under Acting as to see this record." : e.Message;
+            return e.Reason == AccessDenial.NoUser ? "NoUser" : "Forbidden";
+        }
+        catch (RecordNotFoundException)
+        {
+            Record = null;
+            _loadError = "This record does not exist (it may have been deleted).";
+            return "NotFound";
+        }
+    }
+
+    /// <summary>The Reload button on the conflict message.</summary>
+    private async Task ReloadPressedAsync()
+    {
+        using var action = Log.ButtonPressed(Page, "Reload", Id);
+        var outcome = await ReloadAsync();
+        action.Result(outcome == "Loaded" ? "Reloaded" : outcome);
+    }
+
+    /// <summary>Fetches the latest version, dropping any unsaved edits and messages.</summary>
+    /// <returns>What was shown, as from <see cref="LoadAsync"/>.</returns>
+    private async Task<string> ReloadAsync()
+    {
+        _conflict = false;
+        _error = null;
+        CancelEdit();
+        return await LoadAsync();
+    }
+
+    private void StartEdit()
+    {
+        using var action = Log.ButtonPressed(Page, "Edit", Id);
+        _draft = Copy(Record!.Data);
+        _editContext = new EditContext(_draft);
+        _serverErrors = new ValidationMessageStore(_editContext);
+        _editContext.OnFieldChanged += (_, e) => _serverErrors.Clear(e.FieldIdentifier);
+        _editing = true;
+        action.Result("Editing");
+    }
+
+    private void CancelPressed()
+    {
+        using var action = Log.ButtonPressed(Page, "Cancel", Id);
+        CancelEdit();
+        action.Result("Cancelled");
+    }
+
+    /// <summary>Save pressed, but the form failed client-side validation; nothing was sent.</summary>
+    private void SaveInvalid()
+    {
+        using var action = Log.ButtonPressed(Page, "Save", Id);
+        action.Result("Invalid");
+    }
+
+    private void CancelEdit()
+    {
+        _editing = false;
+        _draft = null;
+        _editContext = null;
+        _serverErrors = null;
+    }
+
+    private async Task SaveAsync()
+    {
+        var draft = _draft!;
+        await RunAsync("Save", version => Registrations.UpdateAsync(Id, version, draft), onSaved: CancelEdit);
+    }
+
+    private async Task CommentAsync()
+    {
+        var text = _comment;
+        await RunAsync("Add comment", version => Registrations.CommentAsync(Id, version, text), onSaved: () => _comment = string.Empty);
+    }
+
+    private async Task DeleteAsync()
+    {
+        await RunChangeAsync(
+            "Delete",
+            async version =>
+            {
+                await Registrations.DeleteAsync(Id, version);
+                return null;
+            },
+            onSaved: () => Navigation.NavigateTo("records"));
+    }
+
+    /// <summary>Runs a change that returns the updated record; see <see cref="RunChangeAsync"/>.</summary>
+    /// <param name="button">The button pressed, for the client event.</param>
+    /// <param name="change">The service call, given the version currently shown.</param>
+    /// <param name="onSaved">Runs after a successful change.</param>
+    private Task RunAsync(string button, Func<int, Task<RegistrationRecordDto>> change, Action? onSaved = null) =>
+        RunChangeAsync(button, async version => await change(version), onSaved);
+
+    /// <summary>
+    /// Runs one change with the version currently shown and turns each kind of refusal into a
+    /// message: 409 shows the conflict banner, the rest show what the server said.
+    /// </summary>
+    /// <param name="button">The button pressed; logged with the result shown, under one correlation id.</param>
+    /// <param name="change">The service call; returns the updated record, or null when it was deleted.</param>
+    /// <param name="onSaved">Runs after a successful change.</param>
+    private async Task RunChangeAsync(string button, Func<int, Task<RegistrationRecordDto?>> change, Action? onSaved = null)
+    {
+        using var action = Log.ButtonPressed(Page, button, Id);
+        var result = "Saved";
+        _busy = true;
+        _error = null;
+        _conflict = false;
+        try
+        {
+            var updated = await change(Record!.Version);
+            if (updated is not null)
+            {
+                Record = updated;
+            }
+
+            onSaved?.Invoke();
+        }
+        catch (VersionConflictException)
+        {
+            result = "Conflict";
+            _conflict = true;
+        }
+        catch (RecordValidationException e) when (_editContext is not null && _serverErrors is not null)
+        {
+            result = "Invalid";
+            foreach (var (field, messages) in e.Errors)
+            {
+                _serverErrors.Add(_editContext.Field(field), messages);
+            }
+
+            _editContext.NotifyValidationStateChanged();
+        }
+        catch (RecordValidationException e)
+        {
+            result = "Invalid";
+            _error = string.Join(" ", e.Errors.SelectMany(kv => kv.Value));
+        }
+        catch (Exception e) when (e is AccessDeniedException or WrongStatusException or RecordNotFoundException)
+        {
+            result = e switch
+            {
+                AccessDeniedException { Reason: AccessDenial.NoUser } => "NoUser",
+                AccessDeniedException => "Forbidden",
+                WrongStatusException => "WrongStatus",
+                _ => "NotFound",
+            };
+            _error = e.Message;
+        }
+        catch
+        {
+            // Anything else (a 500, the network) propagates; the event must not say "Saved".
+            result = "Error";
+            throw;
+        }
+        finally
+        {
+            _busy = false;
+            action.Result(result);
+        }
+    }
+
+    /// <summary>Copies a registration so edits don't touch the record shown until they are saved.</summary>
+    private static RegistrationDto Copy(RegistrationDto source) => new()
+    {
+        FirstName = source.FirstName,
+        LastName = source.LastName,
+        Email = source.Email,
+        Phone = source.Phone,
+        Street = source.Street,
+        City = source.City,
+        PostalCode = source.PostalCode,
+        Country = source.Country,
+        PreferredContact = source.PreferredContact,
+        SubscribeToNewsletter = source.SubscribeToNewsletter,
+        Notes = source.Notes,
+    };
+}

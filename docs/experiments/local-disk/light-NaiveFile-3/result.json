@@ -1,0 +1,228 @@
+{
+  "passed": false,
+  "commit": "ee6af83bef739621009cd4be91192b48f8df58df",
+  "startedAt": "2026-10-17T19:07:33.9236531+00:00",
+  "finishedAt": "2026-10-17T19:07:36.0466879+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/light-NaiveFile-3/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 3,
+    "serverArgs": []
+  },
+  "runFolder": "stress-runs/light-NaiveFile-3",
+  "servers": [
+    {
+      "port": 39295,
+      "logFile": "stress-runs/light-NaiveFile-3/logs/server-39295.jsonl"
+    },
+    {
+      "port": 45253,
+      "logFile": "stress-runs/light-NaiveFile-3/logs/server-45253.jsonl"
+    },
+    {
+      "port": 41195,
+      "logFile": "stress-runs/light-NaiveFile-3/logs/server-41195.jsonl"
+    }
+  ],
+  "numbers": {
+    "writes": 93,
+    "saves": 39,
+    "conflicts": 25,
+    "wrongStatus": 26,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 25,
+      "http500": 3,
+      "saved": 39,
+      "wrongStatus": 26
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 4,
+      "Submit": 2,
+      "Reject": 1,
+      "Comment": 26
+    },
+    "reads": 600,
+    "readFailures": {
+      "http500": 4,
+      "notFound": 509
+    },
+    "durationSeconds": 0.418,
+    "savesPerSecond": 93.36,
+    "saveLatencyMs": {
+      "p50": 2.68,
+      "p95": 102.05,
+      "max": 102.31,
+      "mean": 19.16
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 1,
+        "recordsUnexpected": 0,
+        "missingRecords": 5,
+        "lostUpdates": 16,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record e098fe7a-635a-4753-b31b-d1238605543a: missing (1 acknowledged changes)",
+          "missing record 474d9f24-8be5-4f82-a76c-b534e8d66bca: missing (1 acknowledged changes)",
+          "missing record 1cf8a242-05df-49de-b81a-da2d89acd7a6: missing (1 acknowledged changes)",
+          "missing record 06e19c9b-e73c-4e37-a037-e0a167fecdf6: missing (1 acknowledged changes)",
+          "missing record b8671b10-276d-4b1f-96be-cb9a55fc059d: missing (1 acknowledged changes)",
+          "lost update e098fe7a-635a-4753-b31b-d1238605543a v1 Create by s1c1-registrant via 39295 (stress-2d6e1c59abe54f95abd844d2ade0087b): record missing",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c2-reviewer \u0027s1c2-reviewer:10\u0027 via 39295 (stress-57bbcc8b951546a98f337b6c8001b351): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Update by s1c4-admin \u0027s1c4-admin:14\u0027 via 39295 (stress-46645aea3f4442faa1fe2c87d8f3852f): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c5-reviewer \u0027s1c5-reviewer:22\u0027 via 39295 (stress-0b6ad08a6a2546499d6f03777fae59ab): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c2-reviewer \u0027s2c2-reviewer:4\u0027 via 45253 (stress-1731429f09424256ac4891d53d4fe2ff): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v9 Comment by s2c2-reviewer \u0027s2c2-reviewer:19\u0027 via 45253 (stress-44fad814d0ff43ea98cd330f5bc8d169): version 9 holds Comment by s2c5-reviewer",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c2-reviewer \u0027s2c2-reviewer:25\u0027 via 45253 (stress-d85e7961b19f43c6952319d2a8923432): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Submit by s2c4-admin via 45253 (stress-8fe3366d5e96430aa8962ffaba2a915d): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v12 Comment by s2c4-admin \u0027s2c4-admin:22\u0027 via 45253 (stress-6b44129a946846c79a6de0e1ce87d871): version 12 holds Comment by s3c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c5-reviewer \u0027s2c5-reviewer:6\u0027 via 45253 (stress-6284fa6cc2194bed9e2af3e31ba1d80e): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c5-reviewer \u0027s2c5-reviewer:27\u0027 via 45253 (stress-0d9651f841884373afcca8df660ebe8c): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v4 Comment by s3c2-reviewer \u0027s3c2-reviewer:10\u0027 via 41195 (stress-e1d486cdb6f04ca49af7a6773f34c9d7): version 4 holds Update by s2c4-admin",
+          "lost update 474d9f24-8be5-4f82-a76c-b534e8d66bca v1 Create by s3c1-registrant via 41195 (stress-afefd8864ef24f8c8a2309622a770b07): record missing",
+          "lost update 1cf8a242-05df-49de-b81a-da2d89acd7a6 v1 Create by s1c3-registrant via 39295 (stress-36ea5c834c7b4f8996d29c3f8644621a): record missing",
+          "lost update 06e19c9b-e73c-4e37-a037-e0a167fecdf6 v1 Create by s2c3-registrant via 45253 (stress-b9f0dbce017348a3918f592391481c97): record missing",
+          "lost update b8671b10-276d-4b1f-96be-cb9a55fc059d v1 Create by s3c3-registrant via 41195 (stress-dd0ec0b79c7b4c41bb9ee56f89dae14e): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 39295",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 1,
+        "recordsUnexpected": 0,
+        "missingRecords": 5,
+        "lostUpdates": 16,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record e098fe7a-635a-4753-b31b-d1238605543a: missing (1 acknowledged changes)",
+          "missing record 474d9f24-8be5-4f82-a76c-b534e8d66bca: missing (1 acknowledged changes)",
+          "missing record 1cf8a242-05df-49de-b81a-da2d89acd7a6: missing (1 acknowledged changes)",
+          "missing record 06e19c9b-e73c-4e37-a037-e0a167fecdf6: missing (1 acknowledged changes)",
+          "missing record b8671b10-276d-4b1f-96be-cb9a55fc059d: missing (1 acknowledged changes)",
+          "lost update e098fe7a-635a-4753-b31b-d1238605543a v1 Create by s1c1-registrant via 39295 (stress-2d6e1c59abe54f95abd844d2ade0087b): record missing",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c2-reviewer \u0027s1c2-reviewer:10\u0027 via 39295 (stress-57bbcc8b951546a98f337b6c8001b351): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Update by s1c4-admin \u0027s1c4-admin:14\u0027 via 39295 (stress-46645aea3f4442faa1fe2c87d8f3852f): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c5-reviewer \u0027s1c5-reviewer:22\u0027 via 39295 (stress-0b6ad08a6a2546499d6f03777fae59ab): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c2-reviewer \u0027s2c2-reviewer:4\u0027 via 45253 (stress-1731429f09424256ac4891d53d4fe2ff): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v9 Comment by s2c2-reviewer \u0027s2c2-reviewer:19\u0027 via 45253 (stress-44fad814d0ff43ea98cd330f5bc8d169): version 9 holds Comment by s2c5-reviewer",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c2-reviewer \u0027s2c2-reviewer:25\u0027 via 45253 (stress-d85e7961b19f43c6952319d2a8923432): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Submit by s2c4-admin via 45253 (stress-8fe3366d5e96430aa8962ffaba2a915d): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v12 Comment by s2c4-admin \u0027s2c4-admin:22\u0027 via 45253 (stress-6b44129a946846c79a6de0e1ce87d871): version 12 holds Comment by s3c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c5-reviewer \u0027s2c5-reviewer:6\u0027 via 45253 (stress-6284fa6cc2194bed9e2af3e31ba1d80e): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c5-reviewer \u0027s2c5-reviewer:27\u0027 via 45253 (stress-0d9651f841884373afcca8df660ebe8c): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v4 Comment by s3c2-reviewer \u0027s3c2-reviewer:10\u0027 via 41195 (stress-e1d486cdb6f04ca49af7a6773f34c9d7): version 4 holds Update by s2c4-admin",
+          "lost update 474d9f24-8be5-4f82-a76c-b534e8d66bca v1 Create by s3c1-registrant via 41195 (stress-afefd8864ef24f8c8a2309622a770b07): record missing",
+          "lost update 1cf8a242-05df-49de-b81a-da2d89acd7a6 v1 Create by s1c3-registrant via 39295 (stress-36ea5c834c7b4f8996d29c3f8644621a): record missing",
+          "lost update 06e19c9b-e73c-4e37-a037-e0a167fecdf6 v1 Create by s2c3-registrant via 45253 (stress-b9f0dbce017348a3918f592391481c97): record missing",
+          "lost update b8671b10-276d-4b1f-96be-cb9a55fc059d v1 Create by s3c3-registrant via 41195 (stress-dd0ec0b79c7b4c41bb9ee56f89dae14e): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 45253",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 1,
+        "recordsUnexpected": 0,
+        "missingRecords": 5,
+        "lostUpdates": 16,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record e098fe7a-635a-4753-b31b-d1238605543a: missing (1 acknowledged changes)",
+          "missing record 474d9f24-8be5-4f82-a76c-b534e8d66bca: missing (1 acknowledged changes)",
+          "missing record 1cf8a242-05df-49de-b81a-da2d89acd7a6: missing (1 acknowledged changes)",
+          "missing record 06e19c9b-e73c-4e37-a037-e0a167fecdf6: missing (1 acknowledged changes)",
+          "missing record b8671b10-276d-4b1f-96be-cb9a55fc059d: missing (1 acknowledged changes)",
+          "lost update e098fe7a-635a-4753-b31b-d1238605543a v1 Create by s1c1-registrant via 39295 (stress-2d6e1c59abe54f95abd844d2ade0087b): record missing",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c2-reviewer \u0027s1c2-reviewer:10\u0027 via 39295 (stress-57bbcc8b951546a98f337b6c8001b351): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Update by s1c4-admin \u0027s1c4-admin:14\u0027 via 39295 (stress-46645aea3f4442faa1fe2c87d8f3852f): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c5-reviewer \u0027s1c5-reviewer:22\u0027 via 39295 (stress-0b6ad08a6a2546499d6f03777fae59ab): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c2-reviewer \u0027s2c2-reviewer:4\u0027 via 45253 (stress-1731429f09424256ac4891d53d4fe2ff): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v9 Comment by s2c2-reviewer \u0027s2c2-reviewer:19\u0027 via 45253 (stress-44fad814d0ff43ea98cd330f5bc8d169): version 9 holds Comment by s2c5-reviewer",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c2-reviewer \u0027s2c2-reviewer:25\u0027 via 45253 (stress-d85e7961b19f43c6952319d2a8923432): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Submit by s2c4-admin via 45253 (stress-8fe3366d5e96430aa8962ffaba2a915d): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v12 Comment by s2c4-admin \u0027s2c4-admin:22\u0027 via 45253 (stress-6b44129a946846c79a6de0e1ce87d871): version 12 holds Comment by s3c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c5-reviewer \u0027s2c5-reviewer:6\u0027 via 45253 (stress-6284fa6cc2194bed9e2af3e31ba1d80e): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c5-reviewer \u0027s2c5-reviewer:27\u0027 via 45253 (stress-0d9651f841884373afcca8df660ebe8c): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v4 Comment by s3c2-reviewer \u0027s3c2-reviewer:10\u0027 via 41195 (stress-e1d486cdb6f04ca49af7a6773f34c9d7): version 4 holds Update by s2c4-admin",
+          "lost update 474d9f24-8be5-4f82-a76c-b534e8d66bca v1 Create by s3c1-registrant via 41195 (stress-afefd8864ef24f8c8a2309622a770b07): record missing",
+          "lost update 1cf8a242-05df-49de-b81a-da2d89acd7a6 v1 Create by s1c3-registrant via 39295 (stress-36ea5c834c7b4f8996d29c3f8644621a): record missing",
+          "lost update 06e19c9b-e73c-4e37-a037-e0a167fecdf6 v1 Create by s2c3-registrant via 45253 (stress-b9f0dbce017348a3918f592391481c97): record missing",
+          "lost update b8671b10-276d-4b1f-96be-cb9a55fc059d v1 Create by s3c3-registrant via 41195 (stress-dd0ec0b79c7b4c41bb9ee56f89dae14e): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 41195",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 1,
+        "recordsUnexpected": 0,
+        "missingRecords": 5,
+        "lostUpdates": 16,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record e098fe7a-635a-4753-b31b-d1238605543a: missing (1 acknowledged changes)",
+          "missing record 474d9f24-8be5-4f82-a76c-b534e8d66bca: missing (1 acknowledged changes)",
+          "missing record 1cf8a242-05df-49de-b81a-da2d89acd7a6: missing (1 acknowledged changes)",
+          "missing record 06e19c9b-e73c-4e37-a037-e0a167fecdf6: missing (1 acknowledged changes)",
+          "missing record b8671b10-276d-4b1f-96be-cb9a55fc059d: missing (1 acknowledged changes)",
+          "lost update e098fe7a-635a-4753-b31b-d1238605543a v1 Create by s1c1-registrant via 39295 (stress-2d6e1c59abe54f95abd844d2ade0087b): record missing",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c2-reviewer \u0027s1c2-reviewer:10\u0027 via 39295 (stress-57bbcc8b951546a98f337b6c8001b351): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Update by s1c4-admin \u0027s1c4-admin:14\u0027 via 39295 (stress-46645aea3f4442faa1fe2c87d8f3852f): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s1c5-reviewer \u0027s1c5-reviewer:22\u0027 via 39295 (stress-0b6ad08a6a2546499d6f03777fae59ab): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c2-reviewer \u0027s2c2-reviewer:4\u0027 via 45253 (stress-1731429f09424256ac4891d53d4fe2ff): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v9 Comment by s2c2-reviewer \u0027s2c2-reviewer:19\u0027 via 45253 (stress-44fad814d0ff43ea98cd330f5bc8d169): version 9 holds Comment by s2c5-reviewer",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c2-reviewer \u0027s2c2-reviewer:25\u0027 via 45253 (stress-d85e7961b19f43c6952319d2a8923432): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Submit by s2c4-admin via 45253 (stress-8fe3366d5e96430aa8962ffaba2a915d): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v12 Comment by s2c4-admin \u0027s2c4-admin:22\u0027 via 45253 (stress-6b44129a946846c79a6de0e1ce87d871): version 12 holds Comment by s3c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v2 Comment by s2c5-reviewer \u0027s2c5-reviewer:6\u0027 via 45253 (stress-6284fa6cc2194bed9e2af3e31ba1d80e): version 2 holds Update by s2c1-registrant",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v13 Comment by s2c5-reviewer \u0027s2c5-reviewer:27\u0027 via 45253 (stress-0d9651f841884373afcca8df660ebe8c): version 13 holds Comment by s2c4-admin",
+          "lost update 8bfcbfe7-ddfd-4295-b176-a23221df44b6 v4 Comment by s3c2-reviewer \u0027s3c2-reviewer:10\u0027 via 41195 (stress-e1d486cdb6f04ca49af7a6773f34c9d7): version 4 holds Update by s2c4-admin",
+          "lost update 474d9f24-8be5-4f82-a76c-b534e8d66bca v1 Create by s3c1-registrant via 41195 (stress-afefd8864ef24f8c8a2309622a770b07): record missing",
+          "lost update 1cf8a242-05df-49de-b81a-da2d89acd7a6 v1 Create by s1c3-registrant via 39295 (stress-36ea5c834c7b4f8996d29c3f8644621a): record missing",
+          "lost update 06e19c9b-e73c-4e37-a037-e0a167fecdf6 v1 Create by s2c3-registrant via 45253 (stress-b9f0dbce017348a3918f592391481c97): record missing",
+          "lost update b8671b10-276d-4b1f-96be-cb9a55fc059d v1 Create by s3c3-registrant via 41195 (stress-dd0ec0b79c7b4c41bb9ee56f89dae14e): record missing"
+        ]
+      }
+    }
+  ]
+}

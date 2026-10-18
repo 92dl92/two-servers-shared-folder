@@ -1,0 +1,70 @@
+@*
+    Every field of a RegistrationDto in one grid, for editing an existing record.
+    Must be placed inside an EditForm whose model is the same RegistrationDto.
+*@
+
+<div class="form-grid">
+    <label>
+        First name
+        <InputText @bind-Value="Model.FirstName" autocomplete="given-name" />
+        <ValidationMessage For="() => Model.FirstName" />
+    </label>
+    <label>
+        Last name
+        <InputText @bind-Value="Model.LastName" autocomplete="family-name" />
+        <ValidationMessage For="() => Model.LastName" />
+    </label>
+    <label>
+        Email
+        <InputText type="email" @bind-Value="Model.Email" autocomplete="email" />
+        <ValidationMessage For="() => Model.Email" />
+    </label>
+    <label>
+        <span>Phone <span class="optional">(optional)</span></span>
+        <InputText type="tel" @bind-Value="Model.Phone" autocomplete="tel" />
+        <ValidationMessage For="() => Model.Phone" />
+    </label>
+    <label class="span-2">
+        Street
+        <InputText @bind-Value="Model.Street" autocomplete="street-address" />
+        <ValidationMessage For="() => Model.Street" />
+    </label>
+    <label>
+        City
+        <InputText @bind-Value="Model.City" autocomplete="address-level2" />
+        <ValidationMessage For="() => Model.City" />
+    </label>
+    <label>
+        Postal code
+        <InputText @bind-Value="Model.PostalCode" autocomplete="postal-code" />
+        <ValidationMessage For="() => Model.PostalCode" />
+    </label>
+    <label class="span-2">
+        Country
+        <InputText @bind-Value="Model.Country" autocomplete="country-name" />
+        <ValidationMessage For="() => Model.Country" />
+    </label>
+    <label>
+        Preferred contact
+        <InputSelect @bind-Value="Model.PreferredContact">
+            @foreach (var method in Enum.GetValues<ContactMethod>())
+            {
+                <option value="@method">@method</option>
+            }
+        </InputSelect>
+    </label>
+    <label class="checkbox">
+        <InputCheckbox @bind-Value="Model.SubscribeToNewsletter" />
+        Subscribe to newsletter
+    </label>
+    <label class="span-2">
+        <span>Notes <span class="optional">(optional)</span></span>
+        <InputTextArea rows="3" @bind-Value="Model.Notes" />
+        <ValidationMessage For="() => Model.Notes" />
+    </label>
+</div>
+
+@code {
+    /// <summary>The registration being edited (the enclosing EditForm's model).</summary>
+    [Parameter, EditorRequired] public RegistrationDto Model { get; set; } = default!;
+}

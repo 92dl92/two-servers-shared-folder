@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- DTOs and service contracts shared by Server, Services and Client.
+       Must stay free of server-only dependencies so it can run in WebAssembly. -->
+
+</Project>

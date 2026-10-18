@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Helper program the storage tests start several copies of, to save to one store from
+       separate processes at once. Not a test project itself. -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BlazorApp.Services\BlazorApp.Services.csproj" />
+  </ItemGroup>
+
+</Project>

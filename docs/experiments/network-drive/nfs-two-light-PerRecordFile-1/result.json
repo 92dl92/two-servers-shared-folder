@@ -1,0 +1,188 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T22:19:19.5365452+00:00",
+  "finishedAt": "2026-10-17T22:19:29.8825036+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "/mnt/share/runs/nfs-two-light-PerRecordFile-1/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 6,
+      "Reviewer": 6,
+      "Admin": 3
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 1,
+    "serverArgs": [],
+    "remote": "user@mac.example",
+    "remoteServers": 1,
+    "remoteDataPath": "/Volumes/share/runs/nfs-two-light-PerRecordFile-1/data"
+  },
+  "runFolder": "stress-runs/nfs/nfs-two-light-PerRecordFile-1",
+  "servers": [
+    {
+      "port": 34861,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-1/logs/server-34861.jsonl",
+      "host": null
+    },
+    {
+      "port": 41387,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-1/logs/server-41387.jsonl",
+      "host": null
+    },
+    {
+      "port": 35109,
+      "logFile": "stress-runs/nfs/nfs-two-light-PerRecordFile-1/logs/server-35109.jsonl",
+      "host": "mac-host.local"
+    }
+  ],
+  "numbers": {
+    "writes": 595,
+    "saves": 255,
+    "conflicts": 196,
+    "wrongStatus": 130,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 196,
+      "http500": 12,
+      "notFound": 2,
+      "saved": 255,
+      "wrongStatus": 130
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 83,
+      "Submit": 6,
+      "Approve": 1,
+      "Reject": 5,
+      "Comment": 154
+    },
+    "reads": 600,
+    "readFailures": {
+      "http500": 11
+    },
+    "durationSeconds": 5.907,
+    "savesPerSecond": 43.17,
+    "saveLatencyMs": {
+      "p50": 24.64,
+      "p95": 184.14,
+      "max": 388.55,
+      "mean": 63.88
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 8,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v34 Comment by s3c2-reviewer \u0027s3c2-reviewer:23\u0027 via mac-host.local:35109 (stress-49da40c27f8a44e0b575ba02dbf51f35): version 34 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c2-reviewer \u0027s3c2-reviewer:33\u0027 via mac-host.local:35109 (stress-50574345ead942738307ede8ee91b3ff): version 41 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v25 Comment by s3c4-admin \u0027s3c4-admin:11\u0027 via mac-host.local:35109 (stress-f02623d600cb483197bfe4360c817868): version 25 holds Comment by s1c2-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v36 Comment by s3c4-admin \u0027s3c4-admin:24\u0027 via mac-host.local:35109 (stress-6d29394404e643218fd184cac8f8e307): version 36 holds Comment by s3c5-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c5-reviewer \u0027s3c5-reviewer:36\u0027 via mac-host.local:35109 (stress-ecb1b79f779e4452a950d0055159bd35): version 41 holds Comment by s3c4-admin",
+          "lost update c1391632-bf07-4eab-92a6-f1deee7fe1be v50 Comment by s3c5-reviewer \u0027s3c5-reviewer:31\u0027 via mac-host.local:35109 (stress-58d51838572448e68896230f27e844d2): version 50 holds Comment by s3c2-reviewer",
+          "lost update 7dfe47c6-6173-4ea1-a167-12f10c1bc523 v9 Update by s3c1-registrant \u0027s3c1-registrant:5\u0027 via mac-host.local:35109 (stress-43ae81dd4549437e8ed485e18e564deb): version 9 holds Reject by s3c2-reviewer",
+          "lost update 22cadb7d-9c51-4779-9107-04aa9a403375 v18 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:35109 (stress-6189ef3dddc84bcfba3da0266c382a4f): version 18 holds Comment by s1c4-admin"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 34861",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 8,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v34 Comment by s3c2-reviewer \u0027s3c2-reviewer:23\u0027 via mac-host.local:35109 (stress-49da40c27f8a44e0b575ba02dbf51f35): version 34 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c2-reviewer \u0027s3c2-reviewer:33\u0027 via mac-host.local:35109 (stress-50574345ead942738307ede8ee91b3ff): version 41 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v25 Comment by s3c4-admin \u0027s3c4-admin:11\u0027 via mac-host.local:35109 (stress-f02623d600cb483197bfe4360c817868): version 25 holds Comment by s1c2-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v36 Comment by s3c4-admin \u0027s3c4-admin:24\u0027 via mac-host.local:35109 (stress-6d29394404e643218fd184cac8f8e307): version 36 holds Comment by s3c5-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c5-reviewer \u0027s3c5-reviewer:36\u0027 via mac-host.local:35109 (stress-ecb1b79f779e4452a950d0055159bd35): version 41 holds Comment by s3c4-admin",
+          "lost update c1391632-bf07-4eab-92a6-f1deee7fe1be v50 Comment by s3c5-reviewer \u0027s3c5-reviewer:31\u0027 via mac-host.local:35109 (stress-58d51838572448e68896230f27e844d2): version 50 holds Comment by s3c2-reviewer",
+          "lost update 7dfe47c6-6173-4ea1-a167-12f10c1bc523 v9 Update by s3c1-registrant \u0027s3c1-registrant:5\u0027 via mac-host.local:35109 (stress-43ae81dd4549437e8ed485e18e564deb): version 9 holds Reject by s3c2-reviewer",
+          "lost update 22cadb7d-9c51-4779-9107-04aa9a403375 v18 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:35109 (stress-6189ef3dddc84bcfba3da0266c382a4f): version 18 holds Comment by s1c4-admin"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 41387",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 8,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v34 Comment by s3c2-reviewer \u0027s3c2-reviewer:23\u0027 via mac-host.local:35109 (stress-49da40c27f8a44e0b575ba02dbf51f35): version 34 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c2-reviewer \u0027s3c2-reviewer:33\u0027 via mac-host.local:35109 (stress-50574345ead942738307ede8ee91b3ff): version 41 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v25 Comment by s3c4-admin \u0027s3c4-admin:11\u0027 via mac-host.local:35109 (stress-f02623d600cb483197bfe4360c817868): version 25 holds Comment by s1c2-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v36 Comment by s3c4-admin \u0027s3c4-admin:24\u0027 via mac-host.local:35109 (stress-6d29394404e643218fd184cac8f8e307): version 36 holds Comment by s3c5-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c5-reviewer \u0027s3c5-reviewer:36\u0027 via mac-host.local:35109 (stress-ecb1b79f779e4452a950d0055159bd35): version 41 holds Comment by s3c4-admin",
+          "lost update c1391632-bf07-4eab-92a6-f1deee7fe1be v50 Comment by s3c5-reviewer \u0027s3c5-reviewer:31\u0027 via mac-host.local:35109 (stress-58d51838572448e68896230f27e844d2): version 50 holds Comment by s3c2-reviewer",
+          "lost update 7dfe47c6-6173-4ea1-a167-12f10c1bc523 v9 Update by s3c1-registrant \u0027s3c1-registrant:5\u0027 via mac-host.local:35109 (stress-43ae81dd4549437e8ed485e18e564deb): version 9 holds Reject by s3c2-reviewer",
+          "lost update 22cadb7d-9c51-4779-9107-04aa9a403375 v18 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:35109 (stress-6189ef3dddc84bcfba3da0266c382a4f): version 18 holds Comment by s1c4-admin"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server mac-host.local:35109",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 8,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v34 Comment by s3c2-reviewer \u0027s3c2-reviewer:23\u0027 via mac-host.local:35109 (stress-49da40c27f8a44e0b575ba02dbf51f35): version 34 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c2-reviewer \u0027s3c2-reviewer:33\u0027 via mac-host.local:35109 (stress-50574345ead942738307ede8ee91b3ff): version 41 holds Comment by s3c4-admin",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v25 Comment by s3c4-admin \u0027s3c4-admin:11\u0027 via mac-host.local:35109 (stress-f02623d600cb483197bfe4360c817868): version 25 holds Comment by s1c2-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v36 Comment by s3c4-admin \u0027s3c4-admin:24\u0027 via mac-host.local:35109 (stress-6d29394404e643218fd184cac8f8e307): version 36 holds Comment by s3c5-reviewer",
+          "lost update 3b8d8ecc-50ba-4799-9a4d-858fb6dd5072 v41 Comment by s3c5-reviewer \u0027s3c5-reviewer:36\u0027 via mac-host.local:35109 (stress-ecb1b79f779e4452a950d0055159bd35): version 41 holds Comment by s3c4-admin",
+          "lost update c1391632-bf07-4eab-92a6-f1deee7fe1be v50 Comment by s3c5-reviewer \u0027s3c5-reviewer:31\u0027 via mac-host.local:35109 (stress-58d51838572448e68896230f27e844d2): version 50 holds Comment by s3c2-reviewer",
+          "lost update 7dfe47c6-6173-4ea1-a167-12f10c1bc523 v9 Update by s3c1-registrant \u0027s3c1-registrant:5\u0027 via mac-host.local:35109 (stress-43ae81dd4549437e8ed485e18e564deb): version 9 holds Reject by s3c2-reviewer",
+          "lost update 22cadb7d-9c51-4779-9107-04aa9a403375 v18 Comment by s3c5-reviewer \u0027s3c5-reviewer:17\u0027 via mac-host.local:35109 (stress-6189ef3dddc84bcfba3da0266c382a4f): version 18 holds Comment by s1c4-admin"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+@page "/records"
+@inject IRegistrationService Registrations
+@inject IClientEventLog Log
+
+@* Lists the records the acting user may see. Registrants see their own; reviewers and admins see all. *@
+
+<PageTitle>Records</PageTitle>
+
+<h1>Records</h1>
+
+@if (_denied is not null)
+{
+    <div class="alert info" role="status">@_denied</div>
+}
+else if (Items is null)
+{
+    <p><em>Loading…</em></p>
+}
+else if (Items.Count == 0)
+{
+    <p>No records yet. <a href="register">Add one</a>.</p>
+}
+else
+{
+    <div class="card table-wrap">
+        <table>
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Country</th><th>Status</th><th>Version</th><th>By</th><th>Updated</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items)
+                {
+                    <tr>
+                        <td><a href="records/@item.Id">@item.FullName</a></td>
+                        <td>@item.Email</td>
+                        <td>@item.Country</td>
+                        <td>@item.Status</td>
+                        <td>@item.Version</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.UpdatedAt.ToLocalTime().ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Loaded records. [PersistentState] carries the value fetched during
+    /// server prerendering over to the WebAssembly render, avoiding a second fetch.
+    /// </summary>
+    [PersistentState]
+    public List<RegistrationSummaryDto>? Items { get; set; }
+
+    /// <summary>Why the list can't be shown (no user, or not allowed), if so.</summary>
+    private string? _denied;
+
+    /// <inheritdoc />
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Only in the browser: prerendering is not a page the user has loaded yet.
+        if (firstRender && RendererInfo.IsInteractive)
+        {
+            Log.PageLoaded("records");
+        }
+    }
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Items ??= [.. await Registrations.GetAllAsync()];
+        }
+        catch (AccessDeniedException e)
+        {
+            _denied = e.Reason == AccessDenial.NoUser
+                ? "Pick a user under Acting as to see records."
+                : e.Message;
+        }
+    }
+}

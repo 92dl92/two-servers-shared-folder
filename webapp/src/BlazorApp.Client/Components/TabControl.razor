@@ -1,0 +1,97 @@
+@*
+    Reusable tab container. Usage:
+
+        <TabControl @bind-ActiveIndex="_tab">
+            <TabPage Title="First">...</TabPage>
+            <TabPage Title="Second">...</TabPage>
+        </TabControl>
+
+    Inactive pages stay rendered (just hidden), so form inputs and their
+    validation messages keep their state when switching tabs.
+*@
+
+<CascadingValue Value="this" IsFixed="true">
+    <div class="tab-control">
+        <div class="tab-strip" role="tablist">
+            @for (var i = 0; i < _pages.Count; i++)
+            {
+                var index = i; // capture for the lambda
+                var tab = _pages[index];
+                var selected = index == ActiveIndex;
+                <button type="button" role="tab" id="@TabId(index)"
+                        class="tab @(selected ? "active" : null)"
+                        aria-selected="@(selected ? "true" : "false")"
+                        aria-controls="@PanelId(index)"
+                        tabindex="@(selected ? 0 : -1)"
+                        disabled="@tab.Disabled"
+                        @onclick="() => SelectAsync(index)">
+                    @tab.Title
+                </button>
+            }
+        </div>
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    private readonly List<TabPage> _pages = [];
+
+    // Unique per instance so several tab controls can share a page.
+    private readonly string _idPrefix = $"tabs-{Guid.NewGuid():N}"[..13];
+
+    /// <summary>The <see cref="TabPage"/> children.</summary>
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = default!;
+
+    /// <summary>Zero-based index of the selected tab.</summary>
+    [Parameter] public int ActiveIndex { get; set; }
+
+    /// <summary>Raised when the user selects a tab; enables <c>@bind-ActiveIndex</c>.</summary>
+    [Parameter] public EventCallback<int> ActiveIndexChanged { get; set; }
+
+    /// <summary>Number of registered tab pages.</summary>
+    public int Count => _pages.Count;
+
+    /// <summary>Called by a <see cref="TabPage"/> when it initializes.</summary>
+    /// <param name="page">The page to add as a tab.</param>
+    internal void Register(TabPage page)
+    {
+        _pages.Add(page);
+        StateHasChanged(); // re-render so the new tab header appears
+    }
+
+    /// <summary>Called by a <see cref="TabPage"/> when it is disposed.</summary>
+    /// <param name="page">The page to remove.</param>
+    internal void Unregister(TabPage page)
+    {
+        _pages.Remove(page);
+        StateHasChanged();
+    }
+
+    /// <summary>Whether the given page is the selected one.</summary>
+    /// <param name="page">A registered page.</param>
+    /// <returns>True if <paramref name="page"/> is at <see cref="ActiveIndex"/>.</returns>
+    internal bool IsActive(TabPage page) => _pages.IndexOf(page) == ActiveIndex;
+
+    /// <summary>DOM id of a page's tabpanel element, for ARIA wiring.</summary>
+    /// <param name="page">A registered page.</param>
+    /// <returns>The panel element id.</returns>
+    internal string PanelIdFor(TabPage page) => PanelId(_pages.IndexOf(page));
+
+    /// <summary>DOM id of a page's tab button, for ARIA wiring.</summary>
+    /// <param name="page">A registered page.</param>
+    /// <returns>The tab button id.</returns>
+    internal string TabIdFor(TabPage page) => TabId(_pages.IndexOf(page));
+
+    private string TabId(int index) => $"{_idPrefix}-tab-{index}";
+
+    private string PanelId(int index) => $"{_idPrefix}-panel-{index}";
+
+    /// <summary>Selects a tab and notifies the parent binding.</summary>
+    /// <param name="index">Index of the tab to select.</param>
+    /// <returns>A task that completes when the parent has been notified.</returns>
+    private async Task SelectAsync(int index)
+    {
+        ActiveIndex = index;
+        await ActiveIndexChanged.InvokeAsync(index);
+    }
+}

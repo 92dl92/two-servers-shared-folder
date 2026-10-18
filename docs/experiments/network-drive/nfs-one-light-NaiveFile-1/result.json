@@ -1,0 +1,149 @@
+{
+  "passed": false,
+  "commit": "1b49659b6d0d95e1a10858057ef4082c27040edb",
+  "startedAt": "2026-10-17T21:56:32.8032009+00:00",
+  "finishedAt": "2026-10-17T21:56:35.2894154+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "/mnt/share/runs/nfs-one-light-NaiveFile-1/data",
+    "servers": 3,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 6,
+      "Reviewer": 6,
+      "Admin": 3
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 1,
+    "serverArgs": [],
+    "remote": null,
+    "remoteServers": 0,
+    "remoteDataPath": null
+  },
+  "runFolder": "stress-runs/nfs/nfs-one-light-NaiveFile-1",
+  "servers": [
+    {
+      "port": 39433,
+      "logFile": "stress-runs/nfs/nfs-one-light-NaiveFile-1/logs/server-39433.jsonl",
+      "host": null
+    },
+    {
+      "port": 39463,
+      "logFile": "stress-runs/nfs/nfs-one-light-NaiveFile-1/logs/server-39463.jsonl",
+      "host": null
+    },
+    {
+      "port": 41243,
+      "logFile": "stress-runs/nfs/nfs-one-light-NaiveFile-1/logs/server-41243.jsonl",
+      "host": null
+    }
+  ],
+  "numbers": {
+    "writes": 54,
+    "saves": 31,
+    "conflicts": 13,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 13,
+      "http500": 10,
+      "saved": 31
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 14,
+      "Submit": 1,
+      "Comment": 10
+    },
+    "reads": 600,
+    "readFailures": {
+      "http500": 140,
+      "notFound": 412
+    },
+    "durationSeconds": 0.737,
+    "savesPerSecond": 42.06,
+    "saveLatencyMs": {
+      "p50": 18.75,
+      "p95": 116.2,
+      "max": 116.43,
+      "mean": 38.57
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": "JsonException: \u0027]\u0027 is invalid after a single JSON value. Expected end of data. Path: $[1] | LineNumber: 130 | BytePositionInLine: 3.",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 39433",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 39463",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server 41243",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

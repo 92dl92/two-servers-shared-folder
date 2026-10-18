@@ -1,0 +1,7 @@
+[
+  { "id": "alice", "name": "Alice", "roles": ["Registrant"] },
+  { "id": "bob", "name": "Bob", "roles": ["Registrant"] },
+  { "id": "rita", "name": "Rita", "roles": ["Reviewer"] },
+  { "id": "ravi", "name": "Ravi", "roles": ["Reviewer"] },
+  { "id": "ada", "name": "Ada", "roles": ["Admin"] }
+]
