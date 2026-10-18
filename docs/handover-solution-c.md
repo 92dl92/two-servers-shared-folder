@@ -3,11 +3,13 @@
 **For:** an agent (or developer) starting in a new environment, whose job is to turn this
 proposal into an **implementation plan** for a real application, and then carry it out.
 **From:** a proof of concept (the code in this repository, called "ClaudeTest" in its docs).
-Commit ids quoted below are from the original, private repository: they identify which code
-produced which result, and are not in this repository's history.
-**Status:** 2026-10-18, after phase 6b. The Windows results in section 3 are final and written
+Commit ids and pull request numbers quoted below are from the original, private repository:
+they identify which code produced which result, and are not in this repository's history.
+**Status:** 2026-10-18, after phase 6c. The Windows results in section 3 are final and written
 up in `docs/experiments/windows-smb.md`, with every run's `result.json` and `summary.md` in
-`docs/experiments/windows-smb/`. All code this document cites is on `main`.
+`docs/experiments/windows-smb/`. The no-ssh test harness section 10 relies on was built in
+phase 6c and checked in the lab (`docs/experiments/no-ssh-lab.md`). All code this document
+cites is on `main`.
 
 ## 0. How to use this document
 
@@ -555,6 +557,9 @@ Ask these before planning; the answers change the design.
    equivalents in that stack, checked against SMB behaviour the same way.
 8. How is the real application hosted (IIS, a Windows service, plain Kestrel), and under
    which account? That account opens the share (section 5, "Hosting and identity").
+9. For testing: may unsigned executables run from a folder such as `C:\ClaudeTest` on the
+   servers and the PC (AppLocker, SmartScreen, antivirus), and which ports are open from the
+   PC to each server?
 
 ## 9. What the plan must verify, and how
 
@@ -579,8 +584,8 @@ Ask these before planning; the answers change the design.
    network cut for 10 s and 60 s) on the production layout, plus what phase 6b didn't do:
    **reboot the share host during a run**. After each, the checks must still pass for every
    save that was acknowledged, and every record must still be changeable. Without ssh these
-   are done by hand (stop the app process, unplug or disable a network adapter) at an agreed
-   time during a long run.
+   are done by hand at an agreed time during a long run; section 10.5 says how, and what the
+   tool can and can't check in that mode.
 5. **Operational checks:** antivirus on and off, a backup running during a run, a list view
    timed with 6,000 records.
 6. **Leasing on the production share host:** the heavy and pipeline profiles with the
@@ -602,39 +607,32 @@ what exists for that today, what has to be built first, and how to run it once i
 
 | Piece | State | Where |
 |---|---|---|
-| Stress tool: workloads (light, heavy, pipeline), every check, stale reads, `--fault`, the lock check | **Exists** | `webapp/tools/BlazorApp.Stress/`; `docs/strategies/StressTool.md` |
+| Stress tool: workloads (light, heavy, pipeline), every check, stale reads, `--fault`, the lock check, `--prefill`, `--list` | **Exists** | `webapp/tools/BlazorApp.Stress/`; `docs/strategies/StressTool.md` |
+| `ClaudeTestServer.ps1`: install, start and stop a test server by hand on each server, on a port you give it | **Exists** (phase 6c) | `webapp/scripts/windows/`; `docs/strategies/StressToolWindows.md` |
+| Stress tool on a **Windows PC** using running servers: `--external`, `--prepare --users-out` (also writes any `--prefill` records to the share before the servers start), `--routing random\|sticky` | **Exists** (phase 6c) | same |
+| Self-contained `win-x64` packages of the server and the tool (`build-packages.sh`) | **Exists** (phase 6c) | `webapp/scripts/windows/build-packages.sh` |
+| Lab check: the tool on Windows against two Windows Server VMs started with the script, A and C, both routings, seeds 1–3 | **Done**: A failed 6/6, C passed 6/6 | `docs/strategies/StressToolWindows.md`, "Lab check"; `docs/experiments/no-ssh-lab/` |
 | Driving Windows servers **over ssh** from a Linux machine (`--remote`), and `prepare-test-server.ps1` | **Exists, lab only**: needs ssh, a firewall rule and a Linux driver, none of which the target allows | Appendix A |
-| `ClaudeTestServer.ps1`: start and stop a test server by hand on each server, on a port you give it | **Designed, not built** | `docs/strategies/StressToolWindows.md` |
-| Stress tool on a **Windows PC** using running servers (`--external`), with **`--routing random\|sticky`** and `--prepare` | **Designed, not built**; the tool has never run on Windows | same |
-| Fallback: one tool per server against `localhost`, merged by `--check` (if no port from the PC can be opened) | **Designed, not built** | same |
-| Filling the share with records before a run (`--prefill <n>`) and timing list views (`--list`) | **Exists** (phase 6b's volume test) | the stress tool |
-| Self-contained builds of the server, the tool, the contract tests and `BlazorApp.StoreHelper` | **Not done** | — |
+| Fallback: one tool per server against `localhost`, merged by `--check` (if no port from the PC can be opened) | **Designed, not built** | `docs/strategies/StressToolWindows.md` |
+| Self-contained builds of the contract tests and `BlazorApp.StoreHelper`, to run section 9.1 on the servers | **Not done** | — |
+| Failure tests with servers started by hand: a planned fault the tool knows about, and the lock check afterwards | **Not built**: done by hand, partly checked (10.5) | — |
 
-**If you are reading this before those pieces exist, building them is the first phase of
-your plan** (10.2). Check the repository first: they may have been built since this was
-written (look for `webapp/scripts/windows/ClaudeTestServer.ps1` and `--external` in
-`webapp/tools/BlazorApp.Stress/StressOptions.cs`).
+### 10.2 What is still to build
 
-### 10.2 What to build first
+1. **Only if no port from the PC to the servers can be opened:** the fallback (one tool per
+   server), following `docs/strategies/StressToolWindows.md`, with its tests written and seen
+   failing first.
+2. **For section 9.1:** the contract tests and `BlazorApp.StoreHelper` runnable on each server
+   without the SDK: for example the xUnit 2 console runner against the built test assembly,
+   or the tests moved to xUnit v3, whose test projects build as self-contained executables
+   (a migration: the project uses xUnit 2), plus a self-contained `BlazorApp.StoreHelper`.
+3. **Optional, for the failure tests in this mode:** a `--fault manual:<server>@<s>` that tells
+   the person when to stop a server, treats it as down rather than failed, and runs the lock
+   check afterwards (10.5, "Failure tests").
 
-Following `docs/strategies/StressToolWindows.md`, with its tests written and seen failing
-first:
+Everything else in section 10.3 can be done with what exists.
 
-1. `ClaudeTestServer.ps1` (`Install`, `Start -Port <n>`, `Stop`, `Status`, `CollectLogs`,
-   `Uninstall`): no firewall changes, no services, every port a required parameter.
-2. Stress tool options `--external`, `--routing random|sticky`, `--prepare --users-out`, and
-   the read-back order (API while the servers run, then the folder once they are stopped).
-3. Self-contained `win-x64` publishes of the Server and the stress tool, packaged with the
-   script.
-4. **A lab check before the enterprise round:** the tool on a Windows machine against two
-   Windows Server VMs started with the script (no ssh), a light run of `NaiveFile` and
-   `PerRecordFile` with both routings: A must fail, C must pass.
-5. Make `--prefill` and `--list` work with `--external`. Today the prefill creates the records
-   on the tool's machine through the app's rules and copies them into the data folder before
-   it starts the servers; with external servers that copy must land on the share **before
-   the servers are started by hand** (for example as part of `--prepare`).
-
-### 10.3 Running in the target environment (once built)
+### 10.3 Running in the target environment
 
 ```text
 your Windows PC (stress tool, 10 simulated users)
@@ -643,23 +641,41 @@ your Windows PC (stress tool, 10 simulated users)
    └── reads \\fileserver\share\stress\<run> ◀─────────────┘
 ```
 
-1. **Upload** the package to both servers and run `ClaudeTestServer.ps1 Install` on each.
-2. **Confirm the port.** Start a test server on the first port the owner names, on server 1,
-   then on the PC: `Test-NetConnection server1 -Port <port>`. `TcpTestSucceeded : True` means
-   it is open (the test only succeeds while something listens). If not, stop it and try the
-   next port the owner names. Repeat for server 2.
-3. **Record the environment** (below) before the first run.
-4. **Each run:** `--prepare` on the PC (writes the users file to the share) → `Start` on
-   both servers with the run's data folder → the tool on the PC with `--external` and
-   `--routing` → `Stop` on both when the tool asks → the tool checks the folder and writes
-   `result.json` and `summary.md`. The exact commands are in `StressToolWindows.md`.
-5. **Known answer first.** Both test servers on server 1 (two `Start`s on two ports) with a
-   data folder on server 1's **local disk**: `NaiveFile` must fail and
-   `PerRecordFile` must pass, light, seeds 1–3, before any run on the share. If not, stop:
-   the harness is not doing what this document assumes. If only one port is open on
-   server 1, rely on the lab check (10.2, step 4) for the harness, and on `NaiveFile`
-   failing on the share in the round below.
-6. **The round**, so the results compare with phase 6b:
+1. **Build the packages.** `webapp/scripts/windows/build-packages.sh` needs bash, git,
+   python3 and the .NET 10 SDK: a Linux machine, or WSL on a Windows PC. It writes
+   `claudetest-server-win-x64.zip`, `claudetest-stress-win-x64.zip` and `ClaudeTestServer.ps1`
+   to `dist/`.
+2. **Upload and install.** Copy the server zip and the script to each server. Files copied
+   from elsewhere may be marked as downloaded: run `Unblock-File` on both first. Then
+   `.\ClaudeTestServer.ps1 Install -Package .\claudetest-server-win-x64.zip`. On the PC, unzip
+   the stress zip (and `Unblock-File` it). If AppLocker or SmartScreen refuses
+   `BlazorApp.Server.exe` or `BlazorApp.Stress.exe`, stop and ask the owner (question 9).
+3. **Confirm the ports.** `Start` needs a users file, so make one first: run the tool on the PC
+   with `--prepare` for a throwaway run: a real strategy name (e.g. `--strategy
+   PerRecordFile`), the real `--external` addresses, a test `--data` folder on the share, a
+   throwaway `--out` folder on the PC, and `--users-out` on the share. Then, on server 1,
+   `Start` on the first port the owner names, and on the PC
+   `Test-NetConnection server1 -Port <port>`: `TcpTestSucceeded : True` means it is open (it
+   only succeeds while something listens). If not, `Stop` and try the owner's next port.
+   Repeat for server 2. While a server runs, also check that it **survives closing the
+   console window** that started it (close it, then `Status` in a new window), and after
+   `Stop` check that `Test-NetConnection` now **fails at once**: the tool counts a server as
+   stopped only when its port refuses connections (see 10.5).
+4. **Record the environment** (below) before the first run.
+5. **Each run:** the tool on the PC with `--external … --prepare --users-out <file on the
+   share>` (writes the users file, and any prefill) → `Start` on both servers with the run's
+   data folder and that users file → the same command without `--prepare` and `--users-out`
+   → `Stop` on both when the tool prints "Stop the test servers now" → the tool checks the
+   folder and writes `result.json` and `summary.md`. Every run gets its own run name, `--out`
+   folder and `--data` folder. The exact commands are in `StressToolWindows.md`, "One run".
+6. **Known answer first.** Both test servers on **server 1** (two `Start`s with two `-Name`s,
+   on two ports), the data folder on the share: `NaiveFile` must fail and `PerRecordFile`
+   must pass, light, seeds 1–3, before any run with the servers on both machines. This checks
+   the harness with one SMB client, as phase 6b's one-machine round did. (A folder on server
+   1's own disk would need a path the PC can read, such as `\\server1\C$\…`, i.e. admin
+   rights; not needed.) If only one port is open on server 1, skip this step, rely on the lab
+   check (10.1) for the harness, and on `NaiveFile` failing in the round below.
+7. **The round**, so the results compare with phase 6b:
 
    | Profile | Options |
    |---|---|
@@ -667,20 +683,25 @@ your Windows PC (stress tool, 10 simulated users)
    | heavy | `--clients 12 --records 12 --ops 200` |
    | pipeline | `--clients 5 --workload pipeline --think-ms 1000 --ops 120` |
 
-   `NaiveFile` (the control) and `PerRecordFile`, each profile, **each routing**, seeds 1–3.
-   Then the pipeline with the share filled to ~6,000 records (`--prefill 6000 --list`), an
-   hour-long pipeline run, and
-   the failure tests of section 9 (done by hand during a long run).
+   `NaiveFile` (the control) and `PerRecordFile`, each profile, **each routing**, seeds 1–3:
+   2 × 3 × 2 × 3 = **36 runs**. Then for `PerRecordFile`:
+   - the **volume** runs: the pipeline with `--prefill 6000 --list`, seeds 1–3. The prefill is
+     written from the PC through the share (tens of thousands of saves, each record taken to
+     a final status), so it may take far longer than phase 6b's, which wrote locally and
+     copied the folder over. To prefill once for all three seeds: prepare once, then run
+     seeds 2 and 3 with the **same** `--out` and `--data` and **no new `--prepare`** (the
+     seed isn't part of the prepared settings; a new `--prepare` on that folder would add
+     another 6,000 records), copying `result.json` and `summary.md` out of `--out` after each
+     run, and starting the servers again with the same users file. Earlier seeds' records
+     then count as "unexpected" and are checked for the rules only;
+   - an **hour-long** pipeline run on the prefilled share with `--list` (`--ops 3300`, as 6b's
+     soak);
+   - the **failure tests** of section 9, by hand (10.5, "Failure tests").
 
-   That is 2 strategies × 3 profiles × 2 routings × 3 seeds = **36 runs**, each with a start
-   and stop on both servers if done one run at a time. The shortcut in
-   `StressToolWindows.md`: start each strategy's servers once, on one fresh data folder for
-   that strategy, run all its profiles, routings and seeds against them, and restart only
-   between strategies (the checks already handle records an earlier run created: they are
-   counted and checked for rules only). That is 2 restarts instead of 36. Decide when
-   building 10.2 whether results stay comparable that way; the users file must then cover
-   every run's users.
-7. Clean the share's test folder between strategies.
+   **Every run ends with `Stop` on both servers**: the tool checks the folder only once both
+   have stopped answering, so servers can't be kept running from one run to the next. Budget
+   a few minutes of hand work per run (36 runs, plus the volume, soak and failure tests), and
+   a new `--prepare` before every run except the volume seeds above.
 
 #### Record the environment
 
@@ -718,6 +739,52 @@ whether anything replicates or scans it.
 - Keep each run's `result.json` and `summary.md` and write the round up as
   `docs/methodology.md` section 7.4 describes, with the environment recorded in 10.3.
 
+### 10.5 Between runs, when something goes wrong, and what to send back
+
+**Between runs**
+
+- On each server: `Stop -Name <run>` (removes only the record of the running server; the
+  run's logs stay in `<Root>\runs\<run>` for `CollectLogs`).
+- On the share: the run's `data` folder and its users file can be deleted once the run is
+  recorded; the owner can clean the test folder.
+- On the PC: keep each run's `--out` folder (`result.json`, `summary.md`, and the
+  `users.json`, `prepared.json`, `prefilled.json` that `--prepare` wrote). Reusing an `--out`
+  folder overwrites the results, and a new `--prepare` there replaces the prepared files.
+
+**When a run couldn't be done (exit 2)**
+
+- Read the message: a server that didn't answer or doesn't know the run's users, settings that
+  differ from `--prepare`'s, or a server still answering after the 60-minute wait.
+- On each server: `Status`, then `Stop -Name <run>`; `CollectLogs -Name <run> -To <share>` if
+  the cause isn't clear (the server's console output and its JSON-lines log, where every
+  request's correlation id appears).
+- Start again with a new run name, `--out` and `--data`, after a new `--prepare`.
+- **A run that ends without `result.json` loses its acknowledgements**, so its folder can't be
+  checked afterwards. That happens if the tool is stopped with Ctrl+C, or if a server's port
+  never refuses connections after `Stop` (a firewall that drops instead of refusing): the
+  tool then waits the full 60 minutes and gives up. Check that behaviour in step 3 before the
+  round.
+
+**Failure tests** (section 9, item 4) in this mode are done by hand, and the tool supports them
+only partly:
+
+- during a long pipeline run, at an agreed time, `Stop` server 2 (or cut its network); after
+  the agreed time, `Start` it again with the same data folder and users file and a new
+  `-Name` (e.g. `<run>-restart`, so the first instance's console output is kept) **before
+  the workload ends**, and `CollectLogs` both names afterwards. Requests to it meanwhile are counted as refused or
+  unanswered; the run must still pass;
+- a server that is still down when the workload ends can't be read back, so the run reports
+  it as failed: that is the tool's limit in this mode, not a finding about the share;
+- the **lock check** (every record still changeable afterwards) runs only with `--fault`, which
+  needs servers the tool started, so it isn't done in this mode until a manual-fault option
+  exists (10.2). Meanwhile a record left locked would show as saves to it getting no answer
+  for the rest of the run: look at the run's "No response" count and at lock waits in the
+  servers' logs (`CollectLogs`).
+
+**What to send the owner after a round:** each run's `result.json` and `summary.md`; the
+`CollectLogs` zip from each server for any run that failed or couldn't be done; the
+environment record (10.3); and a write-up in the shape of `docs/experiments/windows-smb.md`.
+
 ## 11. Reference implementation (this repository)
 
 | What | Where |
@@ -731,7 +798,7 @@ whether anything replicates or scans it.
 | Record type | `webapp/src/BlazorApp.Shared/Dtos/RegistrationRecordDto.cs` |
 | Contract and multi-process tests | `webapp/tests/BlazorApp.Services.Tests/Storage/` and `webapp/tests/BlazorApp.StoreHelper/` |
 | Preparing a Windows test server over ssh (lab only) | `webapp/scripts/windows/prepare-test-server.ps1` (Appendix A.3) |
-| The planned no-ssh harness | `docs/strategies/StressToolWindows.md` (section 10) |
+| The no-ssh harness: server script, package builder, `--external`, `--routing` | `webapp/scripts/windows/ClaudeTestServer.ps1`, `build-packages.sh`; `docs/strategies/StressToolWindows.md` (section 10) |
 | Stress tool and its checks | `webapp/tools/BlazorApp.Stress/` (`DataCheck.cs`), `docs/strategies/StressTool.md` |
 | Method, hypotheses and all results | `docs/methodology.md`, `docs/experiments/` |
 | Plan and decisions of the proof of concept | `docs/plan.md` |
@@ -864,8 +931,8 @@ Same settings as the proof of concept's Windows round, so the results compare:
 
 1. **Known answer first**, both servers on server 1 with a folder on its local disk, as in
    the proof of concept (`--remote Administrator@server1.example --remote-data
-   'C:\stress\<run>' --remote-servers 2`): `NaiveFile` must fail and `PerRecordFile` and
-   `Sqlite` must pass, light, seeds 1–3. If not, stop: the harness is not doing what this
+   'C:\stress\<run>' --remote-servers 2`): `NaiveFile` must fail and `PerRecordFile` (and, optionally,
+   `Sqlite`) must pass, light, seeds 1–3. If not, stop: the harness is not doing what this
    document assumes.
 2. **The two-server round on the share:** `NaiveFile` (the control) and `PerRecordFile`,
    each profile, seeds 1–3. `NaiveFile` failing here is the known answer on the share. The

@@ -12,7 +12,7 @@ namespace BlazorApp.Stress;
 /// E2E tests do: the experiment needs real processes, not simulated servers (plan section 4).
 /// A remote server is the same, with <c>ssh</c> as the local process (<see cref="RemoteHost"/>).
 /// </summary>
-public sealed class ServerProcess : IAsyncDisposable
+public sealed class ServerProcess : IStressServer
 {
     private static readonly TimeSpan StartTimeout = TimeSpan.FromSeconds(90);
 

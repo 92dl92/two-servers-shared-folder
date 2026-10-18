@@ -265,6 +265,31 @@ between phases, and the gate is what prevents that.
      - a **soak**: the realistic load for one hour for C on layout 2, on the filled share,
        checked as any run, with server errors, stale reads and the save latency over time
        reported.
+   - **6c. Testing servers the tool didn't start (no ssh).** The production-like servers
+     have no ssh and no remoting, and their firewalls are closed except for one port per
+     server, supplied by the owner. So the test servers are started by hand on each server
+     machine, and the stress tool runs on the owner's Windows PC against them. Design:
+     `docs/strategies/StressToolWindows.md`. Built: `webapp/scripts/windows/ClaudeTestServer.ps1`
+     (`Install`, `Start -Port <n>`, `Stop`, `Status`, `CollectLogs`, `Uninstall`; no firewall
+     changes, no services); stress-tool options `--prepare` (the run's users file, and any
+     prefill, written to the share before the servers start), `--external <url>,<url>` (use
+     running servers; requires `--data`), `--routing random|sticky` (each request to a random
+     server, or each user kept on one); the read-back order for external servers (API while
+     they run, then the folder once they are stopped); self-contained `win-x64` builds of the
+     Server and the tool. Done when:
+     - option parsing and refused combinations are tested (seen failing first);
+     - the known answers hold through `--external`, against servers the tests start
+       themselves: in-memory with one server passes and with two fails; A fails and C
+       passes; with both routings;
+     - `--routing random` spreads each user's requests over both servers and `sticky`
+       doesn't (a test of the client), and the result records requests per server;
+     - the script's `Start`/`Status`/`Stop` round trip works on a Windows VM, and `Start` on
+       a port in use fails clearly (by hand; no Windows in CI);
+     - a **lab check**: the self-contained tool on ws1 standing in for the owner's PC, test
+       servers on ws1 and ws2 started with the script (no ssh used), light runs of A and C
+       with both routings, seeds 1–3: A fails and C passes;
+     - `docs/handover-solution-c.md` section 10 and `docs/methodology.md` describe the
+       new mode.
 7. **Docs.** The purpose of the app and the results in the README; the new layout in
    `CLAUDE.md`.
 
@@ -422,6 +447,7 @@ and **field names** only, never field values. Comment text is not logged either.
 | List cache for C (phase 6b) | The volume test's first trial (W2, 6,000 records) found that C's list read every record file: ~0.6 s on ws1, more than 60 s on ws2 over SMB (every list timed out). Of an archive folder, a list cache per server and an index file, the owner chose the cache: the list re-reads only files whose creation time, write time or size changed, lists arriving together share one refresh, and single reads and writes still read the file. Warm lists: 33 ms on ws1, 127 ms on ws2. The first list after a server start still reads everything (~21 s on ws1, ~53 s on ws2 on 2-processor VMs) and slows other requests meanwhile; the owner accepted that rather than spend more on it now |
 | Methodology document | `docs/methodology.md` describes the experiment on its own, so that it can be repeated in another environment with only the repository: question, hypotheses and their status, checks, load profiles, environment requirements, procedure, results and limitations. It is updated in the same PR as any change to those, and is part of every phase's gate (decided 2026-10-18) |
 | Flaky control race (after phase 6b) | `Many_threads_from_the_same_version_exactly_one_wins` sometimes failed for strategy A (the control) when every test project ran at once: its 32 threads ran one after another, so A happened not to lose anything. On 2026-10-18 it failed in 2 of 5 full test runs on linux-host (16 CPUs) and in none of 9 runs of its project alone. Approved by the owner as a change to the fixed shared suite: a store that `ExpectsLostUpdates` gets up to 5 rounds, each on a fresh folder, and must fail in at least one; a correct store still gets one round with the same assertions. Afterwards 6 of 6 full runs passed. Spot-check: A made safe with a lock failed all 5 rounds, so the test still catches it. The rounds aren't fully independent (a busy machine stays busy); a failure now lists each round's answers, to show whether the threads overlapped |
+| No-ssh test mode (phase 6c) | Owner, 2026-10-18: the production-like environment has no ssh, assumed no remoting, closed firewalls (ports supplied by the owner, never opened by the scripts) and .NET 8 on the servers, so test servers are started by hand with a script and shipped self-contained, and the stress tool runs on the owner's Windows PC, which can reach both servers on their ports and open the share. The tool routes requests randomly or stickily, since the load balancer's routing is unknown. Fallback if no port from the PC can be opened: one tool per server against `localhost`, merged by a `--check` step (designed, built only if needed). Built by the documentation session after phase 6b merged |
 | Checks and reviews | CI on every push and PR from phase 1; `/code-review high` in every phase gate; Claude GitHub Action reviews optional for 4b PRs (section 7) |
 
 ## Needed before phase 6

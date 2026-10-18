@@ -36,7 +36,7 @@ public sealed class KnownAnswerTests
         Assert.Equal(0, server.Report.LostUpdates + server.Report.MissingRecords + server.Report.Unacknowledged + server.Report.RuleViolations);
 
         // Every server writes its log into the run folder, where the requests' correlation ids can be found.
-        var log = await File.ReadAllTextAsync(Assert.Single(result.Servers).LogFile);
+        var log = await File.ReadAllTextAsync(Assert.Single(result.Servers).LogFile!);
         Assert.Contains("\"CorrelationId\":\"stress-", log, StringComparison.Ordinal);
         Assert.True(File.Exists(Path.Combine(folder.Path, "summary.md")));
     }

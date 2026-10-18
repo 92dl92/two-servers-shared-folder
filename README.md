@@ -24,8 +24,8 @@ Then, as needed:
 | The method: hypotheses, checks, load profiles, how to repeat it anywhere, results | [`docs/methodology.md`](docs/methodology.md) |
 | The design and caveats of each storage strategy (C is `PerRecordFile`) | [`docs/strategies/`](docs/strategies/) |
 | The stress tool: what a run does, checks, failure tests | [`docs/strategies/StressTool.md`](docs/strategies/StressTool.md) |
-| Running the tests where there is no ssh (planned) | [`docs/strategies/StressToolWindows.md`](docs/strategies/StressToolWindows.md) |
-| Results: local disk, NFS and Windows SMB (with every run's `result.json` and `summary.md`) | [`docs/experiments/`](docs/experiments/) |
+| Running the tests on servers without ssh (servers started by hand, tool on a Windows PC) | [`docs/strategies/StressToolWindows.md`](docs/strategies/StressToolWindows.md) |
+| Results: local disk, NFS, Windows SMB and the no-ssh lab check (with every run's `result.json` and `summary.md`) | [`docs/experiments/`](docs/experiments/) |
 | The plan and decisions the proof of concept was built by | [`docs/plan.md`](docs/plan.md) |
 | The code | [`webapp/`](webapp/) (see [`webapp/README.md`](webapp/README.md)) |
 
@@ -73,9 +73,9 @@ dotnet run --project webapp/tools/BlazorApp.Stress -- --strategy PerRecordFile -
 
 ## Status
 
-A snapshot of the proof of concept on 2026-10-18, after its Windows round (phase 6b). The
-no-ssh test harness for locked-down Windows environments is designed but not built yet
-(`docs/strategies/StressToolWindows.md`). Host names, addresses and paths from the original test machines
+A snapshot of the proof of concept on 2026-10-18, after phase 6c: the Windows round (6b) and
+a test harness for locked-down Windows servers with no ssh (6c: `ClaudeTestServer.ps1` on each
+server, the stress tool on a Windows PC with `--external` and `--routing`). Host names, addresses and paths from the original test machines
 are replaced by placeholders (`linux-host`, `mac-host`, `nas.example`, `ws1.example`, ...).
 The project was built with Claude Code; some docs refer to its working conventions.
 

@@ -63,7 +63,7 @@ public static class Workload
         // the registrants this order reaches with fewer records, so the two must match.
         var registrants = clients.Select((c, i) => (Client: c, Tally: tallies[i]))
             .Where(c => c.Client.Role == Role.Registrant)
-            .GroupBy(c => c.Client.Api.Server)
+            .GroupBy(c => c.Client.Api.Home)
             .SelectMany(g => g.Select((c, place) => (c, place)))
             .OrderBy(x => x.place)
             .Select(x => x.c)

@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "commit": "5d54eb86e993b9c29b4e326d9494a1811ac767b9 (from the build)",
+  "startedAt": "2026-10-18T22:23:19.2341396+00:00",
+  "finishedAt": "2026-10-18T22:23:30.2641448+00:00",
+  "machine": {
+    "name": "WS1",
+    "os": "Microsoft Windows 10.0.26100",
+    "processorCount": 2,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "C:\\share\\6c\\lab-PerRecordFile-random-3\\data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": null,
+    "remoteServers": 0,
+    "dataCopied": false,
+    "workload": "contention",
+    "thinkMilliseconds": null,
+    "prefill": 0,
+    "routing": "random",
+    "external": [
+      "http://ws1.example:8080/",
+      "http://ws2.example:8080/"
+    ]
+  },
+  "runFolder": "C:\\Users\\Administrator\\claudetest-6c\\runs\\lab-PerRecordFile-random-3",
+  "servers": [
+    {
+      "port": 8080,
+      "logFile": "on ws1.example: ClaudeTestServer.ps1 CollectLogs",
+      "host": "ws1.example"
+    },
+    {
+      "port": 8080,
+      "logFile": "on ws2.example: ClaudeTestServer.ps1 CollectLogs",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 406,
+    "saves": 168,
+    "conflicts": 114,
+    "wrongStatus": 124,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 114,
+      "saved": 168,
+      "wrongStatus": 124
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 16,
+      "Submit": 6,
+      "Approve": 1,
+      "Reject": 5,
+      "Comment": 134
+    },
+    "reads": 400,
+    "readFailures": {},
+    "durationSeconds": 3.566,
+    "savesPerSecond": 47.11,
+    "saveLatencyMs": {
+      "p50": 37.56,
+      "p95": 119.7,
+      "max": 252.81,
+      "mean": 49.4
+    },
+    "staleReads": {
+      "count": 0,
+      "readsAfterAnotherServer": 196,
+      "samples": []
+    },
+    "longestStall": {
+      "seconds": 0.16,
+      "afterSeconds": 1.66
+    },
+    "readLatencyMs": {
+      "p50": 11.87,
+      "p95": 96.17,
+      "max": 278.5,
+      "mean": 27.26
+    },
+    "lists": 0,
+    "listLatencyMs": null,
+    "listFailures": {}
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:8080",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:8080",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ],
+  "faults": null,
+  "lockCheck": null,
+  "requestsByServer": {
+    "ws2.example:8080": 425,
+    "ws1.example:8080": 381
+  }
+}

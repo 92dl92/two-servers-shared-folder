@@ -10,7 +10,7 @@ or a result changes, this file changes in the same pull request (see
 
 | | |
 |---|---|
-| **Last updated** | 2026-10-18, after phase 6b (Windows servers on an SMB share) |
+| **Last updated** | 2026-10-18, after phase 6c (running against servers started by hand, no ssh) |
 | **Rounds completed** | Local disk (phase 5, with a contention sweep); NFS share from one and two machines (phase 6); Windows servers on an SMB share, with realistic load, failure tests, volume and a one-hour soak (phase 6b) |
 | **Round in progress** | None |
 
@@ -504,7 +504,8 @@ of the 3 runs, and only between runs that passed.
 **Driver machine** (runs the stress tool, the clients, the checks, and some servers):
 
 - .NET 10 SDK; git; this repository at a known commit
-- tested so far on Linux (Debian 12); other OSes untested as the driver
+- tested on Linux (Debian 12) and, with servers started by hand, on Windows Server 2025
+  (phase 6c lab check), from the self-contained package (no SDK or git needed there)
 
 **Shared folder:** any folder all servers can reach. For a network round, mount it on every
 machine that runs servers and note each machine's path to it.
@@ -523,7 +524,9 @@ machine that runs servers and note each machine's path to it.
 - several machines can each run servers (`--remote` repeated, each with its own
   `--remote-data`); with every server remote, the folder is copied back from the first one
   to be checked
-- **Without ssh** (e.g. production servers started by hand) the tool can't run yet
+- **Without ssh** (e.g. production servers started by hand): start each server with
+  `webapp/scripts/windows/ClaudeTestServer.ps1` and run the tool with `--external` (7.2,
+  `docs/strategies/StressToolWindows.md`)
 
 **Record about the environment**, for the results file of each round (copy this list):
 
@@ -571,6 +574,11 @@ Add, depending on the round:
   remote, leave out `--data`.
 - **Realistic, failure, volume:** `--workload pipeline --think-ms 1000`, `--fault ...`,
   `--prefill <n> --list` (section 5).
+- **Servers started by hand** (no ssh, e.g. locked-down Windows servers): `--external
+  http://server1:<port>,http://server2:<port>` with `--data` and `--out`, after the same
+  command with `--prepare --users-out <file>`; the servers are started and stopped with
+  `webapp/scripts/windows/ClaudeTestServer.ps1`. `--routing random` sends each request to
+  either server, like a load balancer. Steps: `docs/strategies/StressToolWindows.md`.
 
 ### 7.3 One round
 
@@ -716,6 +724,20 @@ Two Windows Server 2025 VMs; the share on one of them (SMB 3.1.1); 121 runs.
 - B and D also stayed safe but don't meet the production requirement (one file per record);
   C is the candidate.
 
+### Phase 6c: servers started by hand, the tool on Windows (`docs/experiments/no-ssh-lab.md`)
+
+A check of the new no-ssh mode, not of new storage conditions: the 6b VMs and share, test
+servers started with `ClaudeTestServer.ps1`, the stress tool on one of the VMs (a Windows
+machine, self-contained build) using them with `--external`, light load, seeds 1–3, 12 runs.
+
+| Strategy | `--routing sticky` | `--routing random` |
+|---|---|---|
+| A NaiveFile | failed 3/3 | failed 3/3 |
+| C PerRecordFile | passed 3/3 (0 stale reads) | passed 3/3 (0 stale reads) |
+
+The known answer holds without ssh, from Windows, with either routing; the harness is ready
+for the production-like servers.
+
 ### What this means so far
 
 - A correct strategy is necessary but not sufficient: **the file-sharing client on each
@@ -734,8 +756,10 @@ Two Windows Server 2025 VMs; the share on one of them (SMB 3.1.1); 121 runs.
 
 ### Next
 
-- **The real servers.** Production's servers have no ssh and are started by hand, so the tool
-  needs a mode that runs against servers it didn't start before it can test them.
+- **The production-like servers** (`docs/handover-solution-c.md`, section 10): the round of
+  section 7 on the real Windows servers and share, with servers started by hand
+  (`docs/strategies/StressToolWindows.md`), both routings, the volume and soak runs, and the
+  failure tests done by hand.
 - **What 6b didn't cover** (`docs/experiments/windows-smb.md`, "Not tested"): a real network,
   the actual share host, antivirus and backup software, a load balancer.
 

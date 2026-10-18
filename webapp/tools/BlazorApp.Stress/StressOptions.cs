@@ -43,6 +43,18 @@ public sealed record StressOptions
           --remote-data <folder>   the shared folder as that remote sees it, one per --remote.
                                    With every server remote, leave out --data: the folder is
                                    copied back from the first remote to be checked
+          --routing <name>         sticky (default): each client sends every request to its own
+                                   server; random: each request goes to a server picked at
+                                   random, like a load balancer without session affinity
+          --external <url>,<url>   use servers started by hand (ClaudeTestServer.ps1) instead of
+                                   starting any; their count is the number of addresses, each
+                                   with its port. Needs --data (the shared folder as this machine
+                                   sees it) and --out. After the read-back through the servers,
+                                   the tool waits for them to be stopped, then checks the folder
+          --prepare                with --external: write the run's users file (to --users-out,
+                                   for the servers' -Users) and any --prefill records, then exit;
+                                   run the same command without --prepare once the servers are up
+          --users-out <file>       with --prepare: where the servers will read the users file
 
         Exit code: 0 when every check passed, 1 when a check failed, 2 when the run couldn't be done.
         """;
@@ -81,7 +93,7 @@ public sealed record StressOptions
     public const string Pipeline = "pipeline";
 
     /// <summary>Seed for the clients' random choices.</summary>
-    public int Seed { get; init; } = Random.Shared.Next();
+    public int Seed { get; init; } = System.Random.Shared.Next();
 
     /// <summary>The run folder; null for <c>stress-runs/&lt;utc time&gt;-&lt;strategy&gt;</c>.</summary>
     public string? OutputDirectory { get; init; }
@@ -104,6 +116,24 @@ public sealed record StressOptions
     /// <summary>How many of the <see cref="Servers"/> run on each of the <see cref="Remotes"/>.</summary>
     public int RemoteServers { get; init; }
 
+    /// <summary>Servers started by hand, by address; empty when the tool starts its own.</summary>
+    public IReadOnlyList<Uri> External { get; init; } = [];
+
+    /// <summary>How clients pick a server for each request: <see cref="Sticky"/> or <see cref="Random"/>.</summary>
+    public string Routing { get; init; } = Sticky;
+
+    /// <summary>The routing name for each client keeping to its own server.</summary>
+    public const string Sticky = "sticky";
+
+    /// <summary>The routing name for each request going to a random server.</summary>
+    public const string Random = "random";
+
+    /// <summary>With <see cref="External"/>: write the users file and any prefill, then stop.</summary>
+    public bool Prepare { get; init; }
+
+    /// <summary>With <see cref="Prepare"/>: where the users file goes, for the servers to read.</summary>
+    public string? UsersOut { get; init; }
+
     /// <summary>Whether every server runs on a remote, so none runs here.</summary>
     public bool AllRemote => Remotes.Count > 0 && RemoteServers * Remotes.Count == Servers;
 
@@ -121,6 +151,7 @@ public sealed record StressOptions
         var recordsGiven = false;
         var thinkGiven = false;
         var remoteData = new List<string>();
+        var serversGiven = false;
         for (var i = 0; i < args.Count; i++)
         {
             var name = args[i];
@@ -133,7 +164,7 @@ public sealed record StressOptions
             options = name switch
             {
                 "--strategy" => options with { Strategy = Value() },
-                "--servers" => options with { Servers = Count(1) },
+                "--servers" => Given(ref serversGiven, options with { Servers = Count(1) }),
                 "--clients" => options with { ClientsPerServer = Count(1) },
                 "--records" => Given(ref recordsGiven, options with { Records = Count(1) }),
                 "--ops" => options with { OpsPerClient = Count(0) },
@@ -150,8 +181,37 @@ public sealed record StressOptions
                 "--fault" => Add(faults, Value(), options),
                 "--remote-servers" => options with { RemoteServers = Count(0) },
                 "--remote-data" => Add(remoteData, Value(), options),
+                "--routing" => options with { Routing = RoutingName(Value()) },
+                "--external" => options with { External = Addresses(Value()) },
+                "--prepare" => options with { Prepare = true },
+                "--users-out" => options with { UsersOut = Value() },
                 _ => throw new ArgumentException($"Unknown option {name}."),
             };
+        }
+
+        if (options.External.Count > 0)
+        {
+            if (serversGiven || options.ServerDll is not null || options.ServerArgs.Count > 0 || remotes.Count > 0)
+            {
+                throw new ArgumentException("--external servers are started by hand: leave out --servers, --server-dll, --server-arg and --remote.");
+            }
+
+            if (options.DataPath is null || options.OutputDirectory is null)
+            {
+                throw new ArgumentException("--external needs --data (the shared folder as this machine sees it) and --out (where --prepare left the run's files).");
+            }
+
+            options = options with { Servers = options.External.Count };
+        }
+
+        if (options.Prepare != (options.UsersOut is not null) || (options.Prepare && options.External.Count == 0))
+        {
+            throw new ArgumentException("--prepare and --users-out go together, with --external.");
+        }
+
+        if (options.Routing == Random && options.Servers < 2)
+        {
+            throw new ArgumentException("--routing random needs at least two servers to choose from.");
         }
 
         if (faults.Count > 0)
@@ -160,6 +220,11 @@ public sealed record StressOptions
             if (options.Faults.Where(f => f.Kind == Fault.Kill).Select(f => f.Server).Distinct().Count() >= options.Servers)
             {
                 throw new ArgumentException("--fault can't kill every server: the lock check and the read-backs need one left.");
+            }
+
+            if (options.External.Count > 0 && options.Faults.Any(f => f.Kind == Fault.Kill))
+            {
+                throw new ArgumentException("--fault kill needs servers the tool started; with --external, stop a server by hand instead.");
             }
         }
         if (options.Workload == Pipeline ? recordsGiven || options.OpsPerClient == 0 : thinkGiven || options.List)
@@ -203,6 +268,24 @@ public sealed record StressOptions
         {
             given = true;
             return current;
+        }
+
+        static string RoutingName(string value) =>
+            value is Sticky or Random ? value : throw new ArgumentException($"--routing is {Sticky} or {Random}.");
+
+        // Each server once, as http://host:port with the port the owner opened for it written out.
+        static IReadOnlyList<Uri> Addresses(string value)
+        {
+            List<Uri> addresses =
+            [
+                .. value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(a =>
+                    System.Text.RegularExpressions.Regex.IsMatch(a, @"^http://[A-Za-z0-9.\-]+:[0-9]{1,5}/?$") && Uri.TryCreate(a, UriKind.Absolute, out var uri)
+                        ? new Uri(uri.GetLeftPart(UriPartial.Authority) + "/")
+                        : throw new ArgumentException($"--external needs addresses like http://server1:8080 (host and port only); got {a}.")),
+            ];
+            return addresses.Distinct().Count() == addresses.Count
+                ? addresses
+                : throw new ArgumentException("--external lists a server more than once.");
         }
 
         static string WorkloadName(string value) =>

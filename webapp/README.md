@@ -123,6 +123,11 @@ each server's log. Exit code 0 when every check passed, 1 when one failed, 2 whe
 couldn't be done. `--help` lists the options; design notes are in
 [`docs/strategies/StressTool.md`](../docs/strategies/StressTool.md).
 
+Servers can also run on other machines: over ssh (`--remote`), or started by hand where there
+is no ssh (`--external`, with `scripts/windows/ClaudeTestServer.ps1` on each server and the
+self-contained packages from `scripts/windows/build-packages.sh`); see
+[`docs/strategies/StressToolWindows.md`](../docs/strategies/StressToolWindows.md).
+
 ## Next steps
 
 See [`docs/plan.md`](../docs/plan.md).

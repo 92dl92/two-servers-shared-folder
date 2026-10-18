@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
@@ -21,20 +22,50 @@ public sealed record ApiResponse<T>(HttpStatusCode? Status, T? Body, TimeSpan El
 }
 
 /// <summary>
-/// Calls one server's record API as one "Acting as" user (the cookie), the way the browser
-/// does. Every request carries a new <c>X-Correlation-Id</c>, so it can be found in the
-/// server's log.
+/// Calls the record API as one "Acting as" user (the cookie), the way the browser does. Every
+/// request carries a new <c>X-Correlation-Id</c>, so it can be found in the server's log. A
+/// client keeps to its own server, or with random routing sends each request to a server
+/// picked at random, as a load balancer without session affinity would.
 /// </summary>
-/// <param name="http">A client for the server; shared, since every request sets its own headers.</param>
-/// <param name="server">The server's name in the results (its port).</param>
-/// <param name="userId">The acting user.</param>
-public sealed class ApiClient(HttpClient http, string server, string userId)
+/// <remarks>Not thread-safe: each client sends one request at a time.</remarks>
+public sealed class ApiClient
 {
-    /// <summary>The server's name in the results.</summary>
-    public string Server { get; } = server;
+    private readonly (HttpClient Http, string Name)[] _servers;
+    private readonly Random? _random;
+    private readonly ConcurrentDictionary<string, int>? _requestsByServer;
+
+    /// <summary>A client that keeps to one server.</summary>
+    /// <param name="http">A client for the server; shared, since every request sets its own headers.</param>
+    /// <param name="server">The server's name in the results (its port).</param>
+    /// <param name="userId">The acting user.</param>
+    public ApiClient(HttpClient http, string server, string userId)
+        : this([(http, server)], userId, random: null, requestsByServer: null)
+    {
+    }
+
+    /// <summary>A client that can reach several servers.</summary>
+    /// <param name="servers">Every server, its own (home) server first.</param>
+    /// <param name="userId">The acting user.</param>
+    /// <param name="random">Picks a server for each request; null keeps to the home server.</param>
+    /// <param name="requestsByServer">Counts the requests sent to each server, shared by the clients; null for none.</param>
+    public ApiClient(IReadOnlyList<(HttpClient Http, string Name)> servers, string userId, Random? random, ConcurrentDictionary<string, int>? requestsByServer)
+    {
+        ArgumentOutOfRangeException.ThrowIfZero(servers.Count);
+        _servers = [.. servers];
+        _random = random;
+        _requestsByServer = requestsByServer;
+        UserId = userId;
+        Server = Home;
+    }
+
+    /// <summary>The client's own server, where sticky routing keeps it.</summary>
+    public string Home => _servers[0].Name;
+
+    /// <summary>The server the latest request went to (the home server before any).</summary>
+    public string Server { get; private set; }
 
     /// <summary>The acting user.</summary>
-    public string UserId { get; } = userId;
+    public string UserId { get; }
 
     /// <summary>Lists the records the user may see.</summary>
     /// <param name="cancellationToken">Cancels the request.</param>
@@ -79,6 +110,9 @@ public sealed class ApiClient(HttpClient http, string server, string userId)
 
     private async Task<ApiResponse<T>> SendAsync<T>(HttpMethod method, string url, object? body, CancellationToken cancellationToken)
     {
+        var (http, server) = _random is null ? _servers[0] : _servers[_random.Next(_servers.Length)];
+        Server = server;
+        _requestsByServer?.AddOrUpdate(server, 1, (_, n) => n + 1);
         var correlationId = $"stress-{CorrelationId.New()}";
         using var request = new HttpRequestMessage(method, url);
         request.Headers.Add("Cookie", $"{UserCookie.Name}={UserId}");

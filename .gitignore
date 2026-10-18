@@ -1,3 +1,6 @@
 # Stress tool run folders, wherever the tool is run from (data, logs, result.json, summary.md)
 stress-runs/
 manual-run/
+
+# Windows packages from webapp/scripts/windows/build-packages.sh
+dist/

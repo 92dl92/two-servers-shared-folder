@@ -22,6 +22,8 @@ namespace BlazorApp.Stress;
 /// <param name="Workload">The workload: contention or pipeline.</param>
 /// <param name="ThinkMilliseconds">Pipeline: the mean pause before each step.</param>
 /// <param name="Prefill">Finished records put in the folder before the run.</param>
+/// <param name="Routing">How clients picked a server for each request: sticky or random.</param>
+/// <param name="External">The servers started by hand, by address; null when the tool started them.</param>
 public sealed record StressSettings(
     string Strategy,
     string DataPath,
@@ -37,7 +39,9 @@ public sealed record StressSettings(
     bool DataCopied = false,
     string Workload = StressOptions.Contention,
     int? ThinkMilliseconds = null,
-    int Prefill = 0);
+    int Prefill = 0,
+    string Routing = StressOptions.Sticky,
+    IReadOnlyList<Uri>? External = null);
 
 /// <summary>Where the run happened.</summary>
 /// <param name="Name">Machine name.</param>
@@ -56,9 +60,9 @@ public sealed record MachineInfo(string Name, string Os, int ProcessorCount, str
 
 /// <summary>One server of the run.</summary>
 /// <param name="Port">Its port, which names it in acks and reports.</param>
-/// <param name="LogFile">Its JSON-lines log (a remote server's is copied back here after the run).</param>
+/// <param name="LogFile">Its JSON-lines log (a remote server's is copied back here after the run); null for a server started by hand, whose logs stay on its machine (<c>ClaudeTestServer.ps1 CollectLogs</c>).</param>
 /// <param name="Host">The remote machine it ran on; null for this one.</param>
-public sealed record ServerInfo(int Port, string LogFile, string? Host = null);
+public sealed record ServerInfo(int Port, string? LogFile, string? Host = null);
 
 /// <summary>One read-back of the data and whether it passed.</summary>
 /// <param name="Passed">Whether the checks passed (or the source was skipped).</param>
@@ -78,6 +82,7 @@ public sealed record SourceCheck(bool Passed, SourceReport Report);
 /// <param name="Checks">The checks on each read-back: the folder through the strategy, then each server's API.</param>
 /// <param name="Faults">The failures caused on purpose and what they did; null without <c>--fault</c>.</param>
 /// <param name="LockCheck">Whether every record could still be changed afterwards; null without <c>--fault</c>.</param>
+/// <param name="RequestsByServer">How many of the clients' requests went to each server; null for runs before phase 6c.</param>
 public sealed record StressResult(
     bool Passed,
     string Commit,
@@ -90,7 +95,8 @@ public sealed record StressResult(
     StressNumbers Numbers,
     IReadOnlyList<SourceCheck> Checks,
     IReadOnlyList<FaultOutcome>? Faults = null,
-    LockReport? LockCheck = null)
+    LockReport? LockCheck = null,
+    IReadOnlyDictionary<string, int>? RequestsByServer = null)
 {
     /// <summary>How <c>result.json</c> is written: indented, enums as names.</summary>
     public static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
@@ -124,9 +130,19 @@ public sealed record StressResult(
             Line($"- {s.RemoteServers} of the servers on `{remote.Target}`, data folder `{remote.DataPath}` there");
         }
 
+        if (s.External is { } external)
+        {
+            Line($"- Servers started by hand: {string.Join(", ", external.Select(u => $"`{u}`"))}");
+        }
+
         if (s.ServerArgs.Count > 0)
         {
             Line($"- Server arguments: `{string.Join(" ", s.ServerArgs)}`");
+        }
+
+        if (RequestsByServer is { } requests)
+        {
+            Line($"- Routing {s.Routing}. Requests by server: {string.Join(", ", requests.OrderBy(r => r.Key, StringComparer.Ordinal).Select(r => $"{r.Key} {r.Value}"))}");
         }
 
         Line($"");

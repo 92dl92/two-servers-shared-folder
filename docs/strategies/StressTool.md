@@ -105,6 +105,17 @@ PowerShell as the ssh server's default shell. There:
   that machine has one (e.g. `net use \\host\share /user:... '...'`). It is kept on the
   machine, never in the repo.
 
+## Servers started by hand, and routing (phase 6c)
+
+`--external http://server1:<port>,http://server2:<port>` uses servers the tool didn't start
+(started with `webapp/scripts/windows/ClaudeTestServer.ps1`, for environments without ssh):
+the same command run first with `--prepare --users-out <file>` writes the users file the
+servers read (and any `--prefill` records), and the run then checks each server knows those
+users, reads back through the servers, prints "Stop the test servers now", waits until they
+stop answering, and checks the folder. `--routing random` sends each request to a server
+picked at random (`sticky`, the default, keeps each client on its own server); the result
+records requests per server. Details and the lab check: `StressToolWindows.md`.
+
 ## The pipeline workload (phase 6b)
 
 `--workload pipeline` replaces steps 2 and 3 with the way the app would be used in

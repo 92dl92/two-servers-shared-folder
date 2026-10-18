@@ -44,6 +44,12 @@ public static class StressProgram
 
         try
         {
+            if (options.Prepare)
+            {
+                await StressRun.PrepareAsync(options, output, cancellationToken);
+                return Passed;
+            }
+
             var result = await StressRun.RunAsync(options, output, cancellationToken);
             output.WriteLine();
             output.WriteLine(result.ToSummary());

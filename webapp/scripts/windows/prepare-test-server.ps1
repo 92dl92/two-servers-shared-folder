@@ -32,6 +32,10 @@ New-ItemProperty HKLM:\SOFTWARE\OpenSSH -Name DefaultShell -PropertyType String 
 # Key login for administrators uses this one file, readable only by Administrators and SYSTEM.
 $keys = "$env:ProgramData\ssh\administrators_authorized_keys"
 if (-not ((Test-Path $keys) -and (Select-String -Path $keys -SimpleMatch $AuthorizedKey -Quiet))) {
+    # Finish a last line that has no newline, or the key would be glued onto it.
+    if ((Test-Path $keys) -and ($existing = Get-Content $keys -Raw) -and -not $existing.EndsWith("`n")) {
+        Add-Content -Path $keys -Value '' -Encoding ascii
+    }
     Add-Content -Path $keys -Value $AuthorizedKey -Encoding ascii
 }
 icacls $keys /inheritance:r /grant 'Administrators:F' /grant 'SYSTEM:F' | Out-Null

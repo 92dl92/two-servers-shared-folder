@@ -1,8 +1,12 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+using System.Net.Http.Json;
+using System.Reflection;
 using System.Text.Json;
 using BlazorApp.Services.Storage;
+using BlazorApp.Shared.Contracts;
 using BlazorApp.Shared.Dtos;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -17,6 +21,12 @@ public static class StressRun
 {
     /// <summary>The user every server's data is read back as; an admin sees every record.</summary>
     public const string ReaderId = "stress-reader";
+
+    /// <summary>What the tool prints when servers started by hand should be stopped (<c>--external</c>).</summary>
+    public const string StopServersPrompt = "Stop the test servers now";
+
+    /// <summary>How long the tool waits for servers started by hand to be stopped.</summary>
+    public static readonly TimeSpan StopTimeout = TimeSpan.FromMinutes(60);
 
     /// <summary>Roles of a server's clients, in turn: two registrants, two reviewers and an admin per five.</summary>
     private static readonly Role[] RoleCycle = [Role.Registrant, Role.Reviewer, Role.Registrant, Role.Admin, Role.Reviewer];
@@ -48,9 +58,30 @@ public static class StressRun
 
         // The pipeline creates as many records as its registrants get through, so keeps every one.
         var pipeline = options.Workload == StressOptions.Pipeline;
-        var users = MakeUsers(options.Servers, options.ClientsPerServer, pipeline ? int.MaxValue : options.Records);
-        var usersFile = Path.Combine(runFolder, "users.json");
-        await File.WriteAllTextAsync(usersFile, JsonSerializer.Serialize(users, StressResult.JsonOptions), cancellationToken);
+        var external = options.External.Count > 0;
+        var usersFile = Path.Combine(runFolder, UsersFileName);
+        IReadOnlyList<UserDto> users;
+        if (external)
+        {
+            // The servers started by hand read the users file --prepare wrote; use the same
+            // users, which only fit the settings they were made for.
+            var preparedFile = Path.Combine(runFolder, PreparedFileName);
+            if (File.Exists(preparedFile)
+                && await File.ReadAllTextAsync(preparedFile, cancellationToken) != PreparedSettings(options))
+            {
+                throw new InvalidOperationException(
+                    $"This run's settings differ from those --prepare used in {runFolder} (strategy, servers, clients, records, workload, prefill or data folder): run --prepare again with the same options, and restart the servers with the users file it writes.");
+            }
+
+            users = File.Exists(usersFile) && File.Exists(preparedFile)
+                ? JsonSerializer.Deserialize<List<UserDto>>(await File.ReadAllTextAsync(usersFile, cancellationToken), StressResult.JsonOptions)!
+                : throw new InvalidOperationException($"No {UsersFileName} and {PreparedFileName} in {runFolder}: run the same command with --prepare first, then start the servers with the users file it wrote.");
+        }
+        else
+        {
+            users = MakeUsers(options.Servers, options.ClientsPerServer, pipeline ? int.MaxValue : options.Records);
+            await File.WriteAllTextAsync(usersFile, JsonSerializer.Serialize(users, StressResult.JsonOptions), cancellationToken);
+        }
 
         var serverDll = Path.GetFullPath(options.ServerDll ?? ServerProcess.DefaultServerDll);
         string[] ServerArgs(string data, string users) =>
@@ -59,31 +90,46 @@ public static class StressRun
         // The last --remote-servers servers on each remote, in order, each on its path to the same folder.
         // Prepared at once: each only touches its own machine (and makes the same data folder).
         var runName = Path.GetFileName(Path.TrimEndingDirectorySeparator(runFolder));
-        log.WriteLine($"Copying the Server to {string.Join(", ", options.Remotes.Select(r => r.Target))}");
+        if (options.Remotes.Count > 0)
+        {
+            log.WriteLine($"Copying the Server to {string.Join(", ", options.Remotes.Select(r => r.Target))}");
+        }
+
         RemoteHost[] remotes = await Task.WhenAll(options.Remotes.Select(target =>
             RemoteHost.PrepareAsync(target.Target, Path.GetDirectoryName(serverDll)!, usersFile, runName, target.DataPath, cancellationToken)));
 
-        IReadOnlyDictionary<Guid, int> prefilled = options.Prefill > 0
-            ? await PrefillAsync(options, factory, users, dataPath, runFolder, remotes, log, cancellationToken)
-            : new Dictionary<Guid, int>();
+        var prefilledFile = Path.Combine(runFolder, PrefilledFileName);
+        IReadOnlyDictionary<Guid, int> prefilled = external
+            ? File.Exists(prefilledFile)
+                ? JsonSerializer.Deserialize<Dictionary<Guid, int>>(await File.ReadAllTextAsync(prefilledFile, cancellationToken), StressResult.JsonOptions)!
+                : new Dictionary<Guid, int>()
+            : options.Prefill > 0
+                ? await PrefillAsync(options, factory, users, dataPath, runFolder, remotes, log, cancellationToken)
+                : new Dictionary<Guid, int>();
 
         var localServers = options.Servers - (options.RemoteServers * remotes.Length);
-        log.WriteLine($"Starting {options.Servers} {options.Strategy} server(s)"
-            + (localServers == 0 ? "" : $", {localServers} here on {dataPath}")
-            + string.Concat(options.Remotes.Select(r => $", {options.RemoteServers} on {r.Target} ({r.DataPath})")));
-        var starting = Enumerable.Range(0, options.Servers)
-            .Select(i =>
-            {
-                if (i < localServers)
+        log.WriteLine(external
+            ? $"Using {options.Servers} server(s) started by hand: {string.Join(", ", options.External)}"
+            : $"Starting {options.Servers} {options.Strategy} server(s)"
+                + (localServers == 0 ? "" : $", {localServers} here on {dataPath}")
+                + string.Concat(options.Remotes.Select(r => $", {options.RemoteServers} on {r.Target} ({r.DataPath})")));
+        var starting = external
+            ? [.. options.External.Select(u => Task.FromResult<IStressServer>(new ExternalServer(u, StopTimeout)))]
+            : Enumerable.Range(0, options.Servers)
+                .Select(async i =>
                 {
-                    return ServerProcess.StartAsync(serverDll, logDirectory, ServerArgs(dataPath, usersFile));
-                }
+                    if (i < localServers)
+                    {
+                        return (IStressServer)await ServerProcess.StartAsync(serverDll, logDirectory, ServerArgs(dataPath, usersFile));
+                    }
 
-                var r = (i - localServers) / options.RemoteServers;
-                return ServerProcess.StartAsync(serverDll, logDirectory, ServerArgs(remotes[r].DataPath, remotes[r].UsersFile), remotes[r]);
-            })
-            .ToList();
-        var servers = new List<ServerProcess>();
+                    var r = (i - localServers) / options.RemoteServers;
+                    return await ServerProcess.StartAsync(serverDll, logDirectory, ServerArgs(remotes[r].DataPath, remotes[r].UsersFile), remotes[r]);
+                })
+                .ToList();
+        var servers = new List<IStressServer>();
+        var requestsByServer = new ConcurrentDictionary<string, int>();
+        var readBackDone = false;
         WorkloadOutcome outcome;
         List<SourceCheck> checks = [];
         FaultOutcome[] faults = [];
@@ -105,10 +151,20 @@ public static class StressRun
             var http = servers.Select(s => new HttpClient(handler, disposeHandler: false) { BaseAddress = s.BaseAddress, Timeout = TimeSpan.FromSeconds(60) }).ToList();
             try
             {
+                if (external)
+                {
+                    await CheckUsersAsync(servers, http, users, cancellationToken);
+                }
+
+                // Every client can reach every server, its own first; random routing picks one per request.
                 var clients = servers.SelectMany((server, s) => Enumerable.Range(0, options.ClientsPerServer).Select(c =>
                 {
-                    var user = users[(s * options.ClientsPerServer) + c];
-                    return new StressClient(new ApiClient(http[s], server.Name, user.Id), user.Roles[0]);
+                    var index = (s * options.ClientsPerServer) + c;
+                    var user = users[index];
+                    var reachable = Enumerable.Range(0, servers.Count).Select(k => (http[(s + k) % servers.Count], servers[(s + k) % servers.Count].Name)).ToList();
+                    // Its own stream of numbers, apart from the workload's (seed + client).
+                    var random = options.Routing == StressOptions.Random ? new Random(RoutingSeed(options.Seed, index)) : null;
+                    return new StressClient(new ApiClient(reachable, user.Id, random, requestsByServer), user.Roles[0]);
                 })).ToList();
 
                 // Faults wait for their time from the start of the workload; any not reached when it
@@ -174,6 +230,8 @@ public static class StressRun
                     var report = await ReadBackAsync(new ApiClient(http[s], servers[s].Name, ReaderId), outcome, byId, prefilled, cancellationToken);
                     checks.Add(new SourceCheck(report.Passed(unknown), report));
                 }
+
+                readBackDone = true;
             }
             finally
             {
@@ -182,8 +240,26 @@ public static class StressRun
         }
         finally
         {
-            // Stop every server before reading the folder, so nothing is still writing.
-            await Task.WhenAll(servers.Select(s => s.DisposeAsync().AsTask()));
+            // Stop every server before reading the folder, so nothing is still writing. Servers
+            // started by hand are stopped by hand: the tool waits until they stop answering.
+            if (external && readBackDone)
+            {
+                log.WriteLine($"{StopServersPrompt} (ClaudeTestServer.ps1 Stop on each); waiting up to {StopTimeout.TotalMinutes:0} min until they stop answering, then the folder is checked");
+            }
+            else if (external)
+            {
+                log.WriteLine("The run stopped early: stop the test servers by hand (ClaudeTestServer.ps1 Stop on each)");
+            }
+
+            if (external && readBackDone)
+            {
+                await Task.WhenAll(servers.OfType<ExternalServer>().Select(s => s.WaitUntilStoppedAsync(cancellationToken)));
+            }
+            else if (!external)
+            {
+                await Task.WhenAll(servers.Select(s => s.DisposeAsync().AsTask()));
+            }
+
             await Task.WhenAll(remotes.Select(r => r.EnsureStoppedAsync(CancellationToken.None)));
             foreach (var remote in remotes)
             {
@@ -197,6 +273,11 @@ public static class StressRun
                     log.WriteLine($"Couldn't copy the logs from {remote.Host}: {e.Message}");
                 }
             }
+        }
+
+        if (servers.OfType<ExternalServer>().FirstOrDefault(s => !s.Stopped) is { } running)
+        {
+            throw new InvalidOperationException($"{running.Name} was still answering after {StopTimeout.TotalMinutes:0} min, so the folder wasn't checked.");
         }
 
         // With no server here, this machine may not see the folder at all (a share on a remote's
@@ -216,17 +297,101 @@ public static class StressRun
             startedAt,
             DateTimeOffset.UtcNow,
             MachineInfo.Current,
-            new StressSettings(options.Strategy, dataPath, options.Servers, options.ClientsPerServer, ClientsByRole(users), pipeline ? outcome.Created.Count : options.Records, options.OpsPerClient, options.Seed, options.ServerArgs, options.Remotes.Count == 0 ? null : options.Remotes, options.RemoteServers, options.AllRemote, options.Workload, pipeline ? options.ThinkMilliseconds : null, options.Prefill),
+            new StressSettings(options.Strategy, dataPath, options.Servers, options.ClientsPerServer, ClientsByRole(users), pipeline ? outcome.Created.Count : options.Records, options.OpsPerClient, options.Seed, options.ServerArgs, options.Remotes.Count == 0 ? null : options.Remotes, options.RemoteServers, options.AllRemote, options.Workload, pipeline ? options.ThinkMilliseconds : null, external ? prefilled.Count : options.Prefill, options.Routing, external ? options.External : null),
             runFolder,
-            [.. servers.Select(s => new ServerInfo(s.Port, Path.Combine(logDirectory, $"server-{s.Port}.jsonl"), s.Host))],
+            [.. servers.Select(s => new ServerInfo(s.Port, external ? null : Path.Combine(logDirectory, $"server-{s.Port}.jsonl"), s.Host))],
             outcome.Numbers,
             checks,
             options.Faults.Count > 0 ? faults : null,
-            lockCheck);
+            lockCheck,
+            new SortedDictionary<string, int>(requestsByServer, StringComparer.Ordinal));
 
         await File.WriteAllTextAsync(Path.Combine(runFolder, "result.json"), result.ToJson(), cancellationToken);
         await File.WriteAllTextAsync(Path.Combine(runFolder, "summary.md"), result.ToSummary(), cancellationToken);
         return result;
+    }
+
+    /// <summary>The run's users, in the run folder: written here, or by <see cref="PrepareAsync"/> for servers started by hand.</summary>
+    public const string UsersFileName = "users.json";
+
+    /// <summary>The prefilled records and their versions, written by <see cref="PrepareAsync"/> for the run to check.</summary>
+    public const string PrefilledFileName = "prefilled.json";
+
+    /// <summary>The settings <see cref="PrepareAsync"/> made the users for; the run must use the same.</summary>
+    public const string PreparedFileName = "prepared.json";
+
+    /// <summary>The settings the prepared users and folder depend on, as written to <see cref="PreparedFileName"/>.</summary>
+    private static string PreparedSettings(StressOptions options) => JsonSerializer.Serialize(
+        new { options.Strategy, options.Servers, options.ClientsPerServer, options.Records, options.Workload, options.Prefill, DataPath = Path.GetFullPath(options.DataPath!) },
+        StressResult.JsonOptions);
+
+    /// <summary>A routing seed for one client, mixed so it doesn't repeat the workload's own seeds (seed + client).</summary>
+    private static int RoutingSeed(int seed, int client) =>
+        unchecked((int)((((uint)seed * 2654435761u) ^ 0x5EED_0000u) + ((uint)client * 40503u)));
+
+    /// <summary>
+    /// Prepares a run against servers started by hand (<c>--prepare</c>): writes the users file
+    /// the servers must read (to <see cref="StressOptions.UsersOut"/>, and the run folder) and
+    /// fills the shared folder with any <c>--prefill</c> records, before the servers start.
+    /// </summary>
+    /// <param name="options">The same settings as the run that follows, with <see cref="StressOptions.Prepare"/>.</param>
+    /// <param name="log">Progress messages and what to do next.</param>
+    /// <param name="cancellationToken">Stops it.</param>
+    /// <returns>When the files are written.</returns>
+    /// <exception cref="ArgumentException">The tool doesn't know the strategy, or it keeps no data in the folder but --prefill was asked for.</exception>
+    public static async Task PrepareAsync(StressOptions options, TextWriter log, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(log);
+        var runFolder = Directory.CreateDirectory(Path.GetFullPath(options.OutputDirectory!)).FullName;
+        var dataPath = Directory.CreateDirectory(Path.GetFullPath(options.DataPath!)).FullName;
+        var factory = StoreStrategies.Resolve(options.Strategy, dataPath);
+        var users = MakeUsers(options.Servers, options.ClientsPerServer, options.Workload == StressOptions.Pipeline ? int.MaxValue : options.Records);
+        var json = JsonSerializer.Serialize(users, StressResult.JsonOptions);
+        await File.WriteAllTextAsync(Path.Combine(runFolder, UsersFileName), json, cancellationToken);
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(options.UsersOut!))!);
+        await File.WriteAllTextAsync(options.UsersOut!, json, cancellationToken);
+        log.WriteLine($"Users file for the servers: {Path.GetFullPath(options.UsersOut!)}");
+
+        await File.WriteAllTextAsync(Path.Combine(runFolder, PreparedFileName), PreparedSettings(options), cancellationToken);
+        var prefilledFile = Path.Combine(runFolder, PrefilledFileName);
+        File.Delete(prefilledFile);
+        if (options.Prefill > 0)
+        {
+            var prefilled = await PrefillAsync(options, factory, users, dataPath, runFolder, [], log, cancellationToken);
+            await File.WriteAllTextAsync(prefilledFile, JsonSerializer.Serialize(prefilled, StressResult.JsonOptions), cancellationToken);
+        }
+
+        log.WriteLine($"Next: on each server, ClaudeTestServer.ps1 Start -Strategy {options.Strategy} -Data <this data folder as that server sees it> -Users <this users file as that server sees it> -Port <its port>");
+        log.WriteLine($"Then run the same command without --prepare ({string.Join(", ", options.External)}).");
+    }
+
+    /// <summary>
+    /// Checks that every server started by hand knows this run's users, i.e. was started with
+    /// the users file <see cref="PrepareAsync"/> wrote; otherwise every request would be refused.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">A server didn't answer, or doesn't know the users.</exception>
+    private static async Task CheckUsersAsync(IReadOnlyList<IStressServer> servers, IReadOnlyList<HttpClient> http, IReadOnlyList<UserDto> users, CancellationToken cancellationToken)
+    {
+        for (var s = 0; s < servers.Count; s++)
+        {
+            List<UserDto>? known;
+            try
+            {
+                known = await http[s].GetFromJsonAsync<List<UserDto>>(ApiRoutes.Users, StressResult.JsonOptions, cancellationToken);
+            }
+            catch (Exception e) when (e is HttpRequestException or TaskCanceledException or JsonException)
+            {
+                throw new InvalidOperationException($"{servers[s].Name} didn't answer at {servers[s].BaseAddress}: {e.Message}", e);
+            }
+
+            var missing = users.Select(u => u.Id).Except(known?.Select(u => u.Id) ?? []).ToList();
+            if (missing.Count > 0)
+            {
+                throw new InvalidOperationException(
+                    $"{servers[s].Name} doesn't know {missing.Count} of this run's users (e.g. {missing[0]}): start it with the users file --prepare wrote.");
+            }
+        }
     }
 
     /// <summary>
@@ -332,7 +497,7 @@ public static class StressRun
 
     /// <summary>Waits for a fault's time, then causes it; reports what it did.</summary>
     private static async Task<FaultOutcome> RunFaultAsync(
-        Fault fault, IReadOnlyList<ServerProcess> servers, long workloadStarted, TextWriter log, CancellationToken workloadEnded)
+        Fault fault, IReadOnlyList<IStressServer> servers, long workloadStarted, TextWriter log, CancellationToken workloadEnded)
     {
         try
         {
@@ -451,7 +616,14 @@ public static class StressRun
     private static string Commit()
     {
         var head = Git("rev-parse HEAD");
-        return head is null ? "unknown" : string.IsNullOrEmpty(Git("status --porcelain")) ? head : $"{head}-dirty";
+        if (head is null)
+        {
+            // No git here (e.g. a published copy on a Windows PC): the commit the build recorded, if any.
+            var version = typeof(StressRun).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            return version?.Split('+') is [_, var built] ? $"{built} (from the build)" : "unknown";
+        }
+
+        return string.IsNullOrEmpty(Git("status --porcelain")) ? head : $"{head}-dirty";
     }
 
     private static string? Git(string arguments)

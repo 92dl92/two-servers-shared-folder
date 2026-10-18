@@ -294,6 +294,69 @@ public sealed class StressOptionsTests
     }
 
     [Fact]
+    public void External_servers_are_read()
+    {
+        // Servers started by hand elsewhere (phase 6c): their count comes from the addresses.
+        var options = StressOptions.Parse(
+            ["--external", "http://server1:8080,http://server2:9090/", "--data", @"\\fs\share\run1", "--out", "run1"]);
+
+        Assert.Equal([new Uri("http://server1:8080/"), new Uri("http://server2:9090/")], options.External);
+        Assert.Equal(2, options.Servers);
+        Assert.False(options.Prepare);
+        Assert.Empty(StressOptions.Parse([]).External);
+    }
+
+    [Fact]
+    public void Routing_is_read()
+    {
+        var options = StressOptions.Parse(["--servers", "2", "--routing", "random"]);
+
+        Assert.Equal(StressOptions.Random, options.Routing);
+        Assert.Equal(StressOptions.Sticky, StressOptions.Parse([]).Routing);
+    }
+
+    [Fact]
+    public void Prepare_is_read_with_the_same_options_as_the_run()
+    {
+        var options = StressOptions.Parse(
+        [
+            "--external", "http://server1:8080,http://server2:8080", "--data", "/share/run1", "--out", "run1",
+            "--prepare", "--users-out", "/share/run1-users.json",
+        ]);
+
+        Assert.True(options.Prepare);
+        Assert.Equal("/share/run1-users.json", options.UsersOut);
+    }
+
+    [Theory]
+    // External servers: the folder is checked from here, and the prepared files are in --out.
+    [InlineData("--external", "http://a:1,http://b:2", "--out", "r")]
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d")]
+    // An address needs http and a port: the owner supplies one per server.
+    [InlineData("--external", "http://a,http://b:2", "--data", "d", "--out", "r")]
+    [InlineData("--external", "ftp://a:1,http://b:2", "--data", "d", "--out", "r")]
+    [InlineData("--external", "a:1", "--data", "d", "--out", "r")]
+    // What only applies to servers the tool starts itself.
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--servers", "2")]
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--server-dll", "s.dll")]
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--server-arg", "--x=1")]
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--fault", "kill:1@5")]
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--remote", "u@h", "--remote-servers", "1", "--remote-data", "x")]
+    // Prepare needs where to write the users file, and the external servers it prepares for.
+    [InlineData("--external", "http://a:1,http://b:2", "--data", "d", "--out", "r", "--prepare")]
+    [InlineData("--prepare", "--users-out", "u.json")]
+    [InlineData("--users-out", "u.json")]
+    // Each server once, with its port written out (not a default port or a user name).
+    [InlineData("--external", "http://a:1,http://a:1", "--data", "d", "--out", "r")]
+    [InlineData("--external", "http://u:80@a/,http://b:2", "--data", "d", "--out", "r")]
+    [InlineData("--external", "http://a:1/x,http://b:2", "--data", "d", "--out", "r")]
+    // Routing: a known name, and more than one server to route between.
+    [InlineData("--routing", "round-robin")]
+    [InlineData("--servers", "1", "--routing", "random")]
+    public void Bad_external_options_are_refused(params string[] args) =>
+        Assert.Throws<ArgumentException>(() => StressOptions.Parse(args));
+
+    [Fact]
     public void Every_registrant_stays_when_there_are_enough_records()
     {
         // Ids name the role, e.g. s1c3-registrant.
