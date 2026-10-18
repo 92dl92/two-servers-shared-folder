@@ -1,0 +1,135 @@
+{
+  "passed": true,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T12:20:05.9736069+00:00",
+  "finishedAt": "2026-10-18T12:22:50.5502419+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "LockedFile",
+    "dataPath": "stress-runs/win-w2-heavy-LockedFile-1/data",
+    "servers": 2,
+    "clientsPerServer": 12,
+    "clientsByRole": {
+      "Registrant": 10,
+      "Reviewer": 10,
+      "Admin": 4
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 1,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w2-heavy-LockedFile-1"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-w2-heavy-LockedFile-1"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w2-heavy-LockedFile-1",
+  "servers": [
+    {
+      "port": 34861,
+      "logFile": "stress-runs/win-w2-heavy-LockedFile-1/logs/server-34861.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 37803,
+      "logFile": "stress-runs/win-w2-heavy-LockedFile-1/logs/server-37803.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 4812,
+    "saves": 2151,
+    "conflicts": 979,
+    "wrongStatus": 1682,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 979,
+      "saved": 2151,
+      "wrongStatus": 1682
+    },
+    "savesByAction": {
+      "Create": 12,
+      "Update": 61,
+      "Submit": 12,
+      "Approve": 6,
+      "Reject": 6,
+      "Comment": 2054
+    },
+    "reads": 4800,
+    "readFailures": {},
+    "durationSeconds": 116.27,
+    "savesPerSecond": 18.5,
+    "saveLatencyMs": {
+      "p50": 33.71,
+      "p95": 538.83,
+      "max": 3178.41,
+      "mean": 109.42
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:34861",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:37803",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T12:01:07.2206102+00:00",
+  "finishedAt": "2026-10-18T12:02:11.2611956+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "Sqlite",
+    "dataPath": "stress-runs/win-w0-heavy-Sqlite-2/data",
+    "servers": 2,
+    "clientsPerServer": 12,
+    "clientsByRole": {
+      "Registrant": 10,
+      "Reviewer": 10,
+      "Admin": 4
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w0-heavy-Sqlite-2"
+      }
+    ],
+    "remoteServers": 2,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w0-heavy-Sqlite-2",
+  "servers": [
+    {
+      "port": 33749,
+      "logFile": "stress-runs/win-w0-heavy-Sqlite-2/logs/server-33749.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 33641,
+      "logFile": "stress-runs/win-w0-heavy-Sqlite-2/logs/server-33641.jsonl",
+      "host": "ws1.example"
+    }
+  ],
+  "numbers": {
+    "writes": 4812,
+    "saves": 1987,
+    "conflicts": 1081,
+    "wrongStatus": 1744,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 1081,
+      "saved": 1987,
+      "wrongStatus": 1744
+    },
+    "savesByAction": {
+      "Create": 12,
+      "Update": 90,
+      "Submit": 12,
+      "Approve": 7,
+      "Reject": 5,
+      "Comment": 1861
+    },
+    "reads": 4800,
+    "readFailures": {},
+    "durationSeconds": 9.85,
+    "savesPerSecond": 201.72,
+    "saveLatencyMs": {
+      "p50": 15.87,
+      "p95": 41.63,
+      "max": 199.06,
+      "mean": 19.68
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:33749",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:33641",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 12,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

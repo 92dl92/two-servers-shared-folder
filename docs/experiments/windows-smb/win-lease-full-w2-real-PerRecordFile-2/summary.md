@@ -1,0 +1,29 @@
+# Stress run: PerRecordFile, 2 server(s): PASSED
+
+- Commit `a8d23669d0f322853d3ffd61c6303a649659db79`, 2026-10-18 15:26:06 UTC, 128.7 s
+- Machine linux-host: Debian GNU/Linux 12 (bookworm), 16 CPUs, .NET 10.0.12
+- Settings: 2 servers × 5 clients, pipeline with 1000 ms think time, 120 changes per client, seed 2
+- Clients by role: 4 Registrant, 4 Reviewer, 2 Admin
+- Data folder `stress-runs/win-lease-full-w2-real-PerRecordFile-2/data` (a copy of the shared folder, made on `Administrator@ws1.example` after the servers stopped); run folder `stress-runs/win-lease-full-w2-real-PerRecordFile-2`
+- 1 of the servers on `Administrator@ws1.example`, data folder `C:\share\runs\win-lease-full-w2-real-PerRecordFile-2` there
+- 1 of the servers on `Administrator@ws2.example`, data folder `\\ws1.example\share\runs\win-lease-full-w2-real-PerRecordFile-2` there
+
+| Writes | Saves | Saves/s | 409 conflicts | 422 wrong status | No response | Save p50 ms | p95 ms | max ms |
+|---|---|---|---|---|---|---|---|---|
+| 777 | 734 | 5.7 | 43 | 0 | 0 | 19.2 | 45.5 | 185.2 |
+
+Writes by outcome: conflict 43, saved 734. Saves by action: Create 159, Update 166, Submit 159, Approve 107, Reject 52, Comment 91. Reads: 620.
+
+Longest stall: 1.4 s with no save acknowledged, from 125.4 s into the run (think time 1000 ms, so pauses up to about 1.5 s are normal).
+
+Stale reads: 0 (older than a version already acknowledged); 154 reads followed a save through another server.
+
+| Read back from | Result | Records found/expected | Missing records | Lost updates | Wrong version | Unacknowledged | Rules broken |
+|---|---|---|---|---|---|---|---|
+| storage | pass | 159/159 | 0 | 0 | 0 | 0 | 0 |
+| server ws1.example:40565 | pass | 159/159 | 0 | 0 | 0 | 0 | 0 |
+| server ws2.example:45161 | pass | 159/159 | 0 | 0 | 0 | 0 | 0 |
+
+Results row (strategy | servers | saves | saves/s | 409 | 422 | lost | unreadable sources | rules broken | p95 ms | passed):
+
+| PerRecordFile | 2 | 734 | 5.7 | 43 | 0 | 0 | 0 | 0 | 45.5 | yes |

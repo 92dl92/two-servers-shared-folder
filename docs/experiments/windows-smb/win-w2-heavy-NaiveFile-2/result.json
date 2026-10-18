@@ -1,0 +1,174 @@
+{
+  "passed": false,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T12:18:08.4878825+00:00",
+  "finishedAt": "2026-10-18T12:19:10.3356602+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/win-w2-heavy-NaiveFile-2/data",
+    "servers": 2,
+    "clientsPerServer": 12,
+    "clientsByRole": {
+      "Registrant": 10,
+      "Reviewer": 10,
+      "Admin": 4
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 2,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w2-heavy-NaiveFile-2"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-w2-heavy-NaiveFile-2"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w2-heavy-NaiveFile-2",
+  "servers": [
+    {
+      "port": 39783,
+      "logFile": "stress-runs/win-w2-heavy-NaiveFile-2/logs/server-39783.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 42907,
+      "logFile": "stress-runs/win-w2-heavy-NaiveFile-2/logs/server-42907.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 3487,
+    "saves": 200,
+    "conflicts": 177,
+    "wrongStatus": 847,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 177,
+      "http500": 2263,
+      "saved": 200,
+      "wrongStatus": 847
+    },
+    "savesByAction": {
+      "Create": 5,
+      "Update": 15,
+      "Submit": 6,
+      "Approve": 4,
+      "Reject": 1,
+      "Comment": 169
+    },
+    "reads": 3800,
+    "readFailures": {
+      "http500": 325
+    },
+    "durationSeconds": 14.461,
+    "savesPerSecond": 13.83,
+    "saveLatencyMs": {
+      "p50": 33.35,
+      "p95": 157.16,
+      "max": 575.6,
+      "mean": 54.26
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 5,
+        "recordsFound": 5,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 11,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v26 Comment by s1c4-admin \u0027s1c4-admin:178\u0027 via ws1.example:39783 (stress-5cdd11460c4d4479ad32284c6fbc7039): version 26 holds Comment by s1c7-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v20 Comment by s1c10-reviewer \u0027s1c10-reviewer:99\u0027 via ws1.example:39783 (stress-ea54b95944ca400591ab648c0725c112): version 20 holds Comment by s1c12-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v36 Comment by s2c7-reviewer \u0027s2c7-reviewer:137\u0027 via ws2.example:42907 (stress-ea18ccc014e340769c185e30c3a078dd): version 36 holds Comment by s2c7-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v15 Comment by s1c10-reviewer \u0027s1c10-reviewer:157\u0027 via ws1.example:39783 (stress-e48076ce96304b2cb558d42d6692a0e5): version 15 holds Comment by s2c2-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v13 Comment by s1c12-reviewer \u0027s1c12-reviewer:149\u0027 via ws1.example:39783 (stress-5161ae153e414a96ad253257c030e4d5): version 13 holds Comment by s1c4-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v7 Comment by s1c10-reviewer \u0027s1c10-reviewer:50\u0027 via ws1.example:39783 (stress-db48acc9599d47cb9dce196e12f9534c): version 7 holds Comment by s1c9-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v5 Comment by s1c12-reviewer \u0027s1c12-reviewer:17\u0027 via ws1.example:39783 (stress-e00bbad07c2c4221939817abc47ada40): version 5 holds Comment by s1c12-reviewer",
+          "lost update 40bbd324-7166-4e78-a9d7-66759fbe3b86 v10 Comment by s1c7-reviewer \u0027s1c7-reviewer:65\u0027 via ws1.example:39783 (stress-a61594e7c81646cf8e38dfb2aeafd552): version 10 holds Comment by s1c10-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v20 Comment by s1c5-reviewer \u0027s1c5-reviewer:195\u0027 via ws1.example:39783 (stress-eb5cc4d750d8471190d5d7a748e8fa49): version 20 holds Comment by s2c5-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v10 Submit by s1c8-registrant via ws1.example:39783 (stress-553402f9174a4c76a95ef1c413ac8363): version 10 holds Submit by s1c8-registrant",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v19 Comment by s1c10-reviewer \u0027s1c10-reviewer:155\u0027 via ws1.example:39783 (stress-599832bb5f5043d2b54272ca584a7d2e): version 19 holds Comment by s1c10-reviewer"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:39783",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 5,
+        "recordsFound": 5,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 11,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v26 Comment by s1c4-admin \u0027s1c4-admin:178\u0027 via ws1.example:39783 (stress-5cdd11460c4d4479ad32284c6fbc7039): version 26 holds Comment by s1c7-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v20 Comment by s1c10-reviewer \u0027s1c10-reviewer:99\u0027 via ws1.example:39783 (stress-ea54b95944ca400591ab648c0725c112): version 20 holds Comment by s1c12-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v36 Comment by s2c7-reviewer \u0027s2c7-reviewer:137\u0027 via ws2.example:42907 (stress-ea18ccc014e340769c185e30c3a078dd): version 36 holds Comment by s2c7-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v15 Comment by s1c10-reviewer \u0027s1c10-reviewer:157\u0027 via ws1.example:39783 (stress-e48076ce96304b2cb558d42d6692a0e5): version 15 holds Comment by s2c2-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v13 Comment by s1c12-reviewer \u0027s1c12-reviewer:149\u0027 via ws1.example:39783 (stress-5161ae153e414a96ad253257c030e4d5): version 13 holds Comment by s1c4-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v7 Comment by s1c10-reviewer \u0027s1c10-reviewer:50\u0027 via ws1.example:39783 (stress-db48acc9599d47cb9dce196e12f9534c): version 7 holds Comment by s1c9-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v5 Comment by s1c12-reviewer \u0027s1c12-reviewer:17\u0027 via ws1.example:39783 (stress-e00bbad07c2c4221939817abc47ada40): version 5 holds Comment by s1c12-reviewer",
+          "lost update 40bbd324-7166-4e78-a9d7-66759fbe3b86 v10 Comment by s1c7-reviewer \u0027s1c7-reviewer:65\u0027 via ws1.example:39783 (stress-a61594e7c81646cf8e38dfb2aeafd552): version 10 holds Comment by s1c10-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v20 Comment by s1c5-reviewer \u0027s1c5-reviewer:195\u0027 via ws1.example:39783 (stress-eb5cc4d750d8471190d5d7a748e8fa49): version 20 holds Comment by s2c5-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v10 Submit by s1c8-registrant via ws1.example:39783 (stress-553402f9174a4c76a95ef1c413ac8363): version 10 holds Submit by s1c8-registrant",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v19 Comment by s1c10-reviewer \u0027s1c10-reviewer:155\u0027 via ws1.example:39783 (stress-599832bb5f5043d2b54272ca584a7d2e): version 19 holds Comment by s1c10-reviewer"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws2.example:42907",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 5,
+        "recordsFound": 5,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 11,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v26 Comment by s1c4-admin \u0027s1c4-admin:178\u0027 via ws1.example:39783 (stress-5cdd11460c4d4479ad32284c6fbc7039): version 26 holds Comment by s1c7-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v20 Comment by s1c10-reviewer \u0027s1c10-reviewer:99\u0027 via ws1.example:39783 (stress-ea54b95944ca400591ab648c0725c112): version 20 holds Comment by s1c12-reviewer",
+          "lost update 203fac02-1104-4118-b9ad-03429227d801 v36 Comment by s2c7-reviewer \u0027s2c7-reviewer:137\u0027 via ws2.example:42907 (stress-ea18ccc014e340769c185e30c3a078dd): version 36 holds Comment by s2c7-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v15 Comment by s1c10-reviewer \u0027s1c10-reviewer:157\u0027 via ws1.example:39783 (stress-e48076ce96304b2cb558d42d6692a0e5): version 15 holds Comment by s2c2-reviewer",
+          "lost update 6b87e893-e4e6-4d36-b09b-abc5f7b94c2d v13 Comment by s1c12-reviewer \u0027s1c12-reviewer:149\u0027 via ws1.example:39783 (stress-5161ae153e414a96ad253257c030e4d5): version 13 holds Comment by s1c4-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v7 Comment by s1c10-reviewer \u0027s1c10-reviewer:50\u0027 via ws1.example:39783 (stress-db48acc9599d47cb9dce196e12f9534c): version 7 holds Comment by s1c9-admin",
+          "lost update 12f0994e-189d-49bf-8de9-631112cb1d0b v5 Comment by s1c12-reviewer \u0027s1c12-reviewer:17\u0027 via ws1.example:39783 (stress-e00bbad07c2c4221939817abc47ada40): version 5 holds Comment by s1c12-reviewer",
+          "lost update 40bbd324-7166-4e78-a9d7-66759fbe3b86 v10 Comment by s1c7-reviewer \u0027s1c7-reviewer:65\u0027 via ws1.example:39783 (stress-a61594e7c81646cf8e38dfb2aeafd552): version 10 holds Comment by s1c10-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v20 Comment by s1c5-reviewer \u0027s1c5-reviewer:195\u0027 via ws1.example:39783 (stress-eb5cc4d750d8471190d5d7a748e8fa49): version 20 holds Comment by s2c5-reviewer",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v10 Submit by s1c8-registrant via ws1.example:39783 (stress-553402f9174a4c76a95ef1c413ac8363): version 10 holds Submit by s1c8-registrant",
+          "lost update b0ae1d33-98eb-4811-b03e-b5d5bd06f705 v19 Comment by s1c10-reviewer \u0027s1c10-reviewer:155\u0027 via ws1.example:39783 (stress-599832bb5f5043d2b54272ca584a7d2e): version 19 holds Comment by s1c10-reviewer"
+        ]
+      }
+    }
+  ]
+}

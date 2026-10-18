@@ -1,0 +1,167 @@
+{
+  "passed": true,
+  "commit": "22febeb1b9f435203813da53e455263d96f64aea",
+  "startedAt": "2026-10-18T16:50:39.0336887+00:00",
+  "finishedAt": "2026-10-18T16:54:30.9866585+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/win-f4-w2-real-PerRecordFile-2/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 158,
+    "opsPerClient": 120,
+    "seed": 2,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-f4-w2-real-PerRecordFile-2"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-f4-w2-real-PerRecordFile-2"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-f4-w2-real-PerRecordFile-2",
+  "servers": [
+    {
+      "port": 33747,
+      "logFile": "stress-runs/win-f4-w2-real-PerRecordFile-2/logs/server-33747.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 35129,
+      "logFile": "stress-runs/win-f4-w2-real-PerRecordFile-2/logs/server-35129.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 741,
+    "saves": 715,
+    "conflicts": 23,
+    "wrongStatus": 0,
+    "noResponse": 1,
+    "writesByOutcome": {
+      "conflict": 23,
+      "http500": 2,
+      "noResponse": 1,
+      "saved": 715
+    },
+    "savesByAction": {
+      "Create": 158,
+      "Update": 164,
+      "Submit": 157,
+      "Approve": 112,
+      "Reject": 45,
+      "Comment": 79
+    },
+    "reads": 589,
+    "readFailures": {
+      "http500": 6,
+      "noResponse": 1
+    },
+    "durationSeconds": 191.711,
+    "savesPerSecond": 3.73,
+    "saveLatencyMs": {
+      "p50": 16.18,
+      "p95": 68.06,
+      "max": 183.33,
+      "mean": 27.1
+    },
+    "staleReads": {
+      "count": 0,
+      "readsAfterAnotherServer": 109,
+      "samples": []
+    },
+    "longestStall": {
+      "seconds": 1.28,
+      "afterSeconds": 178.43
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 158,
+        "recordsFound": 158,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:33747",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 158,
+        "recordsFound": 158,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:35129",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 158,
+        "recordsFound": 158,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ],
+  "faults": [
+    {
+      "fault": "run \u0060webapp/scripts/vm-link.sh ws2 60\u0060 at 40 s",
+      "atSeconds": 40,
+      "result": "exit 0: ws2 vnet3 down for 60 s ws2 vnet3 up again: up",
+      "happened": true
+    }
+  ],
+  "lockCheck": {
+    "changes": 316,
+    "changed": 316,
+    "stuck": 0,
+    "unreadable": 0,
+    "stoppedEarly": false,
+    "examples": [],
+    "passed": true
+  }
+}

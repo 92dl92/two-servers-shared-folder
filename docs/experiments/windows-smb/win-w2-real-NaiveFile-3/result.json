@@ -1,0 +1,196 @@
+{
+  "passed": false,
+  "commit": "fe53fea387646cb0ee65f1cccd5a309abb2291d2",
+  "startedAt": "2026-10-18T12:56:33.6099709+00:00",
+  "finishedAt": "2026-10-18T12:59:16.2100144+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/win-w2-real-NaiveFile-3/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 161,
+    "opsPerClient": 120,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w2-real-NaiveFile-3"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-w2-real-NaiveFile-3"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-w2-real-NaiveFile-3",
+  "servers": [
+    {
+      "port": 36427,
+      "logFile": "stress-runs/win-w2-real-NaiveFile-3/logs/server-36427.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 35665,
+      "logFile": "stress-runs/win-w2-real-NaiveFile-3/logs/server-35665.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 737,
+    "saves": 692,
+    "conflicts": 8,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 8,
+      "http500": 37,
+      "saved": 692
+    },
+    "savesByAction": {
+      "Create": 161,
+      "Update": 143,
+      "Submit": 158,
+      "Approve": 129,
+      "Reject": 30,
+      "Comment": 71
+    },
+    "reads": 586,
+    "readFailures": {
+      "http500": 5,
+      "notFound": 3
+    },
+    "durationSeconds": 127.525,
+    "savesPerSecond": 5.43,
+    "saveLatencyMs": {
+      "p50": 16.88,
+      "p95": 53.75,
+      "max": 220.58,
+      "mean": 20.76
+    },
+    "staleReads": {
+      "count": 4,
+      "readsAfterAnotherServer": 131,
+      "samples": [
+        {
+          "recordId": "d77b322a-f58a-4c9a-9646-36b204931ce5",
+          "server": "ws1.example:36427",
+          "versionRead": 0,
+          "versionAcknowledged": 1,
+          "acknowledgedBy": "ws1.example:36427",
+          "millisecondsSinceAck": 1370.9
+        },
+        {
+          "recordId": "d77b322a-f58a-4c9a-9646-36b204931ce5",
+          "server": "ws1.example:36427",
+          "versionRead": 0,
+          "versionAcknowledged": 1,
+          "acknowledgedBy": "ws1.example:36427",
+          "millisecondsSinceAck": 2101.4
+        },
+        {
+          "recordId": "d77b322a-f58a-4c9a-9646-36b204931ce5",
+          "server": "ws1.example:36427",
+          "versionRead": 0,
+          "versionAcknowledged": 1,
+          "acknowledgedBy": "ws1.example:36427",
+          "millisecondsSinceAck": 3162.7
+        },
+        {
+          "recordId": "9c4f6b05-da0e-43eb-86ce-2a72594f69dd",
+          "server": "ws1.example:36427",
+          "versionRead": 2,
+          "versionAcknowledged": 3,
+          "acknowledgedBy": "ws1.example:36427",
+          "millisecondsSinceAck": 662.3
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 161,
+        "recordsFound": 160,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 4,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record d77b322a-f58a-4c9a-9646-36b204931ce5: missing (1 acknowledged changes)",
+          "lost update a778c5eb-9d47-4b18-acdd-17fca4869542 v5 Comment by s1c4-admin \u0027s1c4-admin:31\u0027 via ws1.example:36427 (stress-328ecf5be1984d78980e04dbb6c0d66b): version 5 holds Approve by s2c2-reviewer",
+          "lost update 9c4f6b05-da0e-43eb-86ce-2a72594f69dd v3 Update by s1c3-registrant \u0027s1c3-registrant:120\u0027 via ws1.example:36427 (stress-59f8594752074d92bfffff33e2c5fd0f): version 3 holds Submit by s1c3-registrant",
+          "lost update d77b322a-f58a-4c9a-9646-36b204931ce5 v1 Create by s1c1-registrant via ws1.example:36427 (stress-0631fcafdee04d32b93afb0382349b12): record missing",
+          "lost update cc769b66-170c-49f9-84de-55ac3214d430 v6 Approve by s1c2-reviewer via ws1.example:36427 (stress-3ff87bd3559b4ba98270eff5f21ad170): version 6 holds Approve by s2c2-reviewer"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:36427",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 161,
+        "recordsFound": 160,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 4,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record d77b322a-f58a-4c9a-9646-36b204931ce5: missing (1 acknowledged changes)",
+          "lost update a778c5eb-9d47-4b18-acdd-17fca4869542 v5 Comment by s1c4-admin \u0027s1c4-admin:31\u0027 via ws1.example:36427 (stress-328ecf5be1984d78980e04dbb6c0d66b): version 5 holds Approve by s2c2-reviewer",
+          "lost update 9c4f6b05-da0e-43eb-86ce-2a72594f69dd v3 Update by s1c3-registrant \u0027s1c3-registrant:120\u0027 via ws1.example:36427 (stress-59f8594752074d92bfffff33e2c5fd0f): version 3 holds Submit by s1c3-registrant",
+          "lost update d77b322a-f58a-4c9a-9646-36b204931ce5 v1 Create by s1c1-registrant via ws1.example:36427 (stress-0631fcafdee04d32b93afb0382349b12): record missing",
+          "lost update cc769b66-170c-49f9-84de-55ac3214d430 v6 Approve by s1c2-reviewer via ws1.example:36427 (stress-3ff87bd3559b4ba98270eff5f21ad170): version 6 holds Approve by s2c2-reviewer"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws2.example:35665",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 161,
+        "recordsFound": 160,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 4,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record d77b322a-f58a-4c9a-9646-36b204931ce5: missing (1 acknowledged changes)",
+          "lost update a778c5eb-9d47-4b18-acdd-17fca4869542 v5 Comment by s1c4-admin \u0027s1c4-admin:31\u0027 via ws1.example:36427 (stress-328ecf5be1984d78980e04dbb6c0d66b): version 5 holds Approve by s2c2-reviewer",
+          "lost update 9c4f6b05-da0e-43eb-86ce-2a72594f69dd v3 Update by s1c3-registrant \u0027s1c3-registrant:120\u0027 via ws1.example:36427 (stress-59f8594752074d92bfffff33e2c5fd0f): version 3 holds Submit by s1c3-registrant",
+          "lost update d77b322a-f58a-4c9a-9646-36b204931ce5 v1 Create by s1c1-registrant via ws1.example:36427 (stress-0631fcafdee04d32b93afb0382349b12): record missing",
+          "lost update cc769b66-170c-49f9-84de-55ac3214d430 v6 Approve by s1c2-reviewer via ws1.example:36427 (stress-3ff87bd3559b4ba98270eff5f21ad170): version 6 holds Approve by s2c2-reviewer"
+        ]
+      }
+    }
+  ]
+}

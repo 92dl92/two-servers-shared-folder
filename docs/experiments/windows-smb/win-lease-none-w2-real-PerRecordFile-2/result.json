@@ -1,0 +1,145 @@
+{
+  "passed": true,
+  "commit": "a8d23669d0f322853d3ffd61c6303a649659db79",
+  "startedAt": "2026-10-18T15:41:32.3766331+00:00",
+  "finishedAt": "2026-10-18T15:44:22.888374+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/win-lease-none-w2-real-PerRecordFile-2/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 159,
+    "opsPerClient": 120,
+    "seed": 2,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-lease-none-w2-real-PerRecordFile-2"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-lease-none-w2-real-PerRecordFile-2"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-lease-none-w2-real-PerRecordFile-2",
+  "servers": [
+    {
+      "port": 39899,
+      "logFile": "stress-runs/win-lease-none-w2-real-PerRecordFile-2/logs/server-39899.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 43105,
+      "logFile": "stress-runs/win-lease-none-w2-real-PerRecordFile-2/logs/server-43105.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 777,
+    "saves": 732,
+    "conflicts": 45,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 45,
+      "saved": 732
+    },
+    "savesByAction": {
+      "Create": 159,
+      "Update": 166,
+      "Submit": 159,
+      "Approve": 115,
+      "Reject": 44,
+      "Comment": 89
+    },
+    "reads": 618,
+    "readFailures": {},
+    "durationSeconds": 131.81,
+    "savesPerSecond": 5.55,
+    "saveLatencyMs": {
+      "p50": 24.64,
+      "p95": 68.45,
+      "max": 257.6,
+      "mean": 28.35
+    },
+    "staleReads": {
+      "count": 0,
+      "readsAfterAnotherServer": 159,
+      "samples": []
+    },
+    "longestStall": {
+      "seconds": 1.37,
+      "afterSeconds": 128.12
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 159,
+        "recordsFound": 159,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:39899",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 159,
+        "recordsFound": 159,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:43105",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 159,
+        "recordsFound": 159,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

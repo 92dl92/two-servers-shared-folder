@@ -1,0 +1,194 @@
+{
+  "passed": false,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T12:38:47.5452599+00:00",
+  "finishedAt": "2026-10-18T12:39:46.2434065+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "Sqlite",
+    "dataPath": "stress-runs/win-w2-heavy-Sqlite-3/data",
+    "servers": 2,
+    "clientsPerServer": 12,
+    "clientsByRole": {
+      "Registrant": 10,
+      "Reviewer": 10,
+      "Admin": 4
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w2-heavy-Sqlite-3"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-w2-heavy-Sqlite-3"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w2-heavy-Sqlite-3",
+  "servers": [
+    {
+      "port": 43625,
+      "logFile": "stress-runs/win-w2-heavy-Sqlite-3/logs/server-43625.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 38979,
+      "logFile": "stress-runs/win-w2-heavy-Sqlite-3/logs/server-38979.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 2231,
+    "saves": 504,
+    "conflicts": 510,
+    "wrongStatus": 877,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 510,
+      "http500": 9,
+      "notFound": 331,
+      "saved": 504,
+      "wrongStatus": 877
+    },
+    "savesByAction": {
+      "Create": 12,
+      "Update": 171,
+      "Submit": 11,
+      "Approve": 2,
+      "Reject": 6,
+      "Comment": 302
+    },
+    "reads": 4800,
+    "readFailures": {
+      "http500": 1170,
+      "notFound": 1411
+    },
+    "durationSeconds": 10.976,
+    "savesPerSecond": 45.92,
+    "saveLatencyMs": {
+      "p50": 52.77,
+      "p95": 379.36,
+      "max": 616.08,
+      "mean": 92.09
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 6,
+        "lostUpdates": 67,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 62300266-87bd-4209-a8e2-14dfb98341f8: missing (13 acknowledged changes)",
+          "missing record 8604931e-c844-43f7-8f43-744746f6597e: missing (9 acknowledged changes)",
+          "missing record db24bce2-180c-4128-af7e-2809650e8429: missing (10 acknowledged changes)",
+          "missing record 29c4091a-0466-491d-ad6e-64d04f303c9e: missing (10 acknowledged changes)",
+          "missing record c2f425e3-3e85-4ad4-97d0-eda8db3e53ee: missing (12 acknowledged changes)",
+          "missing record 451132e0-9b26-47dd-8154-ae8e760848c2: missing (13 acknowledged changes)",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v1 Create by s1c1-registrant via ws1.example:43625 (stress-897b569b11284c8fbaba2e351e7142f9): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v3 Update by s1c1-registrant \u0027s1c1-registrant:6\u0027 via ws1.example:43625 (stress-53bc69b8d7fa4716bc11d5d6009b456a): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v4 Submit by s1c1-registrant via ws1.example:43625 (stress-e3627ebe9fd44b3382cecc7ea48e0882): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v11 Comment by s1c4-admin \u0027s1c4-admin:64\u0027 via ws1.example:43625 (stress-54dcabbd58c64d8081eceb4d8c37790a): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v13 Comment by s1c4-admin \u0027s1c4-admin:81\u0027 via ws1.example:43625 (stress-fdba13f2d2e24f9699f9a249e335372c): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v6 Comment by s1c7-reviewer \u0027s1c7-reviewer:15\u0027 via ws1.example:43625 (stress-61725d4638e144f1a2153aa360a7996e): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v8 Comment by s1c10-reviewer \u0027s1c10-reviewer:38\u0027 via ws1.example:43625 (stress-2258a2a0b50740bf84b0412c11845cf0): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v2 Comment by s1c12-reviewer \u0027s1c12-reviewer:0\u0027 via ws1.example:43625 (stress-8c4480fdd0914399b210b0b94284bdbc): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v5 Approve by s1c12-reviewer via ws1.example:43625 (stress-a1139434c908453f90618d3f98f24d74): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v7 Comment by s1c12-reviewer \u0027s1c12-reviewer:29\u0027 via ws1.example:43625 (stress-ce61b33032e74543a4ffbba9bc730202): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v9 Comment by s1c12-reviewer \u0027s1c12-reviewer:44\u0027 via ws1.example:43625 (stress-6ad565e34cfd4c908ea2091ce65a0e6d): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v10 Comment by s1c12-reviewer \u0027s1c12-reviewer:47\u0027 via ws1.example:43625 (stress-ba456c173c6e4dabb86aed590377e265): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v12 Comment by s1c12-reviewer \u0027s1c12-reviewer:62\u0027 via ws1.example:43625 (stress-f9a6fa69bbbc4b5bbb280c480e3f4cd6): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v1 Create by s1c1-registrant via ws1.example:43625 (stress-cae0e3840c174e3d877cfa7e54695598): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v6 Submit by s1c1-registrant via ws1.example:43625 (stress-f6c4ffad1f0847849998e5996541c18b): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v8 Update by s1c1-registrant \u0027s1c1-registrant:97\u0027 via ws1.example:43625 (stress-21082af891544504afbb11eb841a992c): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v9 Update by s1c1-registrant \u0027s1c1-registrant:103\u0027 via ws1.example:43625 (stress-d6c3fe1e70b54e2293a38c597fe0d959): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v4 Update by s1c4-admin \u0027s1c4-admin:21\u0027 via ws1.example:43625 (stress-41fdd14a26d64b398f5c1e55894037c7): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v5 Comment by s1c7-reviewer \u0027s1c7-reviewer:25\u0027 via ws1.example:43625 (stress-ba245dafb854472b87ba2483e86725a7): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v7 Comment by s1c7-reviewer \u0027s1c7-reviewer:46\u0027 via ws1.example:43625 (stress-dddcbd5632004106b31a0e6c6d109ab1): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:43625",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws2.example:38979",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 12,
+        "recordsFound": 6,
+        "recordsUnexpected": 0,
+        "missingRecords": 6,
+        "lostUpdates": 67,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 62300266-87bd-4209-a8e2-14dfb98341f8: missing (13 acknowledged changes)",
+          "missing record 8604931e-c844-43f7-8f43-744746f6597e: missing (9 acknowledged changes)",
+          "missing record db24bce2-180c-4128-af7e-2809650e8429: missing (10 acknowledged changes)",
+          "missing record 29c4091a-0466-491d-ad6e-64d04f303c9e: missing (10 acknowledged changes)",
+          "missing record c2f425e3-3e85-4ad4-97d0-eda8db3e53ee: missing (12 acknowledged changes)",
+          "missing record 451132e0-9b26-47dd-8154-ae8e760848c2: missing (13 acknowledged changes)",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v1 Create by s1c1-registrant via ws1.example:43625 (stress-897b569b11284c8fbaba2e351e7142f9): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v3 Update by s1c1-registrant \u0027s1c1-registrant:6\u0027 via ws1.example:43625 (stress-53bc69b8d7fa4716bc11d5d6009b456a): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v4 Submit by s1c1-registrant via ws1.example:43625 (stress-e3627ebe9fd44b3382cecc7ea48e0882): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v11 Comment by s1c4-admin \u0027s1c4-admin:64\u0027 via ws1.example:43625 (stress-54dcabbd58c64d8081eceb4d8c37790a): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v13 Comment by s1c4-admin \u0027s1c4-admin:81\u0027 via ws1.example:43625 (stress-fdba13f2d2e24f9699f9a249e335372c): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v6 Comment by s1c7-reviewer \u0027s1c7-reviewer:15\u0027 via ws1.example:43625 (stress-61725d4638e144f1a2153aa360a7996e): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v8 Comment by s1c10-reviewer \u0027s1c10-reviewer:38\u0027 via ws1.example:43625 (stress-2258a2a0b50740bf84b0412c11845cf0): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v2 Comment by s1c12-reviewer \u0027s1c12-reviewer:0\u0027 via ws1.example:43625 (stress-8c4480fdd0914399b210b0b94284bdbc): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v5 Approve by s1c12-reviewer via ws1.example:43625 (stress-a1139434c908453f90618d3f98f24d74): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v7 Comment by s1c12-reviewer \u0027s1c12-reviewer:29\u0027 via ws1.example:43625 (stress-ce61b33032e74543a4ffbba9bc730202): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v9 Comment by s1c12-reviewer \u0027s1c12-reviewer:44\u0027 via ws1.example:43625 (stress-6ad565e34cfd4c908ea2091ce65a0e6d): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v10 Comment by s1c12-reviewer \u0027s1c12-reviewer:47\u0027 via ws1.example:43625 (stress-ba456c173c6e4dabb86aed590377e265): record missing",
+          "lost update 62300266-87bd-4209-a8e2-14dfb98341f8 v12 Comment by s1c12-reviewer \u0027s1c12-reviewer:62\u0027 via ws1.example:43625 (stress-f9a6fa69bbbc4b5bbb280c480e3f4cd6): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v1 Create by s1c1-registrant via ws1.example:43625 (stress-cae0e3840c174e3d877cfa7e54695598): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v6 Submit by s1c1-registrant via ws1.example:43625 (stress-f6c4ffad1f0847849998e5996541c18b): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v8 Update by s1c1-registrant \u0027s1c1-registrant:97\u0027 via ws1.example:43625 (stress-21082af891544504afbb11eb841a992c): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v9 Update by s1c1-registrant \u0027s1c1-registrant:103\u0027 via ws1.example:43625 (stress-d6c3fe1e70b54e2293a38c597fe0d959): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v4 Update by s1c4-admin \u0027s1c4-admin:21\u0027 via ws1.example:43625 (stress-41fdd14a26d64b398f5c1e55894037c7): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v5 Comment by s1c7-reviewer \u0027s1c7-reviewer:25\u0027 via ws1.example:43625 (stress-ba245dafb854472b87ba2483e86725a7): record missing",
+          "lost update 8604931e-c844-43f7-8f43-744746f6597e v7 Comment by s1c7-reviewer \u0027s1c7-reviewer:46\u0027 via ws1.example:43625 (stress-dddcbd5632004106b31a0e6c6d109ab1): record missing"
+        ]
+      }
+    }
+  ]
+}

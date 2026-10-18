@@ -1,0 +1,200 @@
+{
+  "passed": false,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T11:45:24.7192954+00:00",
+  "finishedAt": "2026-10-18T11:46:23.6005502+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/win-w0-heavy-NaiveFile-3/data",
+    "servers": 2,
+    "clientsPerServer": 12,
+    "clientsByRole": {
+      "Registrant": 10,
+      "Reviewer": 10,
+      "Admin": 4
+    },
+    "records": 12,
+    "opsPerClient": 200,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w0-heavy-NaiveFile-3"
+      }
+    ],
+    "remoteServers": 2,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w0-heavy-NaiveFile-3",
+  "servers": [
+    {
+      "port": 41135,
+      "logFile": "stress-runs/win-w0-heavy-NaiveFile-3/logs/server-41135.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 33537,
+      "logFile": "stress-runs/win-w0-heavy-NaiveFile-3/logs/server-33537.jsonl",
+      "host": "ws1.example"
+    }
+  ],
+  "numbers": {
+    "writes": 2201,
+    "saves": 232,
+    "conflicts": 531,
+    "wrongStatus": 337,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 531,
+      "http500": 1101,
+      "saved": 232,
+      "wrongStatus": 337
+    },
+    "savesByAction": {
+      "Create": 3,
+      "Update": 3,
+      "Submit": 2,
+      "Reject": 2,
+      "Comment": 222
+    },
+    "reads": 3400,
+    "readFailures": {
+      "http500": 118,
+      "notFound": 1093
+    },
+    "durationSeconds": 8.154,
+    "savesPerSecond": 28.45,
+    "saveLatencyMs": {
+      "p50": 17.43,
+      "p95": 57.03,
+      "max": 226.81,
+      "mean": 24.07
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 3,
+        "recordsFound": 2,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 28,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record aeb0d708-5d58-4fa8-a9a7-6b749d1f208b: missing (1 acknowledged changes)",
+          "lost update aeb0d708-5d58-4fa8-a9a7-6b749d1f208b v1 Create by s1c1-registrant via ws1.example:41135 (stress-68f5345dcb0a498e96b6a5ebf8151aa9): record missing",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v105 Comment by s1c2-reviewer \u0027s1c2-reviewer:198\u0027 via ws1.example:41135 (stress-8ab31d8ba86a411a8450a8458a0a377d): version 105 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v17 Comment by s1c5-reviewer \u0027s1c5-reviewer:24\u0027 via ws1.example:41135 (stress-8f4567085bbd47a4855702171df9a6cb): version 17 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v37 Comment by s1c7-reviewer \u0027s1c7-reviewer:57\u0027 via ws1.example:41135 (stress-923a99755fc5420799bc8ff269581033): version 37 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v70 Comment by s1c9-admin \u0027s1c9-admin:122\u0027 via ws1.example:41135 (stress-c723b77641af4aa9b46bca1c6e8a73ad): version 70 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v82 Comment by s1c9-admin \u0027s1c9-admin:150\u0027 via ws1.example:41135 (stress-9f6cdaeda1804680a229b4160464bfc8): version 82 holds Comment by s2c2-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v41 Comment by s1c12-reviewer \u0027s1c12-reviewer:83\u0027 via ws1.example:41135 (stress-e68da712680c46d08d05fb917227749e): version 41 holds Comment by s1c12-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v74 Comment by s2c7-reviewer \u0027s2c7-reviewer:142\u0027 via ws1.example:33537 (stress-df2217a238fd49aa86263ea67db2d22e): version 74 holds Comment by s2c9-admin",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v92 Comment by s2c7-reviewer \u0027s2c7-reviewer:175\u0027 via ws1.example:33537 (stress-a3548f5205fc4174902f20973f9fa3b6): version 92 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v40 Comment by s2c12-reviewer \u0027s2c12-reviewer:68\u0027 via ws1.example:33537 (stress-019a2b3a700f463ca49ad380dd4b7926): version 40 holds Comment by s2c10-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v23 Comment by s1c4-admin \u0027s1c4-admin:48\u0027 via ws1.example:41135 (stress-2aeafc46a14d41a78467df321de335a5): version 23 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v63 Comment by s1c5-reviewer \u0027s1c5-reviewer:154\u0027 via ws1.example:41135 (stress-fc6d017878624b128bf3752db5f91796): version 63 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v70 Comment by s1c5-reviewer \u0027s1c5-reviewer:172\u0027 via ws1.example:41135 (stress-0575f794b1d14e9c82f3765567040b53): version 70 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v33 Comment by s1c7-reviewer \u0027s1c7-reviewer:60\u0027 via ws1.example:41135 (stress-f39ae3e9ede643eb88c7f23e79746a05): version 33 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v47 Comment by s1c7-reviewer \u0027s1c7-reviewer:88\u0027 via ws1.example:41135 (stress-ef72ef20933f46d4bf5438a5ca406992): version 47 holds Comment by s1c5-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v56 Comment by s1c7-reviewer \u0027s1c7-reviewer:112\u0027 via ws1.example:41135 (stress-a3e1230f515f486c829fdb0e249ad00e): version 56 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v29 Comment by s1c9-admin \u0027s1c9-admin:62\u0027 via ws1.example:41135 (stress-1610ca5b7fb84bb19b54872cea416fe2): version 29 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v50 Comment by s1c9-admin \u0027s1c9-admin:100\u0027 via ws1.example:41135 (stress-2453d0b359b04ba2897feda68b65e7c2): version 50 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v59 Comment by s1c9-admin \u0027s1c9-admin:118\u0027 via ws1.example:41135 (stress-2cd273e3e2d64c738bdc90a786d7b2b2): version 59 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v43 Comment by s1c10-reviewer \u0027s1c10-reviewer:98\u0027 via ws1.example:41135 (stress-9607356f4db5461094ee8fe9665bc412): version 43 holds Comment by s1c9-admin"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:41135",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 3,
+        "recordsFound": 2,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 28,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record aeb0d708-5d58-4fa8-a9a7-6b749d1f208b: missing (1 acknowledged changes)",
+          "lost update aeb0d708-5d58-4fa8-a9a7-6b749d1f208b v1 Create by s1c1-registrant via ws1.example:41135 (stress-68f5345dcb0a498e96b6a5ebf8151aa9): record missing",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v105 Comment by s1c2-reviewer \u0027s1c2-reviewer:198\u0027 via ws1.example:41135 (stress-8ab31d8ba86a411a8450a8458a0a377d): version 105 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v17 Comment by s1c5-reviewer \u0027s1c5-reviewer:24\u0027 via ws1.example:41135 (stress-8f4567085bbd47a4855702171df9a6cb): version 17 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v37 Comment by s1c7-reviewer \u0027s1c7-reviewer:57\u0027 via ws1.example:41135 (stress-923a99755fc5420799bc8ff269581033): version 37 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v70 Comment by s1c9-admin \u0027s1c9-admin:122\u0027 via ws1.example:41135 (stress-c723b77641af4aa9b46bca1c6e8a73ad): version 70 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v82 Comment by s1c9-admin \u0027s1c9-admin:150\u0027 via ws1.example:41135 (stress-9f6cdaeda1804680a229b4160464bfc8): version 82 holds Comment by s2c2-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v41 Comment by s1c12-reviewer \u0027s1c12-reviewer:83\u0027 via ws1.example:41135 (stress-e68da712680c46d08d05fb917227749e): version 41 holds Comment by s1c12-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v74 Comment by s2c7-reviewer \u0027s2c7-reviewer:142\u0027 via ws1.example:33537 (stress-df2217a238fd49aa86263ea67db2d22e): version 74 holds Comment by s2c9-admin",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v92 Comment by s2c7-reviewer \u0027s2c7-reviewer:175\u0027 via ws1.example:33537 (stress-a3548f5205fc4174902f20973f9fa3b6): version 92 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v40 Comment by s2c12-reviewer \u0027s2c12-reviewer:68\u0027 via ws1.example:33537 (stress-019a2b3a700f463ca49ad380dd4b7926): version 40 holds Comment by s2c10-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v23 Comment by s1c4-admin \u0027s1c4-admin:48\u0027 via ws1.example:41135 (stress-2aeafc46a14d41a78467df321de335a5): version 23 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v63 Comment by s1c5-reviewer \u0027s1c5-reviewer:154\u0027 via ws1.example:41135 (stress-fc6d017878624b128bf3752db5f91796): version 63 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v70 Comment by s1c5-reviewer \u0027s1c5-reviewer:172\u0027 via ws1.example:41135 (stress-0575f794b1d14e9c82f3765567040b53): version 70 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v33 Comment by s1c7-reviewer \u0027s1c7-reviewer:60\u0027 via ws1.example:41135 (stress-f39ae3e9ede643eb88c7f23e79746a05): version 33 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v47 Comment by s1c7-reviewer \u0027s1c7-reviewer:88\u0027 via ws1.example:41135 (stress-ef72ef20933f46d4bf5438a5ca406992): version 47 holds Comment by s1c5-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v56 Comment by s1c7-reviewer \u0027s1c7-reviewer:112\u0027 via ws1.example:41135 (stress-a3e1230f515f486c829fdb0e249ad00e): version 56 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v29 Comment by s1c9-admin \u0027s1c9-admin:62\u0027 via ws1.example:41135 (stress-1610ca5b7fb84bb19b54872cea416fe2): version 29 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v50 Comment by s1c9-admin \u0027s1c9-admin:100\u0027 via ws1.example:41135 (stress-2453d0b359b04ba2897feda68b65e7c2): version 50 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v59 Comment by s1c9-admin \u0027s1c9-admin:118\u0027 via ws1.example:41135 (stress-2cd273e3e2d64c738bdc90a786d7b2b2): version 59 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v43 Comment by s1c10-reviewer \u0027s1c10-reviewer:98\u0027 via ws1.example:41135 (stress-9607356f4db5461094ee8fe9665bc412): version 43 holds Comment by s1c9-admin"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:33537",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 3,
+        "recordsFound": 2,
+        "recordsUnexpected": 0,
+        "missingRecords": 1,
+        "lostUpdates": 28,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record aeb0d708-5d58-4fa8-a9a7-6b749d1f208b: missing (1 acknowledged changes)",
+          "lost update aeb0d708-5d58-4fa8-a9a7-6b749d1f208b v1 Create by s1c1-registrant via ws1.example:41135 (stress-68f5345dcb0a498e96b6a5ebf8151aa9): record missing",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v105 Comment by s1c2-reviewer \u0027s1c2-reviewer:198\u0027 via ws1.example:41135 (stress-8ab31d8ba86a411a8450a8458a0a377d): version 105 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v17 Comment by s1c5-reviewer \u0027s1c5-reviewer:24\u0027 via ws1.example:41135 (stress-8f4567085bbd47a4855702171df9a6cb): version 17 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v37 Comment by s1c7-reviewer \u0027s1c7-reviewer:57\u0027 via ws1.example:41135 (stress-923a99755fc5420799bc8ff269581033): version 37 holds Comment by s1c5-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v70 Comment by s1c9-admin \u0027s1c9-admin:122\u0027 via ws1.example:41135 (stress-c723b77641af4aa9b46bca1c6e8a73ad): version 70 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v82 Comment by s1c9-admin \u0027s1c9-admin:150\u0027 via ws1.example:41135 (stress-9f6cdaeda1804680a229b4160464bfc8): version 82 holds Comment by s2c2-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v41 Comment by s1c12-reviewer \u0027s1c12-reviewer:83\u0027 via ws1.example:41135 (stress-e68da712680c46d08d05fb917227749e): version 41 holds Comment by s1c12-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v74 Comment by s2c7-reviewer \u0027s2c7-reviewer:142\u0027 via ws1.example:33537 (stress-df2217a238fd49aa86263ea67db2d22e): version 74 holds Comment by s2c9-admin",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v92 Comment by s2c7-reviewer \u0027s2c7-reviewer:175\u0027 via ws1.example:33537 (stress-a3548f5205fc4174902f20973f9fa3b6): version 92 holds Comment by s1c7-reviewer",
+          "lost update 915b4288-196f-4188-ba6d-2bcda50ae295 v40 Comment by s2c12-reviewer \u0027s2c12-reviewer:68\u0027 via ws1.example:33537 (stress-019a2b3a700f463ca49ad380dd4b7926): version 40 holds Comment by s2c10-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v23 Comment by s1c4-admin \u0027s1c4-admin:48\u0027 via ws1.example:41135 (stress-2aeafc46a14d41a78467df321de335a5): version 23 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v63 Comment by s1c5-reviewer \u0027s1c5-reviewer:154\u0027 via ws1.example:41135 (stress-fc6d017878624b128bf3752db5f91796): version 63 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v70 Comment by s1c5-reviewer \u0027s1c5-reviewer:172\u0027 via ws1.example:41135 (stress-0575f794b1d14e9c82f3765567040b53): version 70 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v33 Comment by s1c7-reviewer \u0027s1c7-reviewer:60\u0027 via ws1.example:41135 (stress-f39ae3e9ede643eb88c7f23e79746a05): version 33 holds Comment by s2c12-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v47 Comment by s1c7-reviewer \u0027s1c7-reviewer:88\u0027 via ws1.example:41135 (stress-ef72ef20933f46d4bf5438a5ca406992): version 47 holds Comment by s1c5-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v56 Comment by s1c7-reviewer \u0027s1c7-reviewer:112\u0027 via ws1.example:41135 (stress-a3e1230f515f486c829fdb0e249ad00e): version 56 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v29 Comment by s1c9-admin \u0027s1c9-admin:62\u0027 via ws1.example:41135 (stress-1610ca5b7fb84bb19b54872cea416fe2): version 29 holds Comment by s1c2-reviewer",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v50 Comment by s1c9-admin \u0027s1c9-admin:100\u0027 via ws1.example:41135 (stress-2453d0b359b04ba2897feda68b65e7c2): version 50 holds Comment by s2c4-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v59 Comment by s1c9-admin \u0027s1c9-admin:118\u0027 via ws1.example:41135 (stress-2cd273e3e2d64c738bdc90a786d7b2b2): version 59 holds Comment by s2c9-admin",
+          "lost update 44d47101-ffcb-476f-8b3a-5f93aea71b68 v43 Comment by s1c10-reviewer \u0027s1c10-reviewer:98\u0027 via ws1.example:41135 (stress-9607356f4db5461094ee8fe9665bc412): version 43 holds Comment by s1c9-admin"
+        ]
+      }
+    }
+  ]
+}

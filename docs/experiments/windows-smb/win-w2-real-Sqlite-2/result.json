@@ -1,0 +1,347 @@
+{
+  "passed": false,
+  "commit": "fe53fea387646cb0ee65f1cccd5a309abb2291d2",
+  "startedAt": "2026-10-18T13:26:28.397045+00:00",
+  "finishedAt": "2026-10-18T13:29:09.7483145+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "Sqlite",
+    "dataPath": "stress-runs/win-w2-real-Sqlite-2/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 158,
+    "opsPerClient": 120,
+    "seed": 2,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w2-real-Sqlite-2"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-w2-real-Sqlite-2"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-w2-real-Sqlite-2",
+  "servers": [
+    {
+      "port": 35687,
+      "logFile": "stress-runs/win-w2-real-Sqlite-2/logs/server-35687.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 41333,
+      "logFile": "stress-runs/win-w2-real-Sqlite-2/logs/server-41333.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 734,
+    "saves": 725,
+    "conflicts": 7,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 7,
+      "http500": 2,
+      "saved": 725
+    },
+    "savesByAction": {
+      "Create": 158,
+      "Update": 165,
+      "Submit": 156,
+      "Approve": 120,
+      "Reject": 36,
+      "Comment": 90
+    },
+    "reads": 809,
+    "readFailures": {
+      "http500": 14,
+      "notFound": 221
+    },
+    "durationSeconds": 127.229,
+    "savesPerSecond": 5.7,
+    "saveLatencyMs": {
+      "p50": 7.06,
+      "p95": 48.37,
+      "max": 162.92,
+      "mean": 13.7
+    },
+    "staleReads": {
+      "count": 221,
+      "readsAfterAnotherServer": 220,
+      "samples": [
+        {
+          "recordId": "6c2fd68f-17da-4084-a1f0-8006fa5bb34b",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 5,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 34.6
+        },
+        {
+          "recordId": "6c2fd68f-17da-4084-a1f0-8006fa5bb34b",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 6,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 110.8
+        },
+        {
+          "recordId": "6c2fd68f-17da-4084-a1f0-8006fa5bb34b",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 7,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 82.6
+        },
+        {
+          "recordId": "6c2fd68f-17da-4084-a1f0-8006fa5bb34b",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 7,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 98.8
+        },
+        {
+          "recordId": "5faf0a53-7b7c-44be-bd5f-9df16d6906c3",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 3,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 78.2
+        },
+        {
+          "recordId": "1cc151e7-41a8-48e5-8cc6-969920256823",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 4,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 105.4
+        },
+        {
+          "recordId": "1cc151e7-41a8-48e5-8cc6-969920256823",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 5,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 25.3
+        },
+        {
+          "recordId": "f1a7390e-9507-4556-a890-b849cf0ff1c4",
+          "server": "ws2.example:41333",
+          "versionRead": 0,
+          "versionAcknowledged": 2,
+          "acknowledgedBy": "ws1.example:35687",
+          "millisecondsSinceAck": 21.4
+        },
+        {
+          "recordId": "018998d5-25c1-45e4-ab6c-4c3e489d78de",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 4,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 290
+        },
+        {
+          "recordId": "018998d5-25c1-45e4-ab6c-4c3e489d78de",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 4,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 294.3
+        },
+        {
+          "recordId": "ea6dc67d-8fc5-4cd2-9b3c-827080f74bbb",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 2,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 29.1
+        },
+        {
+          "recordId": "72e01eaf-33b8-4e8b-9808-72e50c25be42",
+          "server": "ws2.example:41333",
+          "versionRead": 0,
+          "versionAcknowledged": 4,
+          "acknowledgedBy": "ws1.example:35687",
+          "millisecondsSinceAck": 427.1
+        },
+        {
+          "recordId": "e3c50421-70ec-448a-9878-7367b9404b2d",
+          "server": "ws2.example:41333",
+          "versionRead": 0,
+          "versionAcknowledged": 4,
+          "acknowledgedBy": "ws1.example:35687",
+          "millisecondsSinceAck": 51.5
+        },
+        {
+          "recordId": "df9d94b6-4057-47be-bf06-74fa1fbe30f0",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 3,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 36.6
+        },
+        {
+          "recordId": "a7067697-29f3-4738-91c8-95cd530b6946",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 3,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 332.2
+        },
+        {
+          "recordId": "a7067697-29f3-4738-91c8-95cd530b6946",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 3,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 362.7
+        },
+        {
+          "recordId": "a7067697-29f3-4738-91c8-95cd530b6946",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 5,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 123.9
+        },
+        {
+          "recordId": "a7067697-29f3-4738-91c8-95cd530b6946",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 5,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 144.6
+        },
+        {
+          "recordId": "a7067697-29f3-4738-91c8-95cd530b6946",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 6,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 372.4
+        },
+        {
+          "recordId": "fcc41f93-95c7-48c9-a134-7adb9d8503d3",
+          "server": "ws1.example:35687",
+          "versionRead": 0,
+          "versionAcknowledged": 2,
+          "acknowledgedBy": "ws2.example:41333",
+          "millisecondsSinceAck": 27.4
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 158,
+        "recordsFound": 3,
+        "recordsUnexpected": 0,
+        "missingRecords": 155,
+        "lostUpdates": 715,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 9044230d-e7d0-431d-8b46-d864506ae15b: missing (5 acknowledged changes)",
+          "missing record 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4: missing (5 acknowledged changes)",
+          "missing record b43819a1-845e-4992-a838-7b18b6e4d569: missing (6 acknowledged changes)",
+          "missing record 5eadc34f-2151-4f55-be7e-12fa963d2ef1: missing (4 acknowledged changes)",
+          "missing record cb7fac11-8bdd-4789-ac65-98bada963824: missing (4 acknowledged changes)",
+          "missing record 3c5ae9d5-7c59-469c-8a62-10207931bb72: missing (7 acknowledged changes)",
+          "missing record fd039a59-69af-4ab5-9732-8950cad15c00: missing (4 acknowledged changes)",
+          "missing record 7eb13fdd-1a1b-4235-b4ea-c4470a73c18f: missing (4 acknowledged changes)",
+          "missing record 5fd935a6-1ecc-4b5a-b187-fd059a659542: missing (5 acknowledged changes)",
+          "missing record 47327794-c6f6-4ae9-bae7-c0fa176c3c11: missing (5 acknowledged changes)",
+          "missing record 0dd8d176-1f84-44f1-afac-8c68cee41683: missing (6 acknowledged changes)",
+          "missing record 4c1bd8ee-c0b3-4dda-80bc-01fe193ae3a6: missing (5 acknowledged changes)",
+          "missing record c6fe0a18-1ff8-4adc-8e50-f94680242aba: missing (3 acknowledged changes)",
+          "missing record 5564262b-f0a3-424a-bf24-8cbb1bd626ba: missing (7 acknowledged changes)",
+          "missing record a5d8ada7-5c9c-4c34-9a65-212d6b498112: missing (4 acknowledged changes)",
+          "missing record c7544692-efeb-4429-ba34-96bbde617dc5: missing (4 acknowledged changes)",
+          "missing record 796e06d4-0bf8-48c3-ab93-d39972293bf5: missing (5 acknowledged changes)",
+          "missing record efd594c7-9999-4ec8-bdbb-8812e1618b8d: missing (4 acknowledged changes)",
+          "missing record 6e2beff3-91f2-4d15-8691-5bc2246095ad: missing (3 acknowledged changes)",
+          "missing record bfe10585-2534-4af7-8d92-af259f72e59b: missing (6 acknowledged changes)",
+          "lost update 9044230d-e7d0-431d-8b46-d864506ae15b v1 Create by s2c1-registrant via ws2.example:41333 (stress-84d1eb2098c945a184a3c507bf59182b): record missing",
+          "lost update 9044230d-e7d0-431d-8b46-d864506ae15b v2 Update by s2c1-registrant \u0027s2c1-registrant:74\u0027 via ws2.example:41333 (stress-f95cf397496240c5b00d13e5602fe18a): record missing",
+          "lost update 9044230d-e7d0-431d-8b46-d864506ae15b v3 Update by s2c1-registrant \u0027s2c1-registrant:75\u0027 via ws2.example:41333 (stress-b01b204b3a3d434d98d6c7a8f0c3dd2d): record missing",
+          "lost update 9044230d-e7d0-431d-8b46-d864506ae15b v4 Submit by s2c1-registrant via ws2.example:41333 (stress-674ce78625984bfa9953b33cb2fe87a5): record missing",
+          "lost update 9044230d-e7d0-431d-8b46-d864506ae15b v5 Reject by s2c4-admin via ws2.example:41333 (stress-6077bf552d3d44f9b88dc0a1b9a8f5a2): record missing",
+          "lost update 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4 v5 Approve by s2c2-reviewer via ws2.example:41333 (stress-3d00327ec3da40769083f26d457fdea0): record missing",
+          "lost update 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4 v1 Create by s2c3-registrant via ws2.example:41333 (stress-3d46bea49dba43248df2e44335fac5ff): record missing",
+          "lost update 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4 v2 Update by s2c3-registrant \u0027s2c3-registrant:71\u0027 via ws2.example:41333 (stress-a9130918befd46eca6cf3f8aba1b4451): record missing",
+          "lost update 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4 v3 Update by s2c3-registrant \u0027s2c3-registrant:72\u0027 via ws2.example:41333 (stress-ce19df127a564fc28f829414fd53971f): record missing",
+          "lost update 4cbd2d14-7b59-42b5-86fe-27cbe5f8cfd4 v4 Submit by s2c3-registrant via ws2.example:41333 (stress-b8b602b978624748997fadfd3d79e860): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v1 Create by s1c1-registrant via ws1.example:35687 (stress-06350d33a2d94c1683088229a5361731): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v2 Update by s1c1-registrant \u0027s1c1-registrant:118\u0027 via ws1.example:35687 (stress-0979be5e098a41219255a3a1d0158284): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v3 Update by s1c1-registrant \u0027s1c1-registrant:119\u0027 via ws1.example:35687 (stress-66355128a4aa470ba697c0432ee2b7b7): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v4 Submit by s1c1-registrant via ws1.example:35687 (stress-b2f0871aa11e4e4485f647d1459fabe7): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v6 Approve by s1c4-admin via ws1.example:35687 (stress-efe58910e0694c3597b0eb5053519104): record missing",
+          "lost update b43819a1-845e-4992-a838-7b18b6e4d569 v5 Comment by s1c5-reviewer \u0027s1c5-reviewer:79\u0027 via ws1.example:35687 (stress-351a12c6d92f4c2ebf823221c5fdefba): record missing",
+          "lost update 5eadc34f-2151-4f55-be7e-12fa963d2ef1 v4 Approve by s2c2-reviewer via ws2.example:41333 (stress-ae8f5959497841109e8515693b4937bf): record missing",
+          "lost update 5eadc34f-2151-4f55-be7e-12fa963d2ef1 v1 Create by s2c3-registrant via ws2.example:41333 (stress-c5340348b3c64021b35d2298834b9bc4): record missing",
+          "lost update 5eadc34f-2151-4f55-be7e-12fa963d2ef1 v2 Update by s2c3-registrant \u0027s2c3-registrant:113\u0027 via ws2.example:41333 (stress-7b039cff0ada44a5b2be10b4a66d3cd2): record missing",
+          "lost update 5eadc34f-2151-4f55-be7e-12fa963d2ef1 v3 Submit by s2c3-registrant via ws2.example:41333 (stress-d34f997a2f6e4eeca7757d3335d7ea3d): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:35687",
+        "skipped": null,
+        "error": "listing records answered 500",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws2.example:41333",
+        "skipped": null,
+        "error": "reading 25f8ce61-f9cd-462c-9a30-46f1cd7ec942 answered 404",
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ]
+}

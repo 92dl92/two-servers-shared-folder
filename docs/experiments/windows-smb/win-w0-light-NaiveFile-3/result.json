@@ -1,0 +1,155 @@
+{
+  "passed": false,
+  "commit": "c71df76c37c18ca38a44e27c02961e268fbb1c09",
+  "startedAt": "2026-10-18T11:31:06.8852775+00:00",
+  "finishedAt": "2026-10-18T11:32:02.8306454+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "NaiveFile",
+    "dataPath": "stress-runs/win-w0-light-NaiveFile-3/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 6,
+    "opsPerClient": 40,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-w0-light-NaiveFile-3"
+      }
+    ],
+    "remoteServers": 2,
+    "dataCopied": true
+  },
+  "runFolder": "stress-runs/win-w0-light-NaiveFile-3",
+  "servers": [
+    {
+      "port": 35979,
+      "logFile": "stress-runs/win-w0-light-NaiveFile-3/logs/server-35979.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 33679,
+      "logFile": "stress-runs/win-w0-light-NaiveFile-3/logs/server-33679.jsonl",
+      "host": "ws1.example"
+    }
+  ],
+  "numbers": {
+    "writes": 197,
+    "saves": 37,
+    "conflicts": 27,
+    "wrongStatus": 50,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 27,
+      "http500": 83,
+      "saved": 37,
+      "wrongStatus": 50
+    },
+    "savesByAction": {
+      "Create": 6,
+      "Update": 7,
+      "Submit": 3,
+      "Approve": 3,
+      "Comment": 18
+    },
+    "reads": 400,
+    "readFailures": {
+      "http500": 12,
+      "notFound": 197
+    },
+    "durationSeconds": 1.212,
+    "savesPerSecond": 30.54,
+    "saveLatencyMs": {
+      "p50": 15.11,
+      "p95": 114.4,
+      "max": 114.86,
+      "mean": 28.3
+    }
+  },
+  "checks": [
+    {
+      "passed": false,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 5,
+        "recordsUnexpected": 2,
+        "missingRecords": 3,
+        "lostUpdates": 3,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 8598d8d1-ab88-454f-abd0-a61cc419d9db: missing (1 acknowledged changes)",
+          "missing record 679d4569-af77-4447-9510-3fb9f70994eb: missing (1 acknowledged changes)",
+          "missing record e3bb24bf-6454-443b-895f-e76591aceb33: missing (1 acknowledged changes)",
+          "lost update 8598d8d1-ab88-454f-abd0-a61cc419d9db v1 Create by s1c1-registrant via ws1.example:35979 (stress-a745bc135fbb4a0badfce07ad85b1cc3): record missing",
+          "lost update 679d4569-af77-4447-9510-3fb9f70994eb v1 Create by s2c1-registrant via ws1.example:33679 (stress-ec7d8476b3cc46bdbbd63f0a88c7f792): record missing",
+          "lost update e3bb24bf-6454-443b-895f-e76591aceb33 v1 Create by s1c3-registrant via ws1.example:35979 (stress-1c0ce6c050664e40a80aeb195d4a6acc): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:35979",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 5,
+        "recordsUnexpected": 2,
+        "missingRecords": 3,
+        "lostUpdates": 3,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 8598d8d1-ab88-454f-abd0-a61cc419d9db: missing (1 acknowledged changes)",
+          "missing record 679d4569-af77-4447-9510-3fb9f70994eb: missing (1 acknowledged changes)",
+          "missing record e3bb24bf-6454-443b-895f-e76591aceb33: missing (1 acknowledged changes)",
+          "lost update 8598d8d1-ab88-454f-abd0-a61cc419d9db v1 Create by s1c1-registrant via ws1.example:35979 (stress-a745bc135fbb4a0badfce07ad85b1cc3): record missing",
+          "lost update 679d4569-af77-4447-9510-3fb9f70994eb v1 Create by s2c1-registrant via ws1.example:33679 (stress-ec7d8476b3cc46bdbbd63f0a88c7f792): record missing",
+          "lost update e3bb24bf-6454-443b-895f-e76591aceb33 v1 Create by s1c3-registrant via ws1.example:35979 (stress-1c0ce6c050664e40a80aeb195d4a6acc): record missing"
+        ]
+      }
+    },
+    {
+      "passed": false,
+      "report": {
+        "source": "server ws1.example:33679",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 6,
+        "recordsFound": 5,
+        "recordsUnexpected": 2,
+        "missingRecords": 3,
+        "lostUpdates": 3,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": [
+          "missing record 8598d8d1-ab88-454f-abd0-a61cc419d9db: missing (1 acknowledged changes)",
+          "missing record 679d4569-af77-4447-9510-3fb9f70994eb: missing (1 acknowledged changes)",
+          "missing record e3bb24bf-6454-443b-895f-e76591aceb33: missing (1 acknowledged changes)",
+          "lost update 8598d8d1-ab88-454f-abd0-a61cc419d9db v1 Create by s1c1-registrant via ws1.example:35979 (stress-a745bc135fbb4a0badfce07ad85b1cc3): record missing",
+          "lost update 679d4569-af77-4447-9510-3fb9f70994eb v1 Create by s2c1-registrant via ws1.example:33679 (stress-ec7d8476b3cc46bdbbd63f0a88c7f792): record missing",
+          "lost update e3bb24bf-6454-443b-895f-e76591aceb33 v1 Create by s1c3-registrant via ws1.example:35979 (stress-1c0ce6c050664e40a80aeb195d4a6acc): record missing"
+        ]
+      }
+    }
+  ]
+}

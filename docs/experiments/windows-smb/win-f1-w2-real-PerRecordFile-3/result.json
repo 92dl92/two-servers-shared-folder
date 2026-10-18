@@ -1,0 +1,170 @@
+{
+  "passed": true,
+  "commit": "22febeb1b9f435203813da53e455263d96f64aea",
+  "startedAt": "2026-10-18T16:26:19.3817551+00:00",
+  "finishedAt": "2026-10-18T16:28:56.8166+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/win-f1-w2-real-PerRecordFile-3/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 113,
+    "opsPerClient": 120,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-f1-w2-real-PerRecordFile-3"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-f1-w2-real-PerRecordFile-3"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-f1-w2-real-PerRecordFile-3",
+  "servers": [
+    {
+      "port": 36425,
+      "logFile": "stress-runs/win-f1-w2-real-PerRecordFile-3/logs/server-36425.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 36877,
+      "logFile": "stress-runs/win-f1-w2-real-PerRecordFile-3/logs/server-36877.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 652,
+    "saves": 479,
+    "conflicts": 13,
+    "wrongStatus": 0,
+    "noResponse": 1,
+    "writesByOutcome": {
+      "conflict": 13,
+      "noResponse": 1,
+      "refused": 159,
+      "saved": 479
+    },
+    "savesByAction": {
+      "Create": 113,
+      "Update": 95,
+      "Submit": 111,
+      "Approve": 85,
+      "Reject": 26,
+      "Comment": 49
+    },
+    "reads": 444,
+    "readFailures": {
+      "refused": 63
+    },
+    "durationSeconds": 125.708,
+    "savesPerSecond": 3.81,
+    "saveLatencyMs": {
+      "p50": 8.92,
+      "p95": 49.77,
+      "max": 304.44,
+      "mean": 18.19
+    },
+    "staleReads": {
+      "count": 0,
+      "readsAfterAnotherServer": 45,
+      "samples": []
+    },
+    "longestStall": {
+      "seconds": 1.42,
+      "afterSeconds": 124.29
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 113,
+        "recordsFound": 113,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 1,
+        "ruleViolations": 0,
+        "examples": [
+          "unacknowledged 7ae7a169-a5f3-4073-93a7-31cb89bfbbcf v2: Update by s2c3-registrant"
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:36425",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 113,
+        "recordsFound": 113,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 1,
+        "ruleViolations": 0,
+        "examples": [
+          "unacknowledged 7ae7a169-a5f3-4073-93a7-31cb89bfbbcf v2: Update by s2c3-registrant"
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:36877",
+        "skipped": "killed by --fault",
+        "error": null,
+        "recordsExpected": 0,
+        "recordsFound": 0,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ],
+  "faults": [
+    {
+      "fault": "kill server 2 at 40 s",
+      "atSeconds": 40,
+      "result": "server ws2.example:36877 killed",
+      "happened": true
+    }
+  ],
+  "lockCheck": {
+    "changes": 113,
+    "changed": 113,
+    "stuck": 0,
+    "unreadable": 0,
+    "stoppedEarly": false,
+    "examples": [],
+    "passed": true
+  }
+}

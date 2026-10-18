@@ -1,0 +1,162 @@
+{
+  "passed": true,
+  "commit": "22febeb1b9f435203813da53e455263d96f64aea",
+  "startedAt": "2026-10-18T16:43:44.8412671+00:00",
+  "finishedAt": "2026-10-18T16:46:48.8211751+00:00",
+  "machine": {
+    "name": "linux-host",
+    "os": "Debian GNU/Linux 12 (bookworm)",
+    "processorCount": 16,
+    "runtime": ".NET 10.0.12"
+  },
+  "settings": {
+    "strategy": "PerRecordFile",
+    "dataPath": "stress-runs/win-f3-w2-real-PerRecordFile-3/data",
+    "servers": 2,
+    "clientsPerServer": 5,
+    "clientsByRole": {
+      "Registrant": 4,
+      "Reviewer": 4,
+      "Admin": 2
+    },
+    "records": 168,
+    "opsPerClient": 120,
+    "seed": 3,
+    "serverArgs": [],
+    "remotes": [
+      {
+        "target": "Administrator@ws1.example",
+        "dataPath": "C:\\share\\runs\\win-f3-w2-real-PerRecordFile-3"
+      },
+      {
+        "target": "Administrator@ws2.example",
+        "dataPath": "\\\\ws1.example\\share\\runs\\win-f3-w2-real-PerRecordFile-3"
+      }
+    ],
+    "remoteServers": 1,
+    "dataCopied": true,
+    "workload": "pipeline",
+    "thinkMilliseconds": 1000
+  },
+  "runFolder": "stress-runs/win-f3-w2-real-PerRecordFile-3",
+  "servers": [
+    {
+      "port": 39665,
+      "logFile": "stress-runs/win-f3-w2-real-PerRecordFile-3/logs/server-39665.jsonl",
+      "host": "ws1.example"
+    },
+    {
+      "port": 38339,
+      "logFile": "stress-runs/win-f3-w2-real-PerRecordFile-3/logs/server-38339.jsonl",
+      "host": "ws2.example"
+    }
+  ],
+  "numbers": {
+    "writes": 767,
+    "saves": 729,
+    "conflicts": 38,
+    "wrongStatus": 0,
+    "noResponse": 0,
+    "writesByOutcome": {
+      "conflict": 38,
+      "saved": 729
+    },
+    "savesByAction": {
+      "Create": 168,
+      "Update": 149,
+      "Submit": 168,
+      "Approve": 121,
+      "Reject": 47,
+      "Comment": 76
+    },
+    "reads": 602,
+    "readFailures": {},
+    "durationSeconds": 143.879,
+    "savesPerSecond": 5.07,
+    "saveLatencyMs": {
+      "p50": 24.8,
+      "p95": 65.08,
+      "max": 15511.44,
+      "mean": 67.55
+    },
+    "staleReads": {
+      "count": 0,
+      "readsAfterAnotherServer": 145,
+      "samples": []
+    },
+    "longestStall": {
+      "seconds": 1.28,
+      "afterSeconds": 48.93
+    }
+  },
+  "checks": [
+    {
+      "passed": true,
+      "report": {
+        "source": "storage",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 168,
+        "recordsFound": 168,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws1.example:39665",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 168,
+        "recordsFound": 168,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    },
+    {
+      "passed": true,
+      "report": {
+        "source": "server ws2.example:38339",
+        "skipped": null,
+        "error": null,
+        "recordsExpected": 168,
+        "recordsFound": 168,
+        "recordsUnexpected": 0,
+        "missingRecords": 0,
+        "lostUpdates": 0,
+        "wrongVersion": 0,
+        "unacknowledged": 0,
+        "ruleViolations": 0,
+        "examples": []
+      }
+    }
+  ],
+  "faults": [
+    {
+      "fault": "run \u0060webapp/scripts/vm-link.sh ws2 10\u0060 at 40 s",
+      "atSeconds": 40,
+      "result": "exit 0: ws2 vnet3 down for 10 s ws2 vnet3 up again: up",
+      "happened": true
+    }
+  ],
+  "lockCheck": {
+    "changes": 336,
+    "changed": 336,
+    "stuck": 0,
+    "unreadable": 0,
+    "stoppedEarly": false,
+    "examples": [],
+    "passed": true
+  }
+}

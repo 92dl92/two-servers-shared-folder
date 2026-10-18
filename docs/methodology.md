@@ -10,9 +10,9 @@ or a result changes, this file changes in the same pull request (see
 
 | | |
 |---|---|
-| **Last updated** | 2026-10-18, after phase 6 (NFS) and the planning of phase 6b (Windows + SMB) |
-| **Rounds completed** | Local disk (phase 5, with a contention sweep); NFS share from one and two machines (phase 6) |
-| **Next round** | Phase 6b: Windows servers on an SMB share, realistic load (planned; test machines being set up) |
+| **Last updated** | 2026-10-18, after phase 6b (Windows servers on an SMB share) |
+| **Rounds completed** | Local disk (phase 5, with a contention sweep); NFS share from one and two machines (phase 6); Windows servers on an SMB share, with realistic load, failure tests, volume and a one-hour soak (phase 6b) |
+| **Round in progress** | None |
 
 ## Contents
 
@@ -71,7 +71,7 @@ Design notes for each are in `docs/strategies/<Name>.md`.
 | H1 | On local disk, with all servers on one machine, B–E lose nothing under any contention | **Supported** (phase 5) |
 | H2 | On a network share used from one machine, B–E stay safe, only slower | **Supported** for NFSv3 from Linux (phase 6) |
 | H3 | On a network share used from several machines, safety depends on each machine's file-sharing client (its caching and locking), not on the strategy alone | **Supported** for NFSv3 with a Linux and a macOS client: every strategy failed (phase 6) |
-| H4 | Windows servers on an SMB share are safe at the realistic load, because the SMB server enforces locks and keeps file contents coherent between clients | **Open** (phase 6b) |
+| H4 | Windows servers on an SMB share are safe at the realistic load, because the SMB server enforces locks and keeps file contents coherent between clients | **Supported for C** (and B, D) with Windows Server 2025 and SMB 3.1.1, after three changes the tests called for: retry a rename Windows refuses while the file is open, the share's leasing off, and a list cache in C. Held under crashes and 10 s and 60 s network cuts, with 6,000 records, and for an hour. **Not for E** (SQLite loses data silently) **or A** (loses data even at low load). Phase 6b |
 
 ## 3. The system under test
 
@@ -85,12 +85,16 @@ A Blazor web app (.NET 10) in `webapp/`. What matters for the experiment:
 - **Status rules** refuse a change the current status doesn't allow with **422**.
 - **Every server** is a separate process, started with
   `--Storage:Strategy <name> --Storage:Path <folder>`. It never trusts a copy kept in
-  memory: it reads the files on every request, or (D) first checks that the file hasn't
-  changed since it last read it.
+  memory for anything that decides a write: it reads the files on every request, or (D)
+  first checks that the file hasn't changed since it last read it. Since phase 6b,
+  strategy C's list keeps unchanged records in memory; a record's own page and every write
+  still read the file.
 - **Storage strategies** implement one interface, `IRegistrationStore`, and all pass one
   shared test suite (`webapp/tests/BlazorApp.Services.Tests/Storage/`), including several
   separate processes writing at once. Strategy A runs that suite reversed: it must be seen
-  to lose updates, which proves the suite can detect them.
+  to lose updates, which proves the suite can detect them. Its 32-thread race gets up to 5
+  rounds and must show a loss in at least one, since on a busy machine the threads sometimes
+  don't overlap.
 
 The version is checked twice: once by the service before it builds the change, and again
 by the store at the moment it writes. Only the second check can stop two servers racing,
@@ -295,7 +299,7 @@ var all = ReadAll();
 if (all[i].Version != expected) return Conflict;
 all[i] = updated;
 WriteAndFlush("registrations.json.tmp", all);                   // complete file, on disk
-File.Move("registrations.json.tmp", "registrations.json", overwrite: true); // one step
+FileReplace.Move("registrations.json.tmp", "registrations.json", logger); // one step*
 return Saved;                                                   // lock released here
 ```
 
@@ -308,9 +312,13 @@ var stored = Read($"records/{id}.json");
 if (stored.Version != expected) return Conflict;
 var temp = $"tmp/{id}.{Guid.NewGuid():N}.tmp";
 WriteAndFlush(temp, updated);
-File.Move(temp, $"records/{id}.json", overwrite: true);
+FileReplace.Move(temp, $"records/{id}.json", logger);              // one step*
 return Saved;
 ```
+
+\* `FileReplace.Move` (`webapp/src/BlazorApp.Services/Storage/FileReplace.cs`) is
+`File.Move(…, overwrite: true)`, retried for up to 3 s on Windows while another handle
+has the old file open (phase 6b: Windows refuses the rename then; Linux and macOS don't).
 
 **D AppendLog:** nothing is rewritten. Every change is one line added to a log, and the
 current state is the log replayed.
@@ -340,7 +348,7 @@ process on one machine.
 | Strategy | Relies on |
 |---|---|
 | A | Nothing (it is the control: it should fail) |
-| B, C | An exclusive lock that every server and every thread respects; a fresh read under the lock; rename replacing the file in one step |
+| B, C | An exclusive lock that every server and every thread respects; a fresh read under the lock; rename replacing the file in one step (on Windows, retried while the old file is open elsewhere) |
 | D | The same lock; the file's true length under the lock, so a line lands at the real end |
 | E | SQLite's own locking and shared memory: all servers on one machine |
 
@@ -349,11 +357,15 @@ process on one machine.
 The **stress tool** (`webapp/tools/BlazorApp.Stress`, full design in
 `docs/strategies/StressTool.md`) runs one experiment:
 
-1. **Starts N real server processes** on one data folder, optionally some of them on a
-   second machine over ssh. Real processes matter: servers simulated inside one process
-   would share memory and locks and hide the very problems being tested.
-2. **Creates records**, then lets every client (each acting as its own user) read a
-   random record and send a change with the version it just read, all at the same time.
+1. **Starts N real server processes** on one data folder, optionally some or all of them
+   on other machines over ssh (Linux, macOS or Windows). Real processes matter: servers
+   simulated inside one process would share memory and locks and hide the very problems
+   being tested. With `--prefill`, the folder is first filled with finished records.
+2. **Runs a workload.** *Contention:* creates records, then every client (each acting as
+   its own user) reads a random record and sends a change with the version it just read,
+   all at once. *Pipeline:* registrants create, edit and submit records; reviewers take
+   submitted records and comment or decide; every step reads first, after a think time.
+   With `--fault`, a server is killed or a command (e.g. a network cut) runs at a set time.
 3. **Records every acknowledged change** (any 2xx answer): record, version, action, user,
    a unique marker written into the record, server and correlation id.
 4. **Reads everything back** through every server's API and, after the servers stop,
@@ -365,14 +377,21 @@ The **stress tool** (`webapp/tools/BlazorApp.Stress`, full design in
 | **Nothing lost** | An acknowledged change isn't in the history at its version, its marker is at another version, a created record is missing, or the data isn't from the last update |
 | **No broken files** | The folder can't be read through the strategy, or a server can't list or return a record |
 | **Rules respected** | History isn't versions 1..N, or replaying it finds a change the status or role didn't allow |
-| **Unacknowledged entries** | More history entries than acknowledgements can account for (allowing for requests that timed out) |
+| **Unacknowledged entries** | More history entries than acknowledgements can account for (allowing for requests that timed out; refused connections don't count, since nothing was sent) |
+| **Prefilled records** (with `--prefill`) | A record put in the folder before the run is missing, or not at the version it was left at |
+| **Lock check** (with `--fault`) | After the workload, a record can be read but not changed within 30 s through a surviving server: left locked |
 
 A run **passes** only when every check passes on every read-back. Exit code 0 = passed,
 1 = a check failed, 2 = the run couldn't be done.
 
-**Numbers recorded** (`result.json`, `summary.md`): saves, 409s, 422s, 500s, unanswered
-requests, saves per second, save latency (p50/p95/max), the commit (with `-dirty` for
-uncommitted changes), machine, times and every setting including the seed.
+**Numbers recorded** (`result.json`, `summary.md`): saves, 409s, 422s, 500s, refused and
+unanswered requests, saves per second, save, read and list latency (p50/p95/max), the
+**longest stall** (the longest time no save was acknowledged), **stale reads** (a read that
+returned an older version than one already acknowledged before it was sent, or a 404 for a
+record whose create was acknowledged: reported, not a failure), the faults and what they did,
+the commit (with `-dirty` for uncommitted changes), machine, times and every setting
+including the seed. Server errors (500) don't fail a run, since nothing is lost, but they are
+reported and must be looked at: phase 6b's main Windows finding first showed up there.
 
 **Known answer.** Before any other result in a round counts, the tool must tell a broken
 strategy from a correct one in that environment: **A must fail** (lost updates or a broken
@@ -449,8 +468,10 @@ racing saves got a 409 instead.
 | Kind | Variable | Values used so far |
 |---|---|---|
 | Independent | Storage strategy | A, B, C, D, E |
-| Independent | Where the folder lives | Local disk; NFSv3 share on a NAS; (planned) SMB share on a NAS and on a Windows server |
-| Independent | Machines and their OS | 1 Linux; 2 Linux + 1 macOS; (planned) 2 Windows Server |
+| Independent | Where the folder lives | Local disk; NFSv3 share on a NAS; SMB 3.1.1 share on a Windows server (leasing on and off) |
+| Independent | Machines and their OS | 1 Linux; 2 Linux + 1 macOS; 2 Windows Server (one hosting the share) |
+| Independent | Faults | None; a server killed; a machine's network cut for 10 s or 60 s |
+| Independent | Data already in the folder | None; 6,000 finished records |
 | Independent | Load: servers × clients per server, records, changes per client | See the profiles below |
 | Controlled | Commit (clean tree), .NET version, seeds 1–3, run time limit | Recorded in every `result.json` |
 | Measured | Pass/fail per check, lost changes, broken files, 409/422/500, saves/s, latency | |
@@ -465,7 +486,11 @@ clients, the more often two changes collide on one record.
 | **light** | `--servers 3 --clients 5 --records 6 --ops 40` | Quick round, about 2.5 clients per record |
 | **heavy** | `--servers 3 --clients 8 --records 12 --ops 200` | Sustained load, about 2 clients per record |
 | **sweep** | `--servers 3 --clients 8 --ops 200 --records 1,3,12,24,48,96`, plus `--servers 5 --clients 8 --records 20 --ops 200` | Contention from 24 clients on one record to 1 client per 4 records |
-| **realistic** (planned, phase 6b) | 2 servers, 10 clients in total (5 per server), creators and responders handing records over with think time, longer run | The production case in section 1 |
+| **light / heavy, 2 servers** (6b) | `--servers 2 --clients 5 --records 6 --ops 40` / `--servers 2 --clients 12 --records 12 --ops 200` | The light and heavy profiles with 2 servers, as in production |
+| **realistic** (6b) | `--servers 2 --clients 5 --workload pipeline --think-ms 1000 --ops 120` | The production case in section 1: 10 clients, creators and reviewers handing records over, collisions rare |
+| **failure** (6b) | realistic + `--fault kill:<n>@40` or `--fault "run:webapp/scripts/vm-link.sh <vm> <10 or 60>@40"` | A server crashing, a machine cut off, mid-run |
+| **volume** (6b) | realistic + `--list --prefill 6000` | Three years of production data; times the Records list |
+| **soak** (6b) | volume with `--ops 3300` (about an hour) | Anything that builds up or slows down over time |
 
 ### Repetition
 
@@ -490,8 +515,15 @@ machine that runs servers and note each machine's path to it.
 - ssh with key login from the driver (the tool uses `BatchMode`)
 - the share mounted
 - inbound access from the driver to the ports the servers listen on
-- today the tool drives a Linux or macOS second machine (it copies with `rsync` and stops
-  servers with `kill`); a Windows second machine needs the phase 6b changes
+- Linux or macOS: copied with `rsync`, servers stopped with `kill`
+- **Windows** (phase 6b): OpenSSH server with PowerShell as its default shell; the driver
+  needs OpenSSH 9.0 or later (`scp -O`). An ssh key logon has no network credentials, so a
+  machine that reaches the share over SMB needs `~/claudetest-stress/connect.ps1` (e.g. a
+  `net use \\host\share /user:... '...'`), kept on that machine
+- several machines can each run servers (`--remote` repeated, each with its own
+  `--remote-data`); with every server remote, the folder is copied back from the first one
+  to be checked
+- **Without ssh** (e.g. production servers started by hand) the tool can't run yet
 
 **Record about the environment**, for the results file of each round (copy this list):
 
@@ -533,9 +565,12 @@ Add, depending on the round:
 
 - **Folder on a share:** `--data <share path on this machine>/runs/<run name>/data` (a new
   folder per run, so no run starts from another's data)
-- **Servers on a second machine:** `--remote <user@host> --remote-servers <n>
-  --remote-data <the same folder as that machine sees it>`. The host must resolve for
-  HTTP too (a name or address, not an ssh config alias).
+- **Servers on other machines:** `--remote <user@host> --remote-data <the same folder as that
+  machine sees it>`, repeated per machine, and `--remote-servers <n>` per machine. The host
+  must resolve for HTTP too (a name or address, not an ssh config alias). With every server
+  remote, leave out `--data`.
+- **Realistic, failure, volume:** `--workload pipeline --think-ms 1000`, `--fault ...`,
+  `--prefill <n> --list` (section 5).
 
 ### 7.3 One round
 
@@ -656,51 +691,72 @@ setting and example in machine-readable form.
   reports a busy lock with a different error code than Linux.
 - Every loss was silent: the client had been told "saved".
 
+### Phase 6b: Windows servers on an SMB share (`docs/experiments/windows-smb.md`)
+
+Two Windows Server 2025 VMs; the share on one of them (SMB 3.1.1); 121 runs.
+
+| Strategy | Both servers on one machine | Two machines over SMB, contention | Realistic pipeline |
+|---|---|---|---|
+| A NaiveFile | failed 6/6 | failed 6/6 | **failed 3/3** |
+| B LockedFile | passed 6/6 | passed 6/6 | passed 3/3 |
+| C PerRecordFile | passed 6/6 | passed 6/6 | passed 3/3 |
+| D AppendLog | passed 6/6 | passed 6/6 | passed 3/3 |
+| E Sqlite | passed 6/6 | **lost data 6/6, silently** | **lost data 3/3** |
+
+- **Windows refuses to replace a file another handle has open**, which showed as server errors
+  (no data lost) in C, up to 141 per heavy run. A retry of up to 3 s brought them to 0.
+- **With the share's leasing on, the system froze for ~35 s** in 2 of 6 heavy runs (the SMB
+  lease-break timeout). With it off: no freeze, slower only under heavy load.
+- **At 6,000 records, C's list read every file** (>60 s over SMB). A list cache made it ~0.1 s;
+  the first list after a server starts still takes ~50 s.
+- With those three changes, C passed **failure tests** (a server killed on either machine,
+  a 10 s and a 60 s network cut: nothing lost, no record left locked), the **volume test**
+  and a **one-hour soak** (19,828 saves, 0 lost, 0 errors, saves as fast at the end as at the
+  start). No stale read was seen in any 6b run of B, C or D.
+- B and D also stayed safe but don't meet the production requirement (one file per record);
+  C is the candidate.
+
 ### What this means so far
 
 - A correct strategy is necessary but not sufficient: **the file-sharing client on each
   machine decides whether locks and version checks see the truth.**
 - Results from one client OS or protocol don't carry over to another; each production
   combination has to be tested itself.
-- Not yet tested: two Linux machines, NFSv4, SMB, Windows clients, macOS with caching off
-  (`noac`), and a realistic (low-contention) load.
+- With Windows on both ends and SMB, the file server keeps locks and contents coherent
+  between machines: correct strategies stayed safe, including through crashes and network
+  cuts. What it took were Windows-specific changes (rename retry, leasing off) found only by
+  running there.
+- Not yet tested: two Linux machines, NFSv4, macOS with caching off (`noac`), a NAS as the SMB
+  host, a real network between real machines (6b's VMs shared one host), and production's
+  antivirus and backup software.
 
 ## 9. Planned rounds
 
-### Phase 6b: Windows servers on an SMB share, realistic load
+### Next
 
-Tests H4, the production case. Plan in `docs/plan.md` (phase 6b and its Decisions row).
-
-- **Machines:** two Windows Server 2025 machines running the servers; the stress tool and
-  clients on the driver. In the reference environment these are evaluation VMs on the Linux
-  driver (KVM), installed unattended (Server Core, OpenSSH on, ASP.NET Core 10 runtime).
-- **Share layouts:** (1) a NAS share over SMB used by both servers; (2) one server sharing
-  its own folder, so one writes to local disk and the other over SMB.
-- **Workloads:** light and heavy as before, plus the realistic profile.
-- **New check:** stale reads: a read that returns an older version than one already
-  acknowledged, especially when a record passes between servers.
-- **Tool changes needed first:** `--remote` for Windows machines (copy without `rsync`,
-  stop servers without `kill`), the realistic profile and the stale-read check.
-- **Done when:** the known answer holds on each layout, every strategy has 3 runs of each
-  profile on each layout, and each layout gets a verdict: safe at the realistic load, or
-  how often it lost or broke something.
+- **The real servers.** Production's servers have no ssh and are started by hand, so the tool
+  needs a mode that runs against servers it didn't start before it can test them.
+- **What 6b didn't cover** (`docs/experiments/windows-smb.md`, "Not tested"): a real network,
+  the actual share host, antivirus and backup software, a load balancer.
 
 ### Later
 
-Depending on 6b: architectures where one authority decides every write (a primary server,
-a database server, replicated SQLite such as rqlite), tested with the same tool and checks.
+If a share turns out not to be acceptable after all: architectures where one authority
+decides every write (a primary server, a database server such as SQL Server Express,
+replicated SQLite such as rqlite), tested with the same tool and checks.
 
 ## 10. Limitations
 
 - **Absence of failure is not proof of safety.** A pass means no loss was seen in these
-  runs. Rare races, crashes mid-write, network drops and failover are not exercised.
-- **The load is artificial.** Clients change records as fast as they can, which raises
-  the chance of collisions far above a real office's. The realistic profile (6b) addresses
-  this.
+  runs. Since 6b, crashes and network cuts are exercised (3 runs each), but whether a fault
+  hits the exact moment a lock is held is down to chance, and failover is not tested.
+- **The contention load is artificial.** Clients change records as fast as they can, far
+  above a real office's collision rate; the realistic profile (6b) models the production
+  pipeline instead, but it is still a model of it.
 - **Timing varies.** The seed fixes choices, not interleaving; numbers vary between runs,
   and speeds depend on the hardware.
-- **One share, one network.** Results describe the NAS, OS versions and mount options
-  recorded with each round. Another vendor's server or other mount options can behave
+- **One share, one network.** Results describe the NAS or server, OS versions and mount or
+  share options recorded with each round; 6b's two Windows machines were VMs on one host. Another vendor's server or other mount options can behave
   differently; that is why section 6 asks for them to be recorded.
 - **Latency includes HTTP** through the real servers, not just the storage.
 

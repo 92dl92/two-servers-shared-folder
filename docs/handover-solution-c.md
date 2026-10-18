@@ -3,14 +3,11 @@
 **For:** an agent (or developer) starting in a new environment, whose job is to turn this
 proposal into an **implementation plan** for a real application, and then carry it out.
 **From:** a proof of concept (the code in this repository, called "ClaudeTest" in its docs).
-**Status:** 2026-10-18. This repository is a snapshot of that proof of concept, taken while its
-Windows round (phase 6b) was still in progress: the Windows results in section 3 are
-**provisional** and not yet written up in `docs/experiments/` (which covers the local-disk
-and NFS rounds). The code here includes everything phase 6b had built by then
-(`Storage/FileReplace.cs`, the list cache, the stress tool's `--remote` for Windows,
-`--workload pipeline`, `--fault`, `--prefill`). Commit ids quoted below (`c71df76`,
-`fe53fea`, `1e1cb64`, `22febeb`, `b3d3ed7`) are from the original, private repository; they
-identify which code produced which result, and are not in this repository's history.
+Commit ids quoted below are from the original, private repository: they identify which code
+produced which result, and are not in this repository's history.
+**Status:** 2026-10-18, after phase 6b. The Windows results in section 3 are final and written
+up in `docs/experiments/windows-smb.md`, with every run's `result.json` and `summary.md` in
+`docs/experiments/windows-smb/`. All code this document cites is on `main`.
 
 ## 0. How to use this document
 
@@ -64,7 +61,7 @@ processes on one folder, makes clients collide on the same records, and then che
 every acknowledged save is still there at its version and every file can be read. The full
 method is in `docs/methodology.md`.
 
-| Design | Local disk, 1 Linux machine | NFS share, 1 Linux machine | NFS share, Linux + macOS | SMB, 2 Windows Server VMs (provisional) |
+| Design | Local disk, 1 Linux machine | NFS share, 1 Linux machine | NFS share, Linux + macOS | SMB, 2 Windows Server VMs |
 |---|---|---|---|---|
 | A one file, no lock (control) | failed 6/6 | failed 6/6 | failed 6/6 | failed 9/9 |
 | B one file + lock | passed | passed | **failed** | passed 9/9 (slowest) |
@@ -72,7 +69,7 @@ method is in `docs/methodology.md`.
 | D one shared log | passed | passed | **failed** | passed 9/9 |
 | E SQLite on the share | passed | passed | couldn't start | **failed 9/9, lost data** |
 
-**The first Windows round** (`stress-runs/win-*` on the test machine; light and heavy on
+**The first Windows round** (`docs/experiments/windows-smb.md`, rounds 1–2; light and heavy on
 commit `c71df76`, pipeline on `fe53fea`):
 
 - Two Windows Server 2025 VMs (Server Core). **Share layout tested: one VM shares its own
@@ -157,6 +154,9 @@ and by not letting clients cache when they are off).
 
 **What has not been tested** (the plan must cover these, section 9):
 
+- a **real network between real machines**: both Windows servers were VMs on one host,
+  talking over its virtual network, so latency, packet loss and a real switch were never in
+  play;
 - the share **hosted on a NAS** or on a separate Windows file server (only "one app server
   shares its folder" was tested);
 - 6,000 records **beyond the pipeline load** (the volume test ran the pipeline only), and the
@@ -773,7 +773,7 @@ starts and stops the servers over ssh, and copies the data back. The failure opt
 Network: the driver reaches both servers on ssh (22) and on any TCP port to `dotnet.exe`;
 both servers reach the share. Use a test folder on the share that nothing else uses.
 
-**Code:** everything this appendix uses is in this repository.
+**Code:** everything this appendix uses is on `main`.
 
 ### A.2 The driver
 

@@ -108,6 +108,9 @@ What changed, so that **a broken file counts as a failure the suite reports, for
   record missing, instead of throwing.
 - `Many_threads_from_the_same_version_exactly_one_wins` catches broken writes too: for the control
   it passes on several winners **or** a broken write; for every other store a broken write fails it.
+  Since phase 6b the control gets up to 5 rounds, each on a fresh folder, and must show this in
+  at least one: on a busy machine its 32 threads sometimes ran one after another and A happened
+  to lose nothing (owner's approval, plan Decisions).
 - `Several_processes_saving_at_once_lose_nothing` skips its final "everything still loads" check
   for the control only (A may or may not leave the file broken; the report has already failed it).
 

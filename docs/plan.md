@@ -163,7 +163,8 @@ failing gate.
 1. `dotnet build webapp/BlazorApp.slnx` succeeds; warnings count as errors.
 2. `dotnet test webapp/BlazorApp.slnx` passes: every test from this phase **and all
    earlier phases**, with none skipped.
-3. The phase's own "done when" conditions below are met.
+3. The phase's own "done when" conditions below are met, and `docs/methodology.md` is
+   up to date with what the phase changed or found (its section 11).
 4. `/code-review high` on the phase's changes; confirmed findings are fixed (with a
    test where the finding is a bug) and the gate is rerun. Findings judged not worth
    fixing are listed in the commit message with the reason.
@@ -242,7 +243,7 @@ between phases, and the gate is what prevents that.
      SMB, both VMs as clients; **(2)** VM 1 shares its own folder, so one server writes to
      local disk and the other over SMB. The stress tool's `--remote` learns to start and
      stop servers on Windows over OpenSSH (no `rsync` there). New workload alongside the
-     light and heavy runs: a **realistic profile** of 2 servers × 10 clients, creators
+     light and heavy runs: a **realistic profile** of 2 servers and 10 clients in total, creators
      and responders handing records over with think time between steps, over a longer
      run. New check: **stale reads**, where a read returns an older version than one
      already acknowledged (the pipeline's risky moment is the handoff between servers).
@@ -419,6 +420,8 @@ and **field names** only, never field values. Comment text is not logged either.
 | Production requirement (phase 6b) | Owner, 2026-10-18: about 2,000 records a year, each updated 5–10 times, kept 3 years (~6,000 records). Each record must have its own file(s) on the share; one file holding every record is not workable in production. That rules out B (one data file) and D (one shared log); C (a file per record) is the candidate, with A and E kept only as controls. The retry rerun, the failure tests and the soak run C only. Added: a **volume test**, the share filled with ~6,000 records before the realistic load, measuring save, read and list times, since C's list reads every record file |
 | Share leasing (phase 6b) | C on W2 with the retry, leasing on vs off on the share (`Set-SmbShare -LeasingMode`), 6 heavy and 3 realistic runs each: with leasing on, 2 of 6 heavy runs froze for 24–34 s (a rename waited 35.5 s, the SMB lease-break timeout; no server saved meanwhile); with it off, no freeze, but about 3× the retries, half the saves per second and double the p95 under heavy load, and 0–10 saves per heavy run still gave up after 1 s. Both were clean under the realistic load (no errors, no pause over 1.4 s). The owner chose leasing off as the production candidate, and the retry limit raised to 3 s; the failure tests, volume test and soak run that way |
 | List cache for C (phase 6b) | The volume test's first trial (W2, 6,000 records) found that C's list read every record file: ~0.6 s on ws1, more than 60 s on ws2 over SMB (every list timed out). Of an archive folder, a list cache per server and an index file, the owner chose the cache: the list re-reads only files whose creation time, write time or size changed, lists arriving together share one refresh, and single reads and writes still read the file. Warm lists: 33 ms on ws1, 127 ms on ws2. The first list after a server start still reads everything (~21 s on ws1, ~53 s on ws2 on 2-processor VMs) and slows other requests meanwhile; the owner accepted that rather than spend more on it now |
+| Methodology document | `docs/methodology.md` describes the experiment on its own, so that it can be repeated in another environment with only the repository: question, hypotheses and their status, checks, load profiles, environment requirements, procedure, results and limitations. It is updated in the same PR as any change to those, and is part of every phase's gate (decided 2026-10-18) |
+| Flaky control race (after phase 6b) | `Many_threads_from_the_same_version_exactly_one_wins` sometimes failed for strategy A (the control) when every test project ran at once: its 32 threads ran one after another, so A happened not to lose anything. On 2026-10-18 it failed in 2 of 5 full test runs on linux-host (16 CPUs) and in none of 9 runs of its project alone. Approved by the owner as a change to the fixed shared suite: a store that `ExpectsLostUpdates` gets up to 5 rounds, each on a fresh folder, and must fail in at least one; a correct store still gets one round with the same assertions. Afterwards 6 of 6 full runs passed. Spot-check: A made safe with a lock failed all 5 rounds, so the test still catches it. The rounds aren't fully independent (a busy machine stays busy); a failure now lists each round's answers, to show whether the threads overlapped |
 | Checks and reviews | CI on every push and PR from phase 1; `/code-review high` in every phase gate; Claude GitHub Action reviews optional for 4b PRs (section 7) |
 
 ## Needed before phase 6

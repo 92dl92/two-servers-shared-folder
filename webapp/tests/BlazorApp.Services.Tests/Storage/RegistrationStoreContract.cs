@@ -15,9 +15,12 @@ namespace BlazorApp.Services.Tests.Storage;
 /// </summary>
 /// <remarks>
 /// Fixed in phase 4a. A strategy that needs a change here stops and reports rather than
-/// editing it on its own branch (plan section 7). Changed once since, with the owner's approval,
-/// when strategy A broke its file: store calls that fail on broken data are counted as broken
-/// reads (<see cref="StoreWorkload.IsBrokenData"/>) and any broken read is a failure.
+/// editing it on its own branch (plan section 7). Changed twice since, each with the owner's
+/// approval (plan, Decisions): in 4b, when strategy A broke its file, store calls that fail on
+/// broken data are counted as broken reads (<see cref="StoreWorkload.IsBrokenData"/>) and any
+/// broken read is a failure; after phase 6b, the control gets up to 5 rounds of
+/// <see cref="Many_threads_from_the_same_version_exactly_one_wins"/>, since under load its
+/// threads sometimes ran one after another and it happened to lose nothing.
 /// </remarks>
 public abstract class RegistrationStoreContract : IDisposable
 {
@@ -203,18 +206,58 @@ public abstract class RegistrationStoreContract : IDisposable
     /// <summary>
     /// Many threads try to replace one record from the same version at once: exactly one may win.
     /// For <see cref="ExpectsLostUpdates"/>, several winners or a write that found the data broken
-    /// shows the store fails.
+    /// shows the store fails. Such a store only fails if the threads really overlap, and on a
+    /// busy machine they sometimes run one after another, so it gets up to
+    /// <see cref="RoundsForTheControl"/> rounds, each on a fresh folder, and must fail in at least
+    /// one (approved by the owner, plan Decisions). A correct store gets one round, as before.
     /// </summary>
     [Fact]
     public async Task Many_threads_from_the_same_version_exactly_one_wins()
     {
-        const int threads = 32;
-        var store = OpenStore(Folder.Path);
-        var record = Sample();
-        await store.TryCreateAsync(record);
-        using var start = new Barrier(threads);
+        var rounds = new List<string>();
+        for (var round = 1; round <= (ExpectsLostUpdates ? RoundsForTheControl : 1); round++)
+        {
+            var folder = ExpectsLostUpdates ? Directory.CreateDirectory(Path.Combine(Folder.Path, $"round-{round}")).FullName : Folder.Path;
+            var (store, record, results) = await RaceAsync(folder);
+            var winners = results.Count(r => !r.Broken && r.Value == WriteResult.Saved);
+            var broken = results.Count(r => r.Broken);
+            if (!ExpectsLostUpdates)
+            {
+                Assert.Equal(0, broken);
+                Assert.Equal(1, winners);
+                Assert.Equal(RaceThreads - 1, results.Count(r => r.Value == WriteResult.Conflict));
+                Assert.Equal(2, (await store.GetAsync(record.Id))!.Version);
+                return;
+            }
 
-        var results = await Task.WhenAll(Enumerable.Range(0, threads).Select(i => Task.Factory.StartNew(
+            if (winners > 1 || broken > 0)
+            {
+                return;
+            }
+
+            // The full split, so a failure shows whether the threads overlapped at all.
+            var answers = string.Join(", ", results.Where(r => !r.Broken).GroupBy(r => r.Value).Select(g => $"{g.Count()} {g.Key}"));
+            rounds.Add($"round {round}: {answers}, {broken} broken");
+        }
+
+        Assert.Fail($"Expected several writers to 'win' from the same version or find the data broken in at least one of {RoundsForTheControl} rounds, got {string.Join("; ", rounds)}.");
+    }
+
+    /// <summary>Threads in <see cref="Many_threads_from_the_same_version_exactly_one_wins"/>.</summary>
+    private const int RaceThreads = 32;
+
+    /// <summary>How many rounds a store that <see cref="ExpectsLostUpdates"/> gets to show it.</summary>
+    private const int RoundsForTheControl = 5;
+
+    /// <summary>One round: a new record in <paramref name="folder"/>, then every thread replaces it from version 1 at once.</summary>
+    private async Task<(IRegistrationStore Store, RegistrationRecordDto Record, (WriteResult Value, bool Broken)[] Results)> RaceAsync(string folder)
+    {
+        var store = OpenStore(folder);
+        var record = Sample();
+        Assert.Equal(WriteResult.Saved, await store.TryCreateAsync(record));
+        using var start = new Barrier(RaceThreads);
+
+        var results = await Task.WhenAll(Enumerable.Range(0, RaceThreads).Select(i => Task.Factory.StartNew(
             () =>
             {
                 start.SignalAndWait();
@@ -223,22 +266,7 @@ public abstract class RegistrationStoreContract : IDisposable
             CancellationToken.None,
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default).Unwrap()));
-
-        var winners = results.Count(r => !r.Broken && r.Value == WriteResult.Saved);
-        var broken = results.Count(r => r.Broken);
-        if (ExpectsLostUpdates)
-        {
-            Assert.True(
-                winners > 1 || broken > 0,
-                $"Expected several writers to 'win' from the same version or find the data broken, got {winners} winners and {broken} broken.");
-        }
-        else
-        {
-            Assert.Equal(0, broken);
-            Assert.Equal(1, winners);
-            Assert.Equal(threads - 1, results.Count(r => r.Value == WriteResult.Conflict));
-            Assert.Equal(2, (await store.GetAsync(record.Id))!.Version);
-        }
+        return (store, record, results);
     }
 
     /// <summary>

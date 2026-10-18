@@ -25,7 +25,7 @@ Then, as needed:
 | The design and caveats of each storage strategy (C is `PerRecordFile`) | [`docs/strategies/`](docs/strategies/) |
 | The stress tool: what a run does, checks, failure tests | [`docs/strategies/StressTool.md`](docs/strategies/StressTool.md) |
 | Running the tests where there is no ssh (planned) | [`docs/strategies/StressToolWindows.md`](docs/strategies/StressToolWindows.md) |
-| Results: local disk and NFS (with every run's `result.json` and `summary.md`) | [`docs/experiments/`](docs/experiments/) |
+| Results: local disk, NFS and Windows SMB (with every run's `result.json` and `summary.md`) | [`docs/experiments/`](docs/experiments/) |
 | The plan and decisions the proof of concept was built by | [`docs/plan.md`](docs/plan.md) |
 | The code | [`webapp/`](webapp/) (see [`webapp/README.md`](webapp/README.md)) |
 
@@ -46,7 +46,7 @@ reference implementation is
 | Local disk, several servers on one Linux machine | Nothing lost under any contention |
 | NFS share, one Linux machine | Nothing lost, slower |
 | NFS share, Linux + macOS clients | **Lost updates**: the macOS NFS client reads stale data under a lock |
-| SMB share, two Windows Server machines (provisional) | Nothing lost in light, heavy, realistic, failure (server killed, network cut), 6,000-record and one-hour runs, with a rename retry and SMB leasing off |
+| SMB share, two Windows Server machines (VMs) | Nothing lost in light, heavy, realistic, failure (server killed, network cut), 6,000-record and one-hour runs, with a rename retry and SMB leasing off |
 
 A correct strategy is necessary but not sufficient: the file-sharing client on each machine
 decides whether locks and version checks see the truth, so each production combination has
@@ -73,8 +73,9 @@ dotnet run --project webapp/tools/BlazorApp.Stress -- --strategy PerRecordFile -
 
 ## Status
 
-A snapshot taken on 2026-10-18 while the Windows round was still in progress; results from
-it are marked provisional. Host names, addresses and paths from the original test machines
+A snapshot of the proof of concept on 2026-10-18, after its Windows round (phase 6b). The
+no-ssh test harness for locked-down Windows environments is designed but not built yet
+(`docs/strategies/StressToolWindows.md`). Host names, addresses and paths from the original test machines
 are replaced by placeholders (`linux-host`, `mac-host`, `nas.example`, `ws1.example`, ...).
 The project was built with Claude Code; some docs refer to its working conventions.
 
